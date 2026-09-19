@@ -80,10 +80,17 @@ No environment variable is required. The container serves plain HTTP on port
 
 ### Behind a reverse proxy
 
-Point your proxy (Traefik, Caddy, nginx, or whatever your host platform uses) at
-port 8080 of the container; if the proxy reaches it over the Docker network,
-drop the `ports` section from the Compose file. `/healthz` answers `ok` and is
-meant for health checks.
+`docker-compose.yml` publishes port 8080 on the host, which is the simplest case
+but collides with a proxy already listening there. Use
+[`docker-compose.proxy.yml`](docker-compose.proxy.yml) instead: same container,
+no published port, the proxy reaches port 8080 over the Docker network.
+
+```bash
+docker compose -f docker-compose.proxy.yml up -d
+```
+
+On a platform that generates the proxy configuration for you, point it at this
+file and give it the domain; `/healthz` answers `ok` for health checks.
 
 HTTPS is only needed for IT-Tools' camera recorder — browsers refuse the camera
 outside a secure context. Everything else works over plain HTTP.

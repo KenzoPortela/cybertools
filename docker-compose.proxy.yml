@@ -1,0 +1,29 @@
+# cybertools derrière un proxy inverse (Traefik, Caddy, nginx, ou une plateforme
+# qui en gère un pour vous).
+#
+# Fichier autonome : aucun port n'est publié sur l'hôte, le proxy joint le
+# conteneur sur son port 8080 par le réseau Docker. À utiliser tel quel :
+#
+#   docker compose -f docker-compose.proxy.yml up -d
+#
+# (Le docker-compose.yml, lui, publie 8080 sur l'hôte : c'est le plus simple
+# quand on n'a que Docker, mais cela entre en conflit avec un proxy qui écoute
+# déjà sur ce port.)
+
+services:
+  cybertools:
+    image: ghcr.io/kenzoportela/cybertools:${CYBERTOOLS_VERSION:-latest}
+    restart: unless-stopped
+    expose:
+      - "8080"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3

@@ -99,15 +99,13 @@ The Docker context holds only our own sources (`.dockerignore`): no need to have
 prepared `vendor/` on the building machine. Expect a few minutes and about 4 GB
 of memory (webpack over CyberChef's operations).
 
-**Two Compose files**:
+**Three Compose files**:
 
 | File | Role |
 |---|---|
 | `docker-compose.yml` | the image published on ghcr.io, port 8080 published (`CYBERTOOLS_PORT` to change it), read-only container, health check. |
-| `docker-compose.build.yml` | builds the image from source instead of pulling it. |
-
-Behind a reverse proxy that reaches containers over the Docker network, drop the
-`ports` section.
+| `docker-compose.proxy.yml` | the same, standalone, with no published port: for a reverse proxy that reaches the container over the Docker network. |
+| `docker-compose.build.yml` | an override that builds the image from source instead of pulling it. |
 
 **What nginx does** (`deploy/nginx.conf`):
 
