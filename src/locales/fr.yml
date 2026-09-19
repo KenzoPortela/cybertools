@@ -1,0 +1,513 @@
+app:
+  home:
+    title: 'Encoder, déchiffrer, analyser.'
+    eyebrow: '{count} outils · 100 % local · open source'
+    subtitle: '{count} outils d''encodage, de cryptographie, de réseau et de formats de données. Tout s''exécute dans votre navigateur.'
+    searchPlaceholder: 'Rechercher un outil : base64, hash, JWT, IP…'
+    paletteHint: 'Depuis n''importe quelle page : {shortcut}'
+    results: 'Résultats de recherche'
+    resultCount: 'Aucun résultat pour « {query} » | 1 résultat pour « {query} » | {count} résultats pour « {query} »'
+    noResult: 'Aucun outil ne correspond. Essayez un autre mot, en français ou en anglais.'
+    favorites: Favoris
+    recents: 'Utilisés récemment'
+    clearRecents: Effacer
+    categories: Catégories
+    featured: À la une
+    recipesTag: atelier
+    magicTag: détection
+    recipesPitch: Enchaînez les opérations de CyberChef, voyez le résultat en direct, partagez vos recettes — compatibles avec cyberchef.org.
+    magicPitch: "Collez une donnée inconnue : CyberChef devine comment la décoder."
+
+  categories:
+    encoding: Encodage
+    crypto: 'Crypto & hash'
+    network: Réseau
+    text: Texte
+    dataFormats: 'Formats de données'
+    webDev: 'Web & dev'
+    forensics: Forensique
+    media: 'Images & médias'
+    math: 'Maths & unités'
+    misc: Divers
+
+  category:
+    count: 'aucun outil | 1 outil | {n} outils'
+    empty: 'Aucun outil dans cette catégorie pour le moment.'
+
+  nav:
+    settings: Paramètres
+    home: Accueil
+    switchLocale: 'Switch to English'
+
+  theme:
+    auto: 'Thème : automatique (suit le système)'
+    light: 'Thème : clair'
+    dark: 'Thème : sombre'
+
+  palette:
+    label: 'Palette de commandes'
+    open: 'Ouvrir la palette de commandes'
+    trigger: 'Rechercher un outil…'
+    placeholder: 'Rechercher un outil ou une commande…'
+    empty: 'Rien ne correspond à « {query} ».'
+    groups:
+      recents: Récents
+      favorites: Favoris
+      tools: Outils
+      commands: Commandes
+    commands:
+      settings: Ouvrir les paramètres
+      home: 'Aller à l''accueil'
+      category: 'Catégorie : {name}'
+      theme: 'Changer de thème'
+      locale: 'Switch to English'
+      about: 'À propos et crédits'
+      recipes: Ouvrir les Recettes
+      magic: Détecter un encodage (Magic)
+    hints:
+      navigate: naviguer
+      open: ouvrir
+      close: fermer
+
+  favorites:
+    add: 'Ajouter aux favoris'
+    remove: 'Retirer des favoris'
+
+  tool:
+    breadcrumb: "Fil d'Ariane"
+    loading: 'Chargement de l''outil…'
+    loadError: 'Impossible de charger cet outil.'
+    reload: 'Recharger la page'
+    unavailable: 'Outil indisponible'
+    comingSoon: 'Cet outil arrive bientôt.'
+
+  footer:
+    privacy: 'Aucune donnée ne quitte votre navigateur.'
+    madeBy: 'par {name}'
+    about: 'À propos et crédits'
+
+  settings:
+    title: Paramètres
+    intro: 'Vos réglages restent dans ce navigateur : rien n''est envoyé à un serveur.'
+    appearance:
+      title: Apparence
+      theme: Thème
+      themeHelp: 'Automatique suit le réglage clair ou sombre de votre système.'
+      themes:
+        auto: Automatique
+        light: Clair
+        dark: Sombre
+      color: Couleur
+      colorHelp: 'Couleur d''accent de l''interface, en clair comme en sombre. La page se recharge pour l''appliquer.'
+      colors:
+        terminal: Terminal
+        indigo: Indigo
+        amber: Ambre
+        arctic: Arctique
+        magenta: Magenta
+      language: Langue
+      languageHelp: 'Langue de l''interface. Les libellés internes de certains outils restent en anglais.'
+    recipes:
+      title: Recettes et opérations
+      autoBake: Calcul en direct
+      autoBakeHelp: 'Recalcule le résultat à chaque modification. Désactivé, un bouton « Exécuter » lance le calcul : pratique pour les recettes lourdes ou les grosses entrées.'
+      restoreLast: Rouvrir la dernière recette
+      restoreLastHelp: 'Par défaut, l''atelier s''ouvre vide et propose de reprendre la dernière recette.'
+    magic:
+      title: Magic
+      autoDepth: Profondeur automatique
+      autoDepthHelp: 'Magic essaie des profondeurs croissantes et s''arrête quand il n''y a plus de couche à décoder. Désactivé, il utilise la profondeur fixe ci-dessous.'
+      depth: Profondeur fixe
+      depthHelp: 'Nombre maximal d''opérations enchaînées. Au-delà de 4, la recherche peut devenir lente.'
+      intensive: Mode intensif
+      intensiveHelp: 'Essaie aussi chaque opération sur des sous-parties de l''entrée. Plus complet, nettement plus lent.'
+    data:
+      title: Données enregistrées
+      favorites: 'Favoris : aucun | Favoris : {count} outil | Favoris : {count} outils'
+      recents: 'Outils récents : aucun | Outils récents : {count} | Outils récents : {count}'
+      clear: Effacer
+      backup: Sauvegarde
+      backupHelp: 'Exporte vos paramètres, favoris et votre dernière recette dans un fichier JSON, pour les retrouver sur un autre navigateur.'
+      export: Exporter
+      import: Importer
+      importError: 'Ce fichier n''est pas une sauvegarde cybertools valide.'
+      reset: Tout réinitialiser
+      resetHelp: 'Efface paramètres, favoris, récents et dernière recette de ce navigateur.'
+      resetQuestion: 'Effacer toutes les données de cybertools dans ce navigateur ?'
+      resetConfirm: Tout effacer
+      cancel: Annuler
+      privacy: 'Ces données sont stockées uniquement dans ce navigateur (localStorage). Les entrées que vous saisissez dans les outils ne sont jamais enregistrées.'
+
+  about:
+    title: 'À propos'
+    intro: 'cybertools réunit les outils de CyberChef et d''IT-Tools dans une seule interface. Ce n''est pas un projet original : tout le travail d''outillage revient aux auteurs de ces deux logiciels libres.'
+    authorTitle: Auteur
+    author: 'Codé et adapté par {name}.'
+    privacyTitle: 'Vos données restent chez vous'
+    privacyBody: 'Chaque outil s''exécute entièrement dans votre navigateur. Rien de ce que vous saisissez n''est envoyé à un serveur, et aucune mesure d''audience n''est collectée.'
+    creditsTitle: 'Crédits'
+    creditsBody: 'Les outils proviennent de deux projets, utilisés sans modification de leurs sources.'
+    by: 'par {author}'
+    cyberchef: 'le moteur d''opérations, les recettes et la détection automatique Magic.'
+    itTools: 'les outils pour développeurs et leur kit de composants.'
+    licenseTitle: 'Licence'
+    licenseBody: 'cybertools est distribué sous licence GNU GPL v3, comme IT-Tools dont il réutilise le code. Le code de CyberChef reste sous licence Apache 2.0.'
+
+  cc:
+    parameters: Paramètres
+    input: Entrée
+    output: Sortie
+    inputPlaceholder: 'Saisissez ou collez vos données ici…'
+    outputPlaceholder: 'Le résultat apparaîtra ici.'
+    loadFile: 'Charger un fichier'
+    removeFile: 'Retirer le fichier'
+    run: Exécuter
+    running: 'Calcul en cours…'
+    cancel: Annuler
+    copy: Copier
+    copied: 'Résultat copié dans le presse-papiers'
+    download: Télécharger
+    opError: 'L''opération a échoué'
+    loadError: 'Impossible de charger cette opération'
+    binary: 'Sortie binaire ({size}) : son affichage en texte est approximatif, téléchargez-la pour la conserver intacte.'
+    truncated: 'Affichage limité aux 512 premiers ko sur {size}. Le téléchargement contient la sortie complète.'
+    aboutOperation: 'À propos de cette opération'
+    learnMore: 'En savoir plus'
+    credit: 'Opération fournie par CyberChef (GCHQ, licence Apache 2.0). Description en anglais, telle que publiée par CyberChef.'
+
+  notFound:
+    message: 'Cette page n''existe pas.'
+    backHome: "Revenir à l'accueil"
+
+  # Titres et descriptions des outils d'IT-Tools. En anglais, on garde les leurs.
+  tools:
+    ascii-text-drawer:
+      title: Générateur de texte ASCII art
+      description: Créez du texte en ASCII art avec de nombreuses polices et styles.
+    base-converter:
+      title: Convertisseur de bases numériques
+      description: "Convertissez un nombre entre différentes bases : décimale, hexadécimale, binaire, octale, base64…"
+    base64-file-converter:
+      title: Fichier vers Base64
+      description: Convertissez un texte, un fichier ou une image en Base64, et inversement.
+    base64-string-converter:
+      title: Encodeur / décodeur Base64
+      description: Encodez et décodez du texte en Base64.
+    basic-auth-generator:
+      title: Générateur d’en-tête Basic Auth
+      description: Générez l’en-tête d’authentification Basic, encodé en Base64, à partir d’un identifiant et d’un mot de passe.
+    bcrypt:
+      title: Bcrypt
+      description: Hachez et comparez du texte avec bcrypt, une fonction de hachage de mots de passe fondée sur l’algorithme Blowfish.
+    benchmark-builder:
+      title: Banc d’essai de performances
+      description: Comparez simplement le temps d’exécution de plusieurs tâches.
+    bip39-generator:
+      title: Générateur de phrase BIP39
+      description: Générez une phrase de passe BIP39 à partir d’un mnémonique existant ou aléatoire, ou retrouvez le mnémonique depuis la phrase.
+    camera-recorder:
+      title: Enregistreur de caméra
+      description: Prenez une photo ou enregistrez une vidéo depuis votre webcam.
+    case-converter:
+      title: Convertisseur de casse
+      description: "Changez la casse d’un texte : camelCase, snake_case, kebab-case, MAJUSCULES…"
+    chmod-calculator:
+      title: Calculateur chmod
+      description: Calculez vos permissions chmod et la commande correspondante.
+    chronometer:
+      title: Chronomètre
+      description: Mesurez une durée avec un chronomètre simple.
+    color-converter:
+      title: Convertisseur de couleurs
+      description: Convertissez une couleur entre les formats hex, RGB, HSL, CMJN et nom CSS.
+    crontab-generator:
+      title: Générateur de crontab
+      description: Validez et générez une expression cron, avec sa description en clair.
+    date-converter:
+      title: Convertisseur de dates
+      description: "Convertissez une date et une heure dans différents formats : ISO 8601, timestamp Unix, RFC…"
+    device-information:
+      title: Informations sur l’appareil
+      description: "Affichez les informations de votre appareil : taille d’écran, densité de pixels, user-agent…"
+    docker-run-to-docker-compose-converter:
+      title: docker run vers docker-compose
+      description: Transformez une commande « docker run » en fichier docker-compose.
+    email-normalizer:
+      title: Normaliseur d’e-mails
+      description: Ramenez des adresses e-mail à un format standard pour les comparer et les dédoublonner plus facilement.
+    emoji-picker:
+      title: Sélecteur d’emojis
+      description: Copiez facilement des emojis et obtenez leur valeur Unicode et leurs points de code.
+    encryption:
+      title: Chiffrer / déchiffrer du texte
+      description: Chiffrez et déchiffrez du texte avec AES, TripleDES, Rabbit ou RC4.
+    eta-calculator:
+      title: Calculateur d’heure de fin
+      description: Estimez l’heure de fin et la durée d’une tâche, par exemple un téléchargement.
+    git-memo:
+      title: Aide-mémoire Git
+      description: Les commandes Git les plus courantes, à portée de main.
+    hash-text:
+      title: Hacher du texte
+      description: "Calculez l’empreinte d’un texte : MD5, SHA1, SHA256, SHA224, SHA512, SHA384, SHA3 ou RIPEMD160."
+    hmac-generator:
+      title: Générateur HMAC
+      description: Calculez un code d’authentification de message (HMAC) avec une clé secrète et la fonction de hachage de votre choix.
+    html-entities:
+      title: Échapper les entités HTML
+      description: "Échappez ou déséchappez les entités HTML : chevrons, esperluette, guillemets et apostrophes."
+    html-wysiwyg-editor:
+      title: Éditeur HTML visuel
+      description: Un éditeur WYSIWYG qui génère instantanément le code HTML du contenu.
+    http-status-codes:
+      title: Codes de statut HTTP
+      description: La liste de tous les codes de statut HTTP, leur nom et leur signification.
+    iban-validator-and-parser:
+      title: Validateur d’IBAN
+      description: "Validez et analysez un IBAN : pays, BBAN, QR-IBAN et format lisible."
+    ipv4-address-converter:
+      title: Convertisseur d’adresse IPv4
+      description: Convertissez une adresse IP en décimal, binaire, hexadécimal ou en représentation IPv6.
+    ipv4-range-expander:
+      title: Plage IPv4 vers sous-réseau
+      description: À partir d’une adresse IPv4 de début et de fin, calculez un sous-réseau valide et sa notation CIDR.
+    ipv4-subnet-calculator:
+      title: Calculateur de sous-réseau IPv4
+      description: Analysez un bloc CIDR IPv4 et obtenez toutes les informations sur le sous-réseau.
+    ipv6-ula-generator:
+      title: Générateur d’adresses IPv6 ULA
+      description: Générez des adresses IPv6 locales, non routables, pour votre réseau, selon la RFC 4193.
+    json-diff:
+      title: Comparaison de JSON
+      description: Comparez deux objets JSON et affichez leurs différences.
+    json-minify:
+      title: Minifier du JSON
+      description: Compressez votre JSON en supprimant les espaces inutiles.
+    json-prettify:
+      title: Formater du JSON
+      description: Mettez en forme une chaîne JSON pour la rendre lisible.
+    json-to-csv:
+      title: JSON vers CSV
+      description: Convertissez du JSON en CSV, avec détection automatique des en-têtes.
+    json-to-toml:
+      title: JSON vers TOML
+      description: Convertissez du JSON en TOML.
+    json-to-xml:
+      title: JSON vers XML
+      description: Convertissez du JSON en XML.
+    json-to-yaml-converter:
+      title: JSON vers YAML
+      description: Convertissez du JSON en YAML, en direct.
+    jwt-parser:
+      title: Décodeur JWT
+      description: Analysez et décodez un JSON Web Token (JWT) pour afficher son contenu.
+    keycode-info:
+      title: Informations sur les touches
+      description: Obtenez le keycode, le code, l’emplacement et les modificateurs JavaScript de n’importe quelle touche pressée.
+    list-converter:
+      title: Convertisseur de listes
+      description: "Transformez des données en colonnes : transposer, ajouter un préfixe ou un suffixe, inverser, trier, mettre en minuscules, tronquer…"
+    lorem-ipsum-generator:
+      title: Générateur de lorem ipsum
+      description: Générez du faux texte pour illustrer la mise en page d’un document ou d’une police sans contenu réel.
+    mac-address-generator:
+      title: Générateur d’adresses MAC
+      description: Générez des adresses MAC avec le préfixe, la quantité et la casse de votre choix.
+    mac-address-lookup:
+      title: Recherche d’adresse MAC
+      description: Trouvez le fabricant d’un appareil à partir de son adresse MAC.
+    markdown-to-html:
+      title: Markdown vers HTML
+      description: Convertissez du Markdown en HTML, et imprimez le résultat, en PDF par exemple.
+    math-evaluator:
+      title: Évaluateur mathématique
+      description: Une calculatrice pour évaluer des expressions mathématiques, avec des fonctions comme sqrt, cos, sin, abs…
+    mime-types:
+      title: Types MIME
+      description: Convertissez des types MIME en extensions de fichier, et inversement.
+    numeronym-generator:
+      title: Générateur de numéronymes
+      description: "Un numéronyme abrège un mot à l’aide d’un nombre : « i18n » pour « internationalization », 18 étant le nombre de lettres entre le premier i et le dernier n."
+    og-meta-generator:
+      title: Générateur de balises Open Graph
+      description: Générez les balises meta Open Graph et réseaux sociaux de votre site.
+    otp-generator:
+      title: Générateur de codes OTP
+      description: Générez et validez des mots de passe à usage unique basés sur le temps (TOTP), pour l’authentification à plusieurs facteurs.
+    password-strength-analyser:
+      title: Robustesse d’un mot de passe
+      description: Évaluez la robustesse d’un mot de passe et le temps nécessaire pour le casser. Tout est calculé localement.
+    pdf-signature-checker:
+      title: Vérificateur de signature PDF
+      description: Vérifiez les signatures d’un fichier PDF, qui permettent de savoir si son contenu a été modifié depuis sa signature.
+    percentage-calculator:
+      title: Calculateur de pourcentages
+      description: Calculez facilement un pourcentage d’une valeur, ou la variation en pourcentage entre deux valeurs.
+    phone-parser-and-formatter:
+      title: Analyseur de numéro de téléphone
+      description: "Analysez, validez et formatez un numéro de téléphone : indicatif pays, type de ligne…"
+    qrcode-generator:
+      title: Générateur de QR code
+      description: Générez et téléchargez un QR code pour une URL ou du texte, avec les couleurs de votre choix.
+    random-port-generator:
+      title: Générateur de port aléatoire
+      description: Générez des numéros de port aléatoires hors de la plage des ports réservés (0-1023).
+    regex-memo:
+      title: Aide-mémoire des regex
+      description: Aide-mémoire des expressions régulières JavaScript.
+    regex-tester:
+      title: Testeur de regex
+      description: Testez vos expressions régulières sur un texte d’exemple.
+    roman-numeral-converter:
+      title: Convertisseur de chiffres romains
+      description: Convertissez des chiffres romains en nombres, et inversement.
+    rsa-key-pair-generator:
+      title: Générateur de paire de clés RSA
+      description: Générez une nouvelle paire de clés RSA, privée et publique, au format PEM.
+    safelink-decoder:
+      title: Décodeur de liens Outlook Safelink
+      description: Décodez les liens Safelink d’Outlook pour retrouver l’URL d’origine.
+    slugify-string:
+      title: Slugifier un texte
+      description: Rendez un texte utilisable dans une URL, un nom de fichier ou un identifiant.
+    sql-prettify:
+      title: Formater du SQL
+      description: Mettez en forme vos requêtes SQL, pour de nombreux dialectes.
+    string-obfuscator:
+      title: Masqueur de texte
+      description: Masquez une chaîne (secret, IBAN, jeton) pour la partager et la reconnaître sans en révéler le contenu.
+    svg-placeholder-generator:
+      title: Générateur d’images SVG de substitution
+      description: Générez des images SVG à utiliser comme espaces réservés dans vos applications.
+    temperature-converter:
+      title: Convertisseur de températures
+      description: Convertissez des températures entre Kelvin, Celsius, Fahrenheit, Rankine, Delisle, Newton, Réaumur et Rømer.
+    text-diff:
+      title: Comparaison de textes
+      description: Comparez deux textes et visualisez leurs différences.
+    text-statistics:
+      title: Statistiques de texte
+      description: "Obtenez des informations sur un texte : nombre de caractères, de mots, taille en octets…"
+    text-to-binary:
+      title: Texte vers binaire ASCII
+      description: Convertissez du texte en binaire ASCII, et inversement.
+    text-to-nato-alphabet:
+      title: Texte vers alphabet OTAN
+      description: Épelez un texte avec l’alphabet phonétique de l’OTAN pour le transmettre à l’oral.
+    text-to-unicode:
+      title: Texte vers Unicode
+      description: Convertissez du texte en Unicode, et inversement.
+    token-generator:
+      title: Générateur de jetons
+      description: "Générez une chaîne aléatoire avec les caractères de votre choix : majuscules, minuscules, chiffres et symboles."
+    toml-to-json:
+      title: TOML vers JSON
+      description: Convertissez du TOML en JSON.
+    toml-to-yaml:
+      title: TOML vers YAML
+      description: Convertissez du TOML en YAML.
+    ulid-generator:
+      title: Générateur d’ULID
+      description: Générez des identifiants uniques triables lexicographiquement (ULID).
+    url-encoder:
+      title: Encoder / décoder une URL
+      description: Encodez du texte au format URL (encodage « pourcent »), ou décodez-le.
+    url-parser:
+      title: Analyseur d’URL
+      description: "Décomposez une URL en ses différentes parties : protocole, origine, paramètres, port, identifiants…"
+    user-agent-parser:
+      title: Analyseur de user-agent
+      description: Détectez le navigateur, le moteur, le système, le processeur et l’appareil à partir d’une chaîne user-agent.
+    uuid-generator:
+      title: Générateur d’UUID
+      description: Générez des identifiants universels uniques (UUID) de 128 bits, en version NIL, v1, v3, v4 ou v5.
+    wifi-qrcode-generator:
+      title: QR code Wi-Fi
+      description: Générez et téléchargez un QR code pour se connecter en un geste à un réseau Wi-Fi.
+    xml-formatter:
+      title: Formater du XML
+      description: Mettez en forme une chaîne XML pour la rendre lisible.
+    xml-to-json:
+      title: XML vers JSON
+      description: Convertissez du XML en JSON.
+    yaml-prettify:
+      title: Formater du YAML
+      description: Mettez en forme une chaîne YAML pour la rendre lisible.
+    yaml-to-json-converter:
+      title: YAML vers JSON
+      description: Convertissez du YAML en JSON, en direct.
+    yaml-to-toml:
+      title: YAML vers TOML
+      description: Convertissez du YAML en TOML.
+  native:
+    recipes:
+      title: Recettes
+      description: Enchaînez des opérations CyberChef, voyez le résultat en direct, lancez Magic, partagez ou importez une recette au format de CyberChef.
+    magic:
+      title: Magic
+      description: Détecte automatiquement l’encodage d’une donnée inconnue (base64, hexadécimal, compression…) et propose la recette pour la décoder.
+  recipes:
+    addPlaceholder: "Ajouter une opération : base64, hex, gzip, xor…"
+    suggested: Suggestions
+    noOperation: Aucune opération ne correspond.
+    stepLabel: "Étape {index} : {name}"
+    drag: Glisser pour réordonner
+    moveUp: Monter
+    moveDown: Descendre
+    enable: Réactiver l’étape
+    disable: Désactiver l’étape
+    expand: Déplier
+    collapse: Replier
+    remove: Retirer l’étape
+    import: Importer
+    share: Partager
+    clear: Vider
+    dropped: "Opérations indisponibles ici, retirées de la recette : {names}."
+    invalid: "Recette illisible : {message}"
+    failedAt: Échec à l’étape {index} — {name}
+    copied: Copié dans le presse-papiers
+    shareTitle: Partager la recette
+    shareLink: Lien vers cette recette
+    includeInput: Inclure l’entrée dans le lien
+    includeInputWarning: Quiconque reçoit ce lien verra vos données.
+    copyLink: Copier le lien
+    copyRecipe: Copier la recette
+    copyJson: Copier en JSON
+    openInCyberChef: Ouvrir dans cyberchef.org
+    shareNote: "Le lien fonctionne aussi sur cyberchef.org : seule l’adresse de départ change. La recette voyage dans la partie de l’adresse située après le « # », que les navigateurs n’envoient jamais au serveur."
+    importTitle: Importer une recette
+    importHelp: "Collez une recette copiée depuis CyberChef (format compact ou JSON), ou un lien complet cyberchef.org : sa recette et son entrée seront reprises."
+    importPlaceholder: From_Base64('A-Za-z0-9+/=',true)To_Hex('Space',0)
+    importConfirm: Importer
+    emptyTitle: Votre recette est vide
+    emptyText: Ajoutez une opération avec le champ ci-dessus, ou lancez Magic pour laisser CyberChef deviner comment décoder votre entrée.
+    resume: Reprendre la dernière recette ({count} étape) | Reprendre la dernière recette ({count} étapes)
+    openIn: Ouvrir dans les Recettes
+    continueIn: Continuer dans les Recettes
+    stoppedAt: "La recette s’est arrêtée à l’étape {index} — {name} : la sortie ci-dessous est son message d’erreur."
+  magic:
+    panelTitle: Magic
+    candidates: Pistes de décodage
+    intro: CyberChef essaie des décodages sur votre entrée et classe les pistes les plus prometteuses.
+    introWithRecipe: CyberChef essaie des décodages sur la sortie de votre recette et classe les pistes les plus prometteuses.
+    addToRecipe: Ajouter à la recette
+    apply: Appliquer
+    openInRecipes: Ouvrir dans les Recettes
+    depth: Profondeur
+    depthAuto: Auto
+    depthManual: Manuelle
+    exploring: 'Exploration, profondeur {depth}…'
+    detected: 'Profondeur détectée : {depth} couche | Profondeur détectée : {depth} couches'
+    nothingToDecode: 'Rien à décoder : l''entrée semble déjà en clair.'
+    limited: 'Arrêt à cette profondeur pour rester rapide. Passez en manuel pour chercher plus loin.'
+    intensive: Mode intensif
+    extensiveLanguages: Toutes les langues
+    cribPlaceholder: Texte ou expression attendu dans le résultat (facultatif)
+    emptyInput: Saisissez ou collez une donnée pour lancer Magic.
+    running: Recherche des pistes…
+    failed: Magic a échoué
+    noCandidate: Aucune piste trouvée.
+    matchesCrib: Correspond au motif
+    utf8: UTF-8 valide
+    entropy: Entropie {value}
+    asIs: Entrée telle quelle

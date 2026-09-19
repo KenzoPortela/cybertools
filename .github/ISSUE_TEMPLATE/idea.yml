@@ -1,0 +1,22 @@
+name: Idea
+description: Suggest an improvement
+labels: [idea]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: The need
+      description: The problem to solve, rather than the solution you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you imagine
+  - type: markdown
+    attributes:
+      value: |
+        For a **new tool**, check first whether it belongs to
+        [IT-Tools](https://github.com/CorentinTh/it-tools) or
+        [CyberChef](https://github.com/gchq/CyberChef): proposing it there will
+        bring it here at the next upstream update.

@@ -1,0 +1,64 @@
+[
+  {
+    "name": "accueil-clair",
+    "url": "http://localhost:5173/",
+    "scheme": "light"
+  },
+  {
+    "name": "accueil-sombre",
+    "url": "http://localhost:5173/",
+    "scheme": "dark"
+  },
+  {
+    "name": "accueil-mobile",
+    "url": "http://localhost:5173/",
+    "width": 390,
+    "height": 844,
+    "mobile": true,
+    "scheme": "light"
+  },
+  {
+    "name": "a-propos",
+    "url": "http://localhost:5173/about",
+    "scheme": "dark",
+    "script": "(() => { const links = [...document.querySelectorAll('.author a, .footer a')].map(a => a.getAttribute('href')); return (links.includes('https://github.com/KenzoPortela') && links.includes('https://kenzoportela.com') && /Kenzo Portela/.test(document.querySelector('.footer').textContent)) || links; })()"
+  },
+  {
+    "name": "404",
+    "url": "http://localhost:5173/page-inexistante",
+    "scheme": "light",
+    "script": "document.querySelector('h1')?.textContent.trim() === '404'"
+  },
+  {
+    "name": "outil-base64",
+    "url": "http://localhost:5173/tools/base64-string-converter",
+    "scheme": "light",
+    "script": "(async () => { const [src, out] = document.querySelectorAll('textarea'); src.value = 'Bonjour CyberTools'; src.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(r => setTimeout(r, 400)); return out.value === 'Qm9uam91ciBDeWJlclRvb2xz'; })()"
+  },
+  {
+    "name": "outil-hash-mobile",
+    "url": "http://localhost:5173/tools/hash-text",
+    "width": 390,
+    "height": 844,
+    "mobile": true,
+    "scheme": "dark"
+  },
+  {
+    "name": "cycle-theme",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(async () => { localStorage.removeItem('cybertools:theme'); const btn = () => [...document.querySelectorAll('button')].find(b => /Thème|Theme/.test(b.getAttribute('aria-label') || '')); const seen = []; for (let i = 0; i < 3; i++) { btn().click(); await new Promise(r => setTimeout(r, 250)); seen.push(localStorage.getItem('cybertools:theme') + ':' + document.documentElement.classList.contains('dark')); } return seen.join(' → ') === 'light:false → dark:true → auto:false'; })()"
+  },
+  {
+    "name": "lien-parametres",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(async () => { document.querySelector('.settings-button').click(); await new Promise(r => setTimeout(r, 800)); return location.pathname === '/settings' && document.querySelector('h1')?.textContent.trim() === 'Settings'; })()"
+  },
+  {
+    "name": "design-system",
+    "url": "http://localhost:5173/_design/c-button",
+    "scheme": "dark",
+    "fullPage": true
+  }
+]

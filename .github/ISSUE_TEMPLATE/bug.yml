@@ -1,0 +1,36 @@
+name: Bug
+description: A tool or the interface does not behave as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      placeholder: |
+        1. Open /tools/…
+        2. Type …
+        3. …
+    validations:
+      required: true
+  - type: input
+    id: tool
+    attributes:
+      label: Tool or operation
+      placeholder: 'Recipes, Magic, To Hex, Hash text…'
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and system
+      placeholder: 'Firefox 141 on Windows 11'
+  - type: input
+    id: instance
+    attributes:
+      label: Instance
+      placeholder: 'ghcr.io/kenzoportela/cybertools:latest, local build, npm run dev…'

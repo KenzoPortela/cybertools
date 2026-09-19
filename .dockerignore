@@ -1,0 +1,12 @@
+# Le contexte de construction ne reçoit que nos sources : les dépôts amont sont
+# clonés dans l'image, à la révision de vendor.lock.json.
+.git
+node_modules
+vendor
+dist
+public/cyberchef
+src/generated
+.screenshots
+*.log
+.vscode
+.idea

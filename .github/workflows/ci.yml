@@ -1,0 +1,53 @@
+# Checks every push and pull request: dependencies aligned with IT-Tools, type
+# checking, full build (CyberChef engine + application).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      # vendor/ only depends on the upstream revision lock and the script that prepares it.
+      - name: Cache upstream sources
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: vendor-${{ runner.os }}-${{ hashFiles('vendor.lock.json', 'build/scripts/setup-vendor.mjs') }}
+
+      - name: Upstream sources (CyberChef, IT-Tools)
+        run: npm run vendor:setup
+
+      - name: Dependencies
+        run: npm ci
+
+      - name: Dependencies aligned with IT-Tools
+        run: npm run vendor:sync-deps -- --check
+
+      - name: Type check and build
+        run: npm run build
+
+      - name: Upstream sources untouched
+        run: |
+          test -z "$(git -C vendor/cyberchef status --porcelain)"
+          test -z "$(git -C vendor/it-tools status --porcelain)"

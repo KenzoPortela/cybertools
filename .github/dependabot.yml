@@ -1,0 +1,16 @@
+# npm dependencies follow IT-Tools (npm run vendor:sync-deps), so Dependabot only
+# handles GitHub actions and Docker base images.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    ignore:
+      # Node 24 est la version LTS ; les versions impaires ne le sont pas.
+      - dependency-name: node
+        update-types: [version-update:semver-major]

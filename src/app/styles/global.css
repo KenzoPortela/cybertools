@@ -1,0 +1,72 @@
+/*
+ * Styles globaux : arrondi unique et détails typographiques, appliqués aussi
+ * au kit `c-*` d'IT-Tools.
+ *
+ * Leurs composants écrivent « border-radius: 4px » en dur dans des styles
+ * scopés. Plutôt que de surcharger six fichiers pour une seule valeur, on les
+ * réaligne ici, en doublant la classe pour l'emporter sur leur sélecteur scopé.
+ */
+
+.c-button.c-button:not(.round):not(.circle),
+.c-card.c-card,
+.c-link.c-link,
+.c-input-text.c-input-text .input-wrapper,
+.c-select.c-select .c-select-input,
+.c-select.c-select .c-select-dropdown,
+.c-select.c-select .c-select-dropdown-option,
+.c-modal--container.c-modal--container {
+  border-radius: var(--ct-radius);
+}
+
+/* Utilitaires UnoCSS « rounded » d'IT-Tools (tableaux, zones de dépôt, infobulles). */
+.tool-content .rounded,
+.tool-content .rounded-md,
+.tool-content .rounded-lg {
+  border-radius: var(--ct-radius);
+}
+
+/* Touches clavier : un micro-élément, qui garde un petit arrondi. */
+kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--ct-radius-micro);
+  border: 1px solid var(--ct-border);
+  border-bottom-width: 2px;
+  background: var(--ct-surface);
+  color: var(--ct-text-muted);
+  font-family: var(--ct-font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+::selection {
+  background: var(--ct-primary-faded);
+  color: var(--ct-text);
+}
+
+/* Libellés techniques : chemins, compteurs, étiquettes de section. */
+.ct-mono {
+  font-family: var(--ct-font-mono);
+}
+
+/*
+ * Pas de ligatures là où on lit ou saisit des données : JetBrains Mono ferait
+ * de « == » (fin d'un base64) ou de « -> » un seul glyphe, et une donnée doit se
+ * lire caractère par caractère. Zéro barré, pour ne pas le confondre avec O.
+ */
+.ct-mono,
+code,
+kbd,
+pre,
+samp,
+input,
+textarea {
+  font-variant-ligatures: none;
+  font-feature-settings: 'calt' 0, 'liga' 0, 'zero' 1;
+}
+
+/* Barres de défilement discrètes, dans la teinte du thème. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ct-border) transparent;
+}

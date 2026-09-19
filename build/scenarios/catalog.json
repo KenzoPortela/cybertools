@@ -1,0 +1,149 @@
+[
+  {
+    "name": "cat-accueil",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "fullPage": true,
+    "script": "(() => { localStorage.removeItem('cybertools:favorites'); localStorage.removeItem('cybertools:recents'); const counts = Object.fromEntries([...document.querySelectorAll('.category-card')].map(c => [c.querySelector('.category-label').textContent.trim(), parseInt(c.querySelector('.category-count').textContent, 10)])); return { sous_titre: document.querySelector('.hero-subtitle').textContent.trim().slice(0, 12), total: Object.values(counts).reduce((a, b) => a + b, 0), counts }; })()"
+  },
+  {
+    "name": "cat-recherche-accents",
+    "url": "http://localhost:5173/?q=reseau",
+    "scheme": "light",
+    "script": "(() => { const first = document.querySelector('.card'); const category = first?.querySelector('.category')?.textContent.trim(); return category === 'Network' || ('premier : ' + first?.querySelector('.title')?.textContent.trim() + ' (' + category + ')'); })()"
+  },
+  {
+    "name": "cat-recherche-anglais",
+    "url": "http://localhost:5173/?q=hash",
+    "scheme": "light",
+    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles[0] === 'Hash text') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+  },
+  {
+    "name": "cat-recherche-francais",
+    "url": "http://localhost:5173/?q=mot de passe",
+    "scheme": "light",
+    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles[0] === 'Password strength analyser') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+  },
+  {
+    "name": "cat-recherche-verbe",
+    "url": "http://localhost:5173/?q=chiffrer",
+    "scheme": "light",
+    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles.slice(0, 3).includes('Encrypt / decrypt text')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+  },
+  {
+    "name": "cat-recherche-faute",
+    "url": "http://localhost:5173/?q=caeser%20cipher",
+    "scheme": "light",
+    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles.slice(0, 5).includes('Caesar Box Cipher') && titles.slice(0, 5).includes('ROT13')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+  },
+  {
+    "name": "cat-recherche-synonyme",
+    "url": "http://localhost:5173/?q=sha256",
+    "scheme": "light",
+    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles[0] === 'Hash text') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+  },
+  {
+    "name": "cat-recherche-desordre",
+    "url": "http://localhost:5173/?q=decode%20base64",
+    "scheme": "light",
+    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles.slice(0, 3).includes('Base64 string encoder/decoder')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+  },
+  {
+    "name": "cat-recherche-vide",
+    "url": "http://localhost:5173/?q=zzqxw",
+    "scheme": "light",
+    "script": "document.querySelector('.empty')?.textContent.trim()"
+  },
+  {
+    "name": "cat-entree-premier",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(async () => { const input = document.querySelector('.search input'); input.value = 'jwt'; input.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(r => setTimeout(r, 300)); input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await new Promise(r => setTimeout(r, 1200)); const ok = location.pathname === '/tools/jwt-parser' && document.querySelector('h1')?.textContent.trim() === 'JWT parser'; return ok || { url: location.pathname, titre: document.querySelector('h1')?.textContent.trim() }; })()"
+  },
+  {
+    "name": "cat-palette-ouverte",
+    "url": "http://localhost:5173/",
+    "scheme": "dark",
+    "script": "(async () => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true })); await new Promise(r => setTimeout(r, 400)); const input = document.querySelector('.palette input'); return { ouverte: !!input, focus: document.activeElement === input, groupes: [...document.querySelectorAll('.group-title')].map(g => g.textContent.trim()) }; })()"
+  },
+  {
+    "name": "cat-palette-clavier",
+    "url": "http://localhost:5173/",
+    "scheme": "dark",
+    "script": "(async () => { const wait = ms => new Promise(r => setTimeout(r, ms)); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true })); await wait(400); const input = document.querySelector('.palette input'); input.value = 'base64'; input.dispatchEvent(new Event('input', { bubbles: true })); await wait(250); const items = [...document.querySelectorAll('.palette .item-label')].map(e => e.textContent.trim()); input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); await wait(100); const choisi = document.querySelector('.item--active .item-label').textContent.trim(); input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await wait(1200); return { résultats: items.slice(0, 3), choisi, url: location.pathname, fermée: !document.querySelector('.palette') }; })()"
+  },
+  {
+    "name": "cat-palette-slash",
+    "url": "http://localhost:5173/about",
+    "scheme": "light",
+    "script": "(async () => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: '/', bubbles: true })); await new Promise(r => setTimeout(r, 400)); return !!document.querySelector('.palette input'); })()"
+  },
+  {
+    "name": "cat-favori",
+    "url": "http://localhost:5173/tools/hash-text",
+    "scheme": "light",
+    "script": "(async () => { const star = document.querySelector('.actions .favorite'); star.click(); await new Promise(r => setTimeout(r, 200)); return { pressé: star.getAttribute('aria-pressed'), stockage: localStorage.getItem('cybertools:favorites') }; })()"
+  },
+  {
+    "name": "cat-accueil-favoris-recents",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "fullPage": true,
+    "script": "({ sections: [...document.querySelectorAll('.section-title')].map(e => e.textContent.trim()), recents: JSON.parse(localStorage.getItem('cybertools:recents')) })"
+  },
+  {
+    "name": "cat-alias",
+    "url": "http://localhost:5173/hash-text",
+    "scheme": "light",
+    "script": "(() => { const ok = location.pathname === '/tools/hash-text' && document.querySelector('h1')?.textContent.trim() === 'Hash text'; return ok || { url: location.pathname, titre: document.querySelector('h1')?.textContent.trim() }; })()"
+  },
+  {
+    "name": "cat-alias-amont",
+    "url": "http://localhost:5173/file-to-base64",
+    "scheme": "light",
+    "script": "location.pathname"
+  },
+  {
+    "name": "cat-categorie",
+    "url": "http://localhost:5173/categories/network",
+    "scheme": "dark",
+    "script": "(() => { const ok = document.querySelector('h1').textContent.trim() === 'Network' && document.querySelector('.count').textContent.trim() === '33 tools' && document.querySelectorAll('.card').length === 33; return ok || { titre: document.querySelector('h1').textContent.trim(), compte: document.querySelector('.count').textContent.trim(), cartes: document.querySelectorAll('.card').length }; })()"
+  },
+  {
+    "name": "cat-outil-inconnu",
+    "url": "http://localhost:5173/tools/nexiste-pas",
+    "scheme": "light",
+    "script": "document.querySelector('h1')?.textContent.trim()"
+  },
+  {
+    "name": "cat-mobile-accueil",
+    "url": "http://localhost:5173/",
+    "width": 390,
+    "height": 844,
+    "mobile": true,
+    "scheme": "light",
+    "fullPage": true
+  },
+  {
+    "name": "cat-mobile-palette",
+    "url": "http://localhost:5173/",
+    "width": 390,
+    "height": 844,
+    "mobile": true,
+    "scheme": "dark",
+    "script": "(async () => { document.querySelector('.search-trigger').click(); await new Promise(r => setTimeout(r, 400)); return !!document.querySelector('.palette'); })()"
+  },
+  {
+    "name": "cat-francais",
+    "url": "http://localhost:5173/tools/hash-text",
+    "scheme": "light",
+    "script": "(async () => { localStorage.setItem('locale', 'fr'); location.reload(); return true; })()",
+    "afterScriptWait": 2000
+  },
+  {
+    "name": "cat-francais-effet",
+    "url": "http://localhost:5173/tools/hash-text",
+    "scheme": "light",
+    "script": "(() => { const ok = document.documentElement.lang === 'fr' && document.querySelector('h1')?.textContent.trim() === 'Hacher du texte'; localStorage.setItem('locale', 'en'); return ok || document.querySelector('h1')?.textContent.trim(); })()"
+  }
+]

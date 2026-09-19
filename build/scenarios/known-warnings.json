@@ -1,0 +1,14 @@
+[
+  {
+    "pattern": "Invalid prop: type check failed for prop \"searchable\"",
+    "reason": "ascii-text-drawer : bug de template chez IT-Tools (searchable=\"true\" passé en texte). Sans effet sur l'outil."
+  },
+  {
+    "pattern": "Requested device not found|NotAllowedError: Permission denied",
+    "reason": "camera-recorder : Chrome headless n'a pas de caméra, et refuse la permission. Sans objet sur un vrai appareil."
+  },
+  {
+    "pattern": "Module \"crypto\" has been externalized.*randomBytes",
+    "reason": "bcrypt : bcryptjs essaie le module Node crypto puis se rabat volontairement sur WebCrypto. Avertissement de Vite en dev uniquement."
+  }
+]

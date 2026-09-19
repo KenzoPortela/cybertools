@@ -1,0 +1,9 @@
+[
+  { "name": "id-accueil-sombre", "url": "http://localhost:5173/", "scheme": "dark", "fullPage": true, "wait": 1200 },
+  { "name": "id-accueil-clair", "url": "http://localhost:5173/", "scheme": "light", "wait": 1200 },
+  { "name": "id-outil-itt-sombre", "url": "http://localhost:5173/tools/base64-string-converter", "scheme": "dark", "wait": 1500 },
+  { "name": "id-operation-sombre", "url": "http://localhost:5173/tools/to-hex", "scheme": "dark", "wait": 1500 },
+  { "name": "id-recettes-sombre", "url": "http://localhost:5173/tools/recipes#recipe=From_Base64('A-Za-z0-9%2B/%3D',true,false)To_Hex('Space',0)&input=YUdWc2JHOD0", "scheme": "dark", "wait": 2500 },
+  { "name": "id-categorie-clair", "url": "http://localhost:5173/categories/crypto", "scheme": "light", "wait": 1200 },
+  { "name": "id-accueil-mobile", "url": "http://localhost:5173/", "scheme": "dark", "width": 390, "height": 844, "mobile": true, "wait": 1200 }
+]

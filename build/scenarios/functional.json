@@ -1,0 +1,121 @@
+[
+  {
+    "name": "fonctionnel-base64-string-converter",
+    "url": "http://localhost:5173/tools/base64-string-converter",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"Bonjour CyberTools\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"Qm9uam91ciBDeWJlclRvb2xz\") || ('attendu ' + \"Qm9uam91ciBDeWJlclRvb2xz\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-hash-text",
+    "url": "http://localhost:5173/tools/hash-text",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"abc\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"900150983cd24fb0d6963f7d28e17f72\") || ('attendu ' + \"900150983cd24fb0d6963f7d28e17f72\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-url-encoder",
+    "url": "http://localhost:5173/tools/url-encoder",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"a b&c\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"a%20b%26c\") || ('attendu ' + \"a%20b%26c\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-html-entities",
+    "url": "http://localhost:5173/tools/html-entities",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"<a>\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"&lt;a&gt;\") || ('attendu ' + \"&lt;a&gt;\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-base-converter",
+    "url": "http://localhost:5173/tools/base-converter",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"255\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"ff\") || ('attendu ' + \"ff\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-roman-numeral-converter",
+    "url": "http://localhost:5173/tools/roman-numeral-converter",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"2024\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"MMXXIV\") || ('attendu ' + \"MMXXIV\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-yaml-to-json-converter",
+    "url": "http://localhost:5173/tools/yaml-to-json-converter",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"a: 1\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"\\\"a\\\": 1\") || ('attendu ' + \"\\\"a\\\": 1\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-json-minify",
+    "url": "http://localhost:5173/tools/json-minify",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"{ \\\"a\\\" : [ 1 , 2 ] }\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"{\\\"a\\\":[1,2]}\") || ('attendu ' + \"{\\\"a\\\":[1,2]}\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-case-converter",
+    "url": "http://localhost:5173/tools/case-converter",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"hello world\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"helloWorld\") || ('attendu ' + \"helloWorld\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-math-evaluator",
+    "url": "http://localhost:5173/tools/math-evaluator",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"2*21\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"42\") || ('attendu ' + \"42\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-text-to-nato-alphabet",
+    "url": "http://localhost:5173/tools/text-to-nato-alphabet",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"abc\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"Alpha Bravo Charlie\") || ('attendu ' + \"Alpha Bravo Charlie\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-slugify-string",
+    "url": "http://localhost:5173/tools/slugify-string",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"Élève à Noël !\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 700));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"eleve-a-noel\") || ('attendu ' + \"eleve-a-noel\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-jwt-parser",
+    "url": "http://localhost:5173/tools/jwt-parser",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    return document.querySelector('.tool-content').innerText.includes('John Doe') || 'John Doe absent';\n  })()"
+  },
+  {
+    "name": "fonctionnel-uuid-generator",
+    "url": "http://localhost:5173/tools/uuid-generator",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const values = [...document.querySelectorAll('.tool-content textarea, .tool-content input')].map(e => e.value).join(' ');\n    return /[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/.test(values) || 'aucun UUID v4';\n  })()"
+  },
+  {
+    "name": "fonctionnel-bcrypt",
+    "url": "http://localhost:5173/tools/bcrypt",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    const root = document.querySelector('.tool-content');\n    const fields = [...root.querySelectorAll('textarea, input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=color])')];\n    const target = fields[0];\n    if (!target) return 'champ introuvable';\n    target.focus();\n    target.value = \"motdepasse\";\n    target.dispatchEvent(new Event('input', { bubbles: true }));\n    target.dispatchEvent(new Event('change', { bubbles: true }));\n    await new Promise(r => setTimeout(r, 1500));\n    const seen = [...root.querySelectorAll('textarea, input')].map(e => e.value).join(' ⏐ ') + ' ⏐ ' + root.innerText;\n    return seen.includes(\"$2a$10$\") || ('attendu ' + \"$2a$10$\" + ', vu : ' + seen.replace(/\\s+/g, ' ').slice(0, 200));\n  })()"
+  },
+  {
+    "name": "fonctionnel-text-diff",
+    "url": "http://localhost:5173/tools/text-diff",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    for (const started = performance.now(); performance.now() - started < 5000;) {\n      if (document.querySelector(\".monaco-diff-editor\")) return true;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    return \"éditeur de différences Monaco absent\";\n  })()"
+  },
+  {
+    "name": "fonctionnel-qrcode-generator",
+    "url": "http://localhost:5173/tools/qrcode-generator",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => {\n    for (const started = performance.now(); performance.now() - started < 10000;) {\n      if (!document.querySelector('.tool-state[role=status]') && document.querySelector('.tool-content')?.children.length) break;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    for (const started = performance.now(); performance.now() - started < 5000;) {\n      if (document.querySelector(\".tool-content img[src^=\\\"data:image\\\"]\")) return true;\n      await new Promise(r => setTimeout(r, 50));\n    }\n    return \"image du QR code absent\";\n  })()"
+  }
+]

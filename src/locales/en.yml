@@ -1,0 +1,252 @@
+app:
+  home:
+    title: 'Encode, decrypt, analyse.'
+    eyebrow: '{count} tools · 100% local · open source'
+    subtitle: '{count} tools for encoding, cryptography, networking and data formats. Everything runs in your browser.'
+    searchPlaceholder: 'Search a tool: base64, hash, JWT, IP…'
+    paletteHint: 'From any page: {shortcut}'
+    results: 'Search results'
+    resultCount: 'No result for “{query}” | 1 result for “{query}” | {count} results for “{query}”'
+    noResult: 'No tool matches. Try another word, in English or French.'
+    favorites: Favourites
+    recents: 'Recently used'
+    clearRecents: Clear
+    categories: Categories
+    featured: Featured
+    recipesTag: workbench
+    magicTag: detection
+    recipesPitch: Chain CyberChef operations, watch the result live, share your recipes — compatible with cyberchef.org.
+    magicPitch: "Paste some unknown data: CyberChef guesses how to decode it."
+
+  categories:
+    encoding: Encoding
+    crypto: 'Crypto & hashing'
+    network: Network
+    text: Text
+    dataFormats: 'Data formats'
+    webDev: 'Web & dev'
+    forensics: Forensics
+    media: 'Images & media'
+    math: 'Maths & units'
+    misc: Misc
+
+  category:
+    count: 'no tool | 1 tool | {n} tools'
+    empty: 'No tool in this category yet.'
+
+  nav:
+    settings: Settings
+    home: Home
+    switchLocale: 'Passer en français'
+
+  theme:
+    auto: 'Theme: automatic (follows system)'
+    light: 'Theme: light'
+    dark: 'Theme: dark'
+
+  palette:
+    label: 'Command palette'
+    open: 'Open the command palette'
+    trigger: 'Search a tool…'
+    placeholder: 'Search a tool or a command…'
+    empty: 'Nothing matches “{query}”.'
+    groups:
+      recents: Recent
+      favorites: Favourites
+      tools: Tools
+      commands: Commands
+    commands:
+      settings: Open settings
+      home: 'Go to home'
+      category: 'Category: {name}'
+      theme: 'Change theme'
+      locale: 'Passer en français'
+      about: 'About & credits'
+      recipes: Open Recipes
+      magic: Detect an encoding (Magic)
+    hints:
+      navigate: navigate
+      open: open
+      close: close
+
+  favorites:
+    add: 'Add to favourites'
+    remove: 'Remove from favourites'
+
+  tool:
+    breadcrumb: Breadcrumb
+    loading: 'Loading tool…'
+    loadError: 'This tool could not be loaded.'
+    reload: 'Reload the page'
+    unavailable: 'Tool unavailable'
+    comingSoon: 'This tool is coming soon.'
+
+  footer:
+    privacy: 'No data ever leaves your browser.'
+    madeBy: 'by {name}'
+    about: 'About & credits'
+
+  settings:
+    title: Settings
+    intro: 'Your settings stay in this browser: nothing is sent to a server.'
+    appearance:
+      title: Appearance
+      theme: Theme
+      themeHelp: 'Automatic follows your system''s light or dark setting.'
+      themes:
+        auto: Automatic
+        light: Light
+        dark: Dark
+      color: Colour
+      colorHelp: 'Accent colour of the interface, in light and dark mode. The page reloads to apply it.'
+      colors:
+        terminal: Terminal
+        indigo: Indigo
+        amber: Amber
+        arctic: Arctic
+        magenta: Magenta
+      language: Language
+      languageHelp: 'Interface language. Some tools keep their inner labels in English.'
+    recipes:
+      title: Recipes and operations
+      autoBake: Live calculation
+      autoBakeHelp: 'Recomputes the result on every change. When off, a “Run” button starts the calculation: handy for heavy recipes or large inputs.'
+      restoreLast: Reopen the last recipe
+      restoreLastHelp: 'By default, the workbench opens empty and offers to resume your last recipe.'
+    magic:
+      title: Magic
+      autoDepth: Automatic depth
+      autoDepthHelp: 'Magic tries increasing depths and stops when there is no layer left to decode. When off, it uses the fixed depth below.'
+      depth: Fixed depth
+      depthHelp: 'Maximum number of chained operations. Beyond 4, the search can get slow.'
+      intensive: Intensive mode
+      intensiveHelp: 'Also tries each operation on parts of the input. More thorough, much slower.'
+    data:
+      title: Stored data
+      favorites: 'Favourites: none | Favourites: {count} tool | Favourites: {count} tools'
+      recents: 'Recent tools: none | Recent tools: {count} | Recent tools: {count}'
+      clear: Clear
+      backup: Backup
+      backupHelp: 'Exports your settings, favourites and last recipe to a JSON file, to restore them in another browser.'
+      export: Export
+      import: Import
+      importError: 'This file is not a valid cybertools backup.'
+      reset: Reset everything
+      resetHelp: 'Erases settings, favourites, recent tools and the last recipe from this browser.'
+      resetQuestion: 'Erase all cybertools data from this browser?'
+      resetConfirm: Erase everything
+      cancel: Cancel
+      privacy: 'This data is stored only in this browser (localStorage). What you type into the tools is never saved.'
+
+  about:
+    title: About
+    intro: 'cybertools brings the tools of CyberChef and IT-Tools together in a single interface. It is not an original project: all the tooling work belongs to the authors of these two open-source projects.'
+    authorTitle: Author
+    author: 'Built and adapted by {name}.'
+    privacyTitle: 'Your data stays with you'
+    privacyBody: 'Every tool runs entirely in your browser. Nothing you type is sent to a server, and no analytics are collected.'
+    creditsTitle: Credits
+    creditsBody: 'The tools come from two projects, used without modifying their sources.'
+    by: 'by {author}'
+    cyberchef: 'the operation engine, recipes and Magic auto-detection.'
+    itTools: 'the developer tools and their component kit.'
+    licenseTitle: Licence
+    licenseBody: 'cybertools is distributed under the GNU GPL v3, like IT-Tools, whose code it reuses. CyberChef''s code remains under the Apache 2.0 licence.'
+
+  cc:
+    parameters: Parameters
+    input: Input
+    output: Output
+    inputPlaceholder: 'Type or paste your data here…'
+    outputPlaceholder: 'The result will appear here.'
+    loadFile: 'Load a file'
+    removeFile: 'Remove the file'
+    run: Run
+    running: 'Running…'
+    cancel: Cancel
+    copy: Copy
+    copied: 'Result copied to the clipboard'
+    download: Download
+    opError: 'The operation failed'
+    loadError: 'This operation could not be loaded'
+    binary: 'Binary output ({size}): its text rendering is approximate, download it to keep it intact.'
+    truncated: 'Display limited to the first 512 KB of {size}. The download contains the full output.'
+    aboutOperation: 'About this operation'
+    learnMore: 'Learn more'
+    credit: 'Operation provided by CyberChef (GCHQ, Apache 2.0 licence).'
+
+  notFound:
+    message: 'This page does not exist.'
+    backHome: 'Back to home'
+  native:
+    recipes:
+      title: Recipes
+      description: Chain CyberChef operations, watch the result live, run Magic, share or import a recipe in CyberChef format.
+    magic:
+      title: Magic
+      description: Automatically detects how unknown data is encoded (base64, hex, compression…) and suggests the recipe to decode it.
+  recipes:
+    addPlaceholder: "Add an operation: base64, hex, gzip, xor…"
+    suggested: Suggestions
+    noOperation: No operation matches.
+    stepLabel: "Step {index}: {name}"
+    drag: Drag to reorder
+    moveUp: Move up
+    moveDown: Move down
+    enable: Enable step
+    disable: Disable step
+    expand: Expand
+    collapse: Collapse
+    remove: Remove step
+    import: Import
+    share: Share
+    clear: Clear
+    dropped: "Operations unavailable here, removed from the recipe: {names}."
+    invalid: "Unreadable recipe: {message}"
+    failedAt: Failed at step {index} — {name}
+    copied: Copied to the clipboard
+    shareTitle: Share the recipe
+    shareLink: Link to this recipe
+    includeInput: Include the input in the link
+    includeInputWarning: Anyone receiving this link will see your data.
+    copyLink: Copy link
+    copyRecipe: Copy recipe
+    copyJson: Copy as JSON
+    openInCyberChef: Open in cyberchef.org
+    shareNote: "The link also works on cyberchef.org: only the start of the address changes. The recipe travels in the part of the address after the “#”, which browsers never send to the server."
+    importTitle: Import a recipe
+    importHelp: "Paste a recipe copied from CyberChef (compact or JSON format), or a full cyberchef.org link: its recipe and input will be loaded."
+    importPlaceholder: From_Base64('A-Za-z0-9+/=',true)To_Hex('Space',0)
+    importConfirm: Import
+    emptyTitle: Your recipe is empty
+    emptyText: Add an operation with the field above, or run Magic to let CyberChef guess how to decode your input.
+    resume: Resume last recipe ({count} step) | Resume last recipe ({count} steps)
+    openIn: Open in Recipes
+    continueIn: Continue in Recipes
+    stoppedAt: "The recipe stopped at step {index} — {name}: the output below is its error message."
+  magic:
+    panelTitle: Magic
+    candidates: Decoding leads
+    intro: CyberChef tries decodings on your input and ranks the most promising leads.
+    introWithRecipe: CyberChef tries decodings on your recipe’s output and ranks the most promising leads.
+    addToRecipe: Add to recipe
+    apply: Apply
+    openInRecipes: Open in Recipes
+    depth: Depth
+    depthAuto: Auto
+    depthManual: Manual
+    exploring: 'Exploring, depth {depth}…'
+    detected: 'Detected depth: {depth} layer | Detected depth: {depth} layers'
+    nothingToDecode: 'Nothing to decode: the input already looks like plain text.'
+    limited: 'Stopped at this depth to stay fast. Switch to manual to search deeper.'
+    intensive: Intensive mode
+    extensiveLanguages: All languages
+    cribPlaceholder: Text or pattern expected in the result (optional)
+    emptyInput: Type or paste some data to run Magic.
+    running: Looking for leads…
+    failed: Magic failed
+    noCandidate: No lead found.
+    matchesCrib: Matches the pattern
+    utf8: Valid UTF-8
+    entropy: Entropy {value}
+    asIs: Input as is

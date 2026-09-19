@@ -1,0 +1,10 @@
+{
+  "cyberchef": {
+    "url": "https://github.com/gchq/CyberChef.git",
+    "commit": "6f85fd6fdb39b0a2b81829ca65c0baaf9f94104f"
+  },
+  "it-tools": {
+    "url": "https://github.com/CorentinTh/it-tools.git",
+    "commit": "d505845f918e946ec300af7b36efc107e2f66e9e"
+  }
+}
