@@ -210,6 +210,9 @@ app:
       entropy: Entropy
       metadata: Metadata
       structure: Structure
+      pngcheck: pngcheck
+      carve: Carve
+      repair: Repair
       lsb: LSB
       strings: Strings
       ela: ELA
@@ -326,6 +329,22 @@ app:
         invRed: Invert red
         invGreen: Invert green
         invBlue: Invert blue
+    pngcheck:
+      onlyPng: This check only applies to PNG images.
+      length: 'length {n}'
+    carve:
+      hint: File signatures and zlib streams found in the bytes — extract what is embedded.
+      none: No embedded signature found.
+      decimal: Decimal
+      hex: Hex
+      description: Description
+      inflated: 'inflates to {n} bytes'
+    repair:
+      onlyPng: Repair only applies to PNG images.
+      done: PNG repaired and re-rendered.
+      clean: The PNG was already valid.
+      stillBroken: Repaired the checksums, but the image still does not render.
+      download: Download repaired PNG
     errors:
       read: This file could not be read.
       decode: This file could not be decoded as an image.

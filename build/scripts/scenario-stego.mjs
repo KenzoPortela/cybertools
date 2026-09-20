@@ -100,6 +100,18 @@ const helpers = `
     input.files = dt.files;
     input.dispatchEvent(new Event('change', { bubbles: true }));
   };
+  // PNG dont le CRC d'IEND est corrompu (le navigateur le décode quand même).
+  const loadCorruptPng = async () => {
+    const c = document.createElement('canvas'); c.width = 40; c.height = 30;
+    c.getContext('2d').fillStyle = '#5080b0'; c.getContext('2d').fillRect(0, 0, 40, 30);
+    const png = new Uint8Array(await (await new Promise(r => c.toBlob(r, 'image/png'))).arrayBuffer());
+    png[png.length - 1] = png[png.length - 1] ^ 0xFF; // dernier octet = CRC d'IEND, toléré au décodage
+    const input = document.querySelector('.stego-file-input');
+    const dt = new DataTransfer();
+    dt.items.add(new File([png], 'broken.png', { type: 'image/png' }));
+    input.files = dt.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
   const loadStegoPng = async () => {
     const c = document.createElement('canvas'); c.width = 48; c.height = 32;
     c.getContext('2d').fillStyle = '#3dd68c'; c.getContext('2d').fillRect(0, 0, 48, 32);
@@ -282,6 +294,57 @@ const jobs = [
       await sleep(300);
       const after = panel.querySelectorAll('.row').length;
       return (/flag\\{test\\}/.test(panel.textContent) && after <= before) || { before, after };
+    `),
+  },
+  {
+    name: 'stego-pngcheck',
+    url: `${base}/tools/stego-lab`,
+    scheme: 'dark',
+    fullPage: true,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadImage(64, 48);
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('pngcheck');
+      const panel = await until(() => document.querySelector('.stego-panel-pngcheck'), 20000);
+      await until(() => /IEND/.test(panel.textContent), 10000);
+      const ok = /IHDR/.test(panel.textContent) && /IEND/.test(panel.textContent)
+        && /No errors detected/.test(panel.textContent) && /CRC OK/.test(panel.textContent) && !panel.querySelector('.errors');
+      await sleep(200);
+      return ok || panel.textContent.slice(0, 120);
+    `),
+  },
+  {
+    name: 'stego-carve',
+    url: `${base}/tools/stego-lab`,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadStegoPng();
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('Carve');
+      const panel = await until(() => document.querySelector('.stego-panel-carve'), 20000);
+      await until(() => /ZIP/.test(panel.textContent), 10000);
+      const rows = panel.querySelectorAll('.row').length;
+      const zlib = /Zlib compressed data/.test(panel.textContent);
+      return (/ZIP/.test(panel.textContent) && rows > 1 && zlib) || { rows, zlib };
+    `),
+  },
+  {
+    name: 'stego-repair',
+    url: `${base}/tools/stego-lab`,
+    scheme: 'dark',
+    fullPage: true,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadCorruptPng();
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('Repair');
+      const panel = await until(() => document.querySelector('.stego-panel-repair'), 20000);
+      const log = await until(() => /Corrected .*CRC/.test(panel.textContent), 10000);
+      const dl = !!panel.querySelector('.stego-repair-download');
+      const img = await until(() => { const i = panel.querySelector('.preview img'); return i && i.complete && i.naturalWidth > 0; }, 10000);
+      await sleep(200);
+      return (!!log && dl && !!img) || { log: !!log, dl, img: !!img };
     `),
   },
   {

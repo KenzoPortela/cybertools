@@ -11,12 +11,15 @@ import { useEventListener } from '@vueuse/core';
 import { NAlert, NSpin, NTabPane, NTabs } from 'naive-ui';
 import { formatBytes } from '~/integrations/cyberchef/output';
 import PanelBitPlanes from '~/integrations/stego/panels/PanelBitPlanes.vue';
+import PanelCarve from '~/integrations/stego/panels/PanelCarve.vue';
 import PanelChannels from '~/integrations/stego/panels/PanelChannels.vue';
 import PanelColorMap from '~/integrations/stego/panels/PanelColorMap.vue';
 import PanelCompare from '~/integrations/stego/panels/PanelCompare.vue';
 import PanelEla from '~/integrations/stego/panels/PanelEla.vue';
 import PanelEntropy from '~/integrations/stego/panels/PanelEntropy.vue';
 import PanelInfo from '~/integrations/stego/panels/PanelInfo.vue';
+import PanelPngcheck from '~/integrations/stego/panels/PanelPngcheck.vue';
+import PanelRepair from '~/integrations/stego/panels/PanelRepair.vue';
 import PanelLsb from '~/integrations/stego/panels/PanelLsb.vue';
 import PanelMetadata from '~/integrations/stego/panels/PanelMetadata.vue';
 import PanelStrings from '~/integrations/stego/panels/PanelStrings.vue';
@@ -147,6 +150,15 @@ onBeforeUnmount(() => engine.terminate());
         </NTabPane>
         <NTabPane name="structure" :tab="t('app.stego.tabs.structure')">
           <PanelStructure :image="image" :active="activeTab === 'structure'" :filename="baseName" />
+        </NTabPane>
+        <NTabPane name="pngcheck" :tab="t('app.stego.tabs.pngcheck')">
+          <PanelPngcheck :image="image" :active="activeTab === 'pngcheck'" />
+        </NTabPane>
+        <NTabPane name="carve" :tab="t('app.stego.tabs.carve')">
+          <PanelCarve :image="image" :active="activeTab === 'carve'" :filename="baseName" />
+        </NTabPane>
+        <NTabPane name="repair" :tab="t('app.stego.tabs.repair')">
+          <PanelRepair :image="image" :active="activeTab === 'repair'" :filename="baseName" />
         </NTabPane>
         <NTabPane name="lsb" :tab="t('app.stego.tabs.lsb')">
           <PanelLsb :engine="engine" :image="image" :active="activeTab === 'lsb'" :filename="baseName" />

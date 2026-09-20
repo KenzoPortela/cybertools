@@ -471,6 +471,9 @@ app:
       entropy: Entropie
       metadata: Métadonnées
       structure: Structure
+      pngcheck: pngcheck
+      carve: Carving
+      repair: Réparer
       lsb: LSB
       strings: Chaînes
       ela: ELA
@@ -587,6 +590,22 @@ app:
         invRed: Inverser rouge
         invGreen: Inverser vert
         invBlue: Inverser bleu
+    pngcheck:
+      onlyPng: Cette vérification ne s'applique qu'aux images PNG.
+      length: 'longueur {n}'
+    carve:
+      hint: Signatures de fichiers et flux zlib trouvés dans les octets — extrayez ce qui est embarqué.
+      none: Aucune signature embarquée trouvée.
+      decimal: Décimal
+      hex: Hex
+      description: Description
+      inflated: 'donne {n} octets décompressés'
+    repair:
+      onlyPng: La réparation ne s'applique qu'aux images PNG.
+      done: PNG réparé et ré-affiché.
+      clean: Le PNG était déjà valide.
+      stillBroken: CRC corrigés, mais l'image ne s'affiche toujours pas.
+      download: Télécharger le PNG réparé
     errors:
       read: Ce fichier n'a pas pu être lu.
       decode: Ce fichier n'a pas pu être décodé comme image.
