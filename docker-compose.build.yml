@@ -1,9 +1,10 @@
-# Construire l'image depuis les sources au lieu de la télécharger :
+# Build the image from source instead of downloading it:
 #
 #   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
 #
-# La construction clone CyberChef et IT-Tools (révisions de vendor.lock.json) et
-# demande environ 4 Go de mémoire et quelques minutes.
+# The build process clones CyberChef and IT-Tools (based on vendor.lock.json revisions)
+# and requires approximately 4 GB of memory and a few minutes.
+
 services:
   cybertools:
     image: cybertools:local
