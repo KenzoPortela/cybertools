@@ -471,6 +471,8 @@ app:
       structure: Structure
       lsb: LSB
       strings: Chaînes
+      ela: ELA
+      compare: Comparer
     bitPlanes:
       channel: Canal
       bit: Bit
@@ -536,6 +538,20 @@ app:
       filter: Filtrer les chaînes
       count: '{count} affichées'
       none: Aucune chaîne imprimable trouvée.
+    ela:
+      quality: Qualité JPEG
+      scale: Amplifier
+      hint: Les zones claires et nettes ont été compressées différemment — signe d'une retouche.
+    compare:
+      pick: Déposez ou choisissez une seconde image
+      mode: Mode
+      modes:
+        diff: Différence
+        xor: XOR
+        overlay: Superposition
+      opacity: Opacité
+      change: Changer
+      mismatch: Les deux images n'ont pas la même taille ; seule la zone commune est comparée.
     errors:
       read: Ce fichier n'a pas pu être lu.
       decode: Ce fichier n'a pas pu être décodé comme image.

@@ -285,6 +285,47 @@ const jobs = [
     `),
   },
   {
+    name: 'stego-ela',
+    url: `${base}/tools/stego-lab`,
+    scheme: 'dark',
+    fullPage: true,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadImage(96, 64);
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('ELA');
+      const panel = await until(() => document.querySelector('.stego-panel-ela'), 20000);
+      const ok = await until(() => drawn(panel), 20000);
+      await sleep(300);
+      return !!ok || 'ELA non rendu';
+    `),
+  },
+  {
+    name: 'stego-compare',
+    url: `${base}/tools/stego-lab`,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadImage(96, 64);
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('Compare');
+      const panel = await until(() => document.querySelector('.stego-panel-compare'), 20000);
+      const c = document.createElement('canvas'); c.width = 96; c.height = 64;
+      const x = c.getContext('2d');
+      x.fillStyle = '#c04030'; x.fillRect(0, 0, 96, 64);
+      x.fillStyle = '#ffffff'; x.fillRect(40, 20, 20, 20);
+      const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+      const input = panel.querySelector('.stego-compare-input');
+      const dt = new DataTransfer(); dt.items.add(new File([blob], 'b.png', { type: 'image/png' }));
+      input.files = dt.files; input.dispatchEvent(new Event('change', { bubbles: true }));
+      const canvas = await until(() => panel.querySelector('.viewer canvas'), 20000);
+      await until(() => drawn(panel), 20000);
+      const d = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+      let colour = false;
+      for (let i = 0; i < d.length; i += 4) { if (d[i] > 10 || d[i + 1] > 10 || d[i + 2] > 10) { colour = true; break; } }
+      return colour || 'différence vide';
+    `),
+  },
+  {
     name: 'stego-dark',
     url: `${base}/tools/stego-lab`,
     scheme: 'dark',

@@ -25,6 +25,9 @@ export class StegoEngine {
         this.ready.value = true;
         request?.resolve(null);
       }
+      else if (message.type === 'loaded2') {
+        request?.resolve(null);
+      }
       else if (message.type === 'result' && request) {
         request.resolve(new ImageData(new Uint8ClampedArray(message.data), message.width, message.height));
       }
@@ -46,8 +49,15 @@ export class StegoEngine {
     return this.send({ type: 'load', width: image.width, height: image.height, data: buffer }, [buffer]);
   }
 
-  /** Vue image (plan de bits, canal, entropie). */
-  run(op: Exclude<StegoOp, { type: 'load' | 'lsb' }>): Promise<ImageData> {
+  /** Charge la seconde image (comparaison), sans toucher à `ready`. */
+  loadSecond(image: ImageData) {
+    const copy = image.data.slice();
+    const buffer = copy.buffer as ArrayBuffer;
+    return this.send({ type: 'loadSecond', width: image.width, height: image.height, data: buffer }, [buffer]);
+  }
+
+  /** Vue image (plan de bits, canal, entropie, ELA, comparaison). */
+  run(op: Exclude<StegoOp, { type: 'load' | 'loadSecond' | 'lsb' }>): Promise<ImageData> {
     return this.send(op) as Promise<ImageData>;
   }
 

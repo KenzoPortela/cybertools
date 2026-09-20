@@ -210,6 +210,8 @@ app:
       structure: Structure
       lsb: LSB
       strings: Strings
+      ela: ELA
+      compare: Compare
     bitPlanes:
       channel: Channel
       bit: Bit
@@ -275,6 +277,20 @@ app:
       filter: Filter strings
       count: '{count} shown'
       none: No printable strings found.
+    ela:
+      quality: JPEG quality
+      scale: Amplify
+      hint: Bright, sharp regions were compressed differently — a sign of editing.
+    compare:
+      pick: Drop or choose a second image
+      mode: Mode
+      modes:
+        diff: Difference
+        xor: XOR
+        overlay: Overlay
+      opacity: Opacity
+      change: Change
+      mismatch: The two images differ in size; only the overlapping area is compared.
     errors:
       read: This file could not be read.
       decode: This file could not be decoded as an image.

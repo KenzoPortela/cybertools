@@ -12,6 +12,8 @@ import { NAlert, NSpin, NTabPane, NTabs } from 'naive-ui';
 import { formatBytes } from '~/integrations/cyberchef/output';
 import PanelBitPlanes from '~/integrations/stego/panels/PanelBitPlanes.vue';
 import PanelChannels from '~/integrations/stego/panels/PanelChannels.vue';
+import PanelCompare from '~/integrations/stego/panels/PanelCompare.vue';
+import PanelEla from '~/integrations/stego/panels/PanelEla.vue';
 import PanelEntropy from '~/integrations/stego/panels/PanelEntropy.vue';
 import PanelLsb from '~/integrations/stego/panels/PanelLsb.vue';
 import PanelMetadata from '~/integrations/stego/panels/PanelMetadata.vue';
@@ -144,7 +146,12 @@ onBeforeUnmount(() => engine.terminate());
         <NTabPane name="strings" :tab="t('app.stego.tabs.strings')">
           <PanelStrings :image="image" :active="activeTab === 'strings'" />
         </NTabPane>
-        <!-- Lot 5 : ELA, comparaison de deux images… -->
+        <NTabPane name="ela" :tab="t('app.stego.tabs.ela')">
+          <PanelEla :engine="engine" :image="image" :active="activeTab === 'ela'" :filename="baseName" />
+        </NTabPane>
+        <NTabPane name="compare" :tab="t('app.stego.tabs.compare')">
+          <PanelCompare :engine="engine" :image="image" :active="activeTab === 'compare'" :filename="baseName" />
+        </NTabPane>
       </NTabs>
     </div>
 

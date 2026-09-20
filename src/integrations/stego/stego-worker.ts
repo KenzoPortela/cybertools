@@ -17,7 +17,10 @@ export type StegoOp =
   | { type: 'bitPlane'; channel: Channel; bit: number; colour: boolean }
   | { type: 'channel'; view: ChannelView; enhance: Enhance; level: number }
   | { type: 'entropy'; block: number }
-  | { type: 'lsb'; channels: Channel[]; bits: number; msbFirst: boolean; column: boolean; limit: number };
+  | { type: 'lsb'; channels: Channel[]; bits: number; msbFirst: boolean; column: boolean; limit: number }
+  | { type: 'loadSecond'; width: number; height: number; data: ArrayBuffer }
+  | { type: 'ela'; quality: number; scale: number }
+  | { type: 'compare'; mode: 'diff' | 'xor' | 'overlay'; opacity: number };
 
 export interface StegoRequest {
   id: number;
@@ -26,6 +29,7 @@ export interface StegoRequest {
 
 export type StegoReply =
   | { id: number; type: 'loaded' }
+  | { id: number; type: 'loaded2' }
   | { id: number; type: 'result'; width: number; height: number; data: ArrayBuffer }
   | { id: number; type: 'bytes'; data: ArrayBuffer }
   | { id: number; type: 'error'; message: string };
@@ -35,6 +39,11 @@ const ctx = self as unknown as Worker;
 let src: Uint8ClampedArray | undefined;
 let width = 0;
 let height = 0;
+
+// Seconde image, pour la comparaison.
+let src2: Uint8ClampedArray | undefined;
+let width2 = 0;
+let height2 = 0;
 
 function reply(message: StegoReply, transfer: Transferable[] = []) {
   ctx.postMessage(message, transfer);
@@ -236,9 +245,58 @@ function entropyMap(block: number): Uint8ClampedArray {
   return out;
 }
 
+/**
+ * Error Level Analysis : ré-encode l'image en JPEG à la qualité voulue, mesure
+ * l'écart avec l'original et l'amplifie. Une zone retouchée, à un niveau de
+ * compression différent du reste, ressort nettement.
+ */
+async function ela(quality: number, scale: number): Promise<Uint8ClampedArray> {
+  const canvas = new OffscreenCanvas(width, height);
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('offscreen canvas');
+  context.putImageData(new ImageData(new Uint8ClampedArray(src!), width, height), 0, 0);
+  const blob = await canvas.convertToBlob({ type: 'image/jpeg', quality: quality / 100 });
+  const bitmap = await createImageBitmap(blob);
+
+  const canvas2 = new OffscreenCanvas(width, height);
+  const context2 = canvas2.getContext('2d')!;
+  context2.drawImage(bitmap, 0, 0);
+  bitmap.close();
+  const recompressed = context2.getImageData(0, 0, width, height).data;
+
+  const out = new Uint8ClampedArray(width * height * 4);
+  for (let i = 0; i < width * height; i++) {
+    const o = i * 4;
+    out[o] = Math.abs(src![o] - recompressed[o]) * scale;
+    out[o + 1] = Math.abs(src![o + 1] - recompressed[o + 1]) * scale;
+    out[o + 2] = Math.abs(src![o + 2] - recompressed[o + 2]) * scale;
+    out[o + 3] = 255;
+  }
+  return out;
+}
+
+function compare(mode: 'diff' | 'xor' | 'overlay', opacity: number): Uint8ClampedArray {
+  const out = new Uint8ClampedArray(width * height * 4);
+  const ow = Math.min(width, width2);
+  const oh = Math.min(height, height2);
+  for (let y = 0; y < oh; y++) {
+    for (let x = 0; x < ow; x++) {
+      const o1 = (y * width + x) * 4;
+      const o2 = (y * width2 + x) * 4;
+      for (let c = 0; c < 3; c++) {
+        const a = src![o1 + c];
+        const b = src2![o2 + c];
+        out[o1 + c] = mode === 'diff' ? Math.abs(a - b) : mode === 'xor' ? (a ^ b) : (a * (1 - opacity) + b * opacity);
+      }
+      out[o1 + 3] = 255;
+    }
+  }
+  return out;
+}
+
 // --- Réception ----------------------------------------------------------------
 
-ctx.addEventListener('message', (event: MessageEvent<StegoRequest>) => {
+ctx.addEventListener('message', async (event: MessageEvent<StegoRequest>) => {
   const { id, op } = event.data;
   try {
     if (op.type === 'load') {
@@ -246,6 +304,13 @@ ctx.addEventListener('message', (event: MessageEvent<StegoRequest>) => {
       width = op.width;
       height = op.height;
       reply({ id, type: 'loaded' });
+      return;
+    }
+    if (op.type === 'loadSecond') {
+      src2 = new Uint8ClampedArray(op.data);
+      width2 = op.width;
+      height2 = op.height;
+      reply({ id, type: 'loaded2' });
       return;
     }
     if (!src) throw new Error('no image loaded');
@@ -264,6 +329,13 @@ ctx.addEventListener('message', (event: MessageEvent<StegoRequest>) => {
       const bytes = lsb(op.channels, op.bits, op.msbFirst, op.column, op.limit).slice();
       const buffer = bytes.buffer as ArrayBuffer;
       reply({ id, type: 'bytes', data: buffer }, [buffer]);
+    }
+    else if (op.type === 'ela') {
+      result(id, await ela(op.quality, op.scale));
+    }
+    else if (op.type === 'compare') {
+      if (!src2) throw new Error('no second image');
+      result(id, compare(op.mode, op.opacity));
     }
   }
   catch (error) {

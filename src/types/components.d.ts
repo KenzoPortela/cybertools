@@ -112,6 +112,7 @@ declare module 'vue' {
     IconMdiGithub: typeof import('~icons/mdi/github')['default']
     IconMdiHistory: typeof import('~icons/mdi/history')['default']
     IconMdiImageOffOutline: typeof import('~icons/mdi/image-off-outline')['default']
+    IconMdiImagePlusOutline: typeof import('~icons/mdi/image-plus-outline')['default']
     IconMdiImageSearchOutline: typeof import('~icons/mdi/image-search-outline')['default']
     IconMdiImport: typeof import('~icons/mdi/import')['default']
     IconMdiLayersOutline: typeof import('~icons/mdi/layers-outline')['default']
