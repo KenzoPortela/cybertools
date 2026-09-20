@@ -16,7 +16,8 @@ export type StegoOp =
   | { type: 'load'; width: number; height: number; data: ArrayBuffer }
   | { type: 'bitPlane'; channel: Channel; bit: number; colour: boolean }
   | { type: 'channel'; view: ChannelView; enhance: Enhance; level: number }
-  | { type: 'entropy'; block: number };
+  | { type: 'entropy'; block: number }
+  | { type: 'lsb'; channels: Channel[]; bits: number; msbFirst: boolean; column: boolean; limit: number };
 
 export interface StegoRequest {
   id: number;
@@ -26,6 +27,7 @@ export interface StegoRequest {
 export type StegoReply =
   | { id: number; type: 'loaded' }
   | { id: number; type: 'result'; width: number; height: number; data: ArrayBuffer }
+  | { id: number; type: 'bytes'; data: ArrayBuffer }
   | { id: number; type: 'error'; message: string };
 
 const ctx = self as unknown as Worker;
@@ -41,6 +43,46 @@ function reply(message: StegoReply, transfer: Transferable[] = []) {
 function result(id: number, out: Uint8ClampedArray) {
   const buffer = out.buffer as ArrayBuffer;
   reply({ id, type: 'result', width, height, data: buffer }, [buffer]);
+}
+
+/**
+ * Extraction LSB (façon zsteg) : lit les `bits` bits de poids faible de chaque
+ * canal choisi, dans l'ordre donné, pixel par pixel (par lignes ou colonnes),
+ * et empile ces bits en octets. Le résultat brut peut ensuite être lu comme
+ * texte, hexdump, ou ré-injecté dans les Recettes.
+ */
+function lsb(channels: Channel[], bits: number, msbFirst: boolean, column: boolean, limit: number): Uint8Array {
+  const out = new Uint8Array(limit);
+  let byte = 0;
+  let nbits = 0;
+  let count = 0;
+
+  const visit = (index: number): boolean => {
+    for (const channel of channels) {
+      const value = src![index * 4 + channel];
+      for (let k = 0; k < bits; k++) {
+        const b = (value >> k) & 1;
+        byte = msbFirst ? ((byte << 1) | b) : (byte | (b << nbits));
+        if (++nbits === 8) {
+          out[count++] = byte;
+          byte = 0;
+          nbits = 0;
+          if (count >= limit) return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  if (column) {
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) if (visit(y * width + x)) return out.subarray(0, count);
+    }
+  }
+  else {
+    for (let i = 0; i < width * height; i++) if (visit(i)) return out.subarray(0, count);
+  }
+  return out.subarray(0, count);
 }
 
 // --- Opérations ---------------------------------------------------------------
@@ -217,6 +259,11 @@ ctx.addEventListener('message', (event: MessageEvent<StegoRequest>) => {
     }
     else if (op.type === 'entropy') {
       result(id, entropyMap(op.block));
+    }
+    else if (op.type === 'lsb') {
+      const bytes = lsb(op.channels, op.bits, op.msbFirst, op.column, op.limit).slice();
+      const buffer = bytes.buffer as ArrayBuffer;
+      reply({ id, type: 'bytes', data: buffer }, [buffer]);
     }
   }
   catch (error) {

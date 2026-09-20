@@ -107,6 +107,7 @@ declare module 'vue' {
     IconMdiEyeOff: typeof import('~icons/mdi/eye-off')['default']
     IconMdiEyeOffOutline: typeof import('~icons/mdi/eye-off-outline')['default']
     IconMdiEyeOutline: typeof import('~icons/mdi/eye-outline')['default']
+    IconMdiFileAlertOutline: typeof import('~icons/mdi/file-alert-outline')['default']
     IconMdiFileOutline: typeof import('~icons/mdi/file-outline')['default']
     IconMdiGithub: typeof import('~icons/mdi/github')['default']
     IconMdiHistory: typeof import('~icons/mdi/history')['default']

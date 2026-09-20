@@ -469,6 +469,8 @@ app:
       entropy: Entropie
       metadata: Métadonnées
       structure: Structure
+      lsb: LSB
+      strings: Chaînes
     bitPlanes:
       channel: Canal
       bit: Bit
@@ -518,6 +520,22 @@ app:
       size: Taille
       polyglotTitle: Ce fichier en cache un autre
       polyglotBody: Un conteneur (archive, PDF…) a été trouvé dans l'image — une cachette classique.
+    lsb:
+      channels: Canaux
+      bits: Bits
+      msbFirst: MSB d'abord
+      column: Par colonnes
+      pickChannel: Choisissez au moins un canal.
+      text: Texte
+      hex: Hex
+      detected: 'Ressemble à {name}'
+      openInRecipes: Ouvrir dans les Recettes
+      download: Télécharger
+    strings:
+      minLength: Longueur min
+      filter: Filtrer les chaînes
+      count: '{count} affichées'
+      none: Aucune chaîne imprimable trouvée.
     errors:
       read: Ce fichier n'a pas pu être lu.
       decode: Ce fichier n'a pas pu être décodé comme image.

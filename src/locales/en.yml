@@ -208,6 +208,8 @@ app:
       entropy: Entropy
       metadata: Metadata
       structure: Structure
+      lsb: LSB
+      strings: Strings
     bitPlanes:
       channel: Channel
       bit: Bit
@@ -257,6 +259,22 @@ app:
       size: Size
       polyglotTitle: This file hides another file
       polyglotBody: A container (archive, PDF…) was found inside the image — a classic hiding place.
+    lsb:
+      channels: Channels
+      bits: Bits
+      msbFirst: MSB first
+      column: Column order
+      pickChannel: Select at least one channel.
+      text: Text
+      hex: Hex
+      detected: 'Looks like {name}'
+      openInRecipes: Open in Recipes
+      download: Download
+    strings:
+      minLength: Min length
+      filter: Filter strings
+      count: '{count} shown'
+      none: No printable strings found.
     errors:
       read: This file could not be read.
       decode: This file could not be decoded as an image.

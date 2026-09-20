@@ -80,6 +80,26 @@ const helpers = `
     chunk.set(u32(crc32(typed)), 4 + typed.length);
     return chunk;
   };
+  // Cache un message dans les LSB des canaux R,G,B (bit 0, LSB d'abord) — l'ordre
+  // par défaut du panneau LSB. Le PNG est sans perte : les LSB survivent.
+  const loadLsbPng = async (message) => {
+    const c = document.createElement('canvas'); c.width = 32; c.height = 16;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#404040'; ctx.fillRect(0, 0, 32, 16);
+    const img = ctx.getImageData(0, 0, 32, 16);
+    const d = img.data;
+    let ci = 0;
+    const setBit = (b) => { const pix = Math.floor(ci / 3); const ch = ci % 3; const o = pix * 4 + ch; d[o] = (d[o] & 0xFE) | b; ci++; };
+    for (const byte of new TextEncoder().encode(message)) for (let k = 0; k < 8; k++) setBit((byte >> k) & 1);
+    for (let i = 3; i < d.length; i += 4) d[i] = 255;
+    ctx.putImageData(img, 0, 0);
+    const png = await new Promise(r => c.toBlob(r, 'image/png'));
+    const input = document.querySelector('.stego-file-input');
+    const dt = new DataTransfer();
+    dt.items.add(new File([png], 'lsb.png', { type: 'image/png' }));
+    input.files = dt.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
   const loadStegoPng = async () => {
     const c = document.createElement('canvas'); c.width = 48; c.height = 32;
     c.getContext('2d').fillStyle = '#3dd68c'; c.getContext('2d').fillRect(0, 0, 48, 32);
@@ -211,6 +231,57 @@ const jobs = [
       await until(() => document.querySelector('.stego-panel-structure')?.textContent.includes('flag{test}'), 15000);
       await sleep(300);
       return true;
+    `),
+  },
+  {
+    name: 'stego-lsb',
+    url: `${base}/tools/stego-lab`,
+    scheme: 'dark',
+    fullPage: true,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadLsbPng('flag{lsb-hidden}');
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('LSB');
+      const panel = await until(() => document.querySelector('.stego-panel-lsb'), 20000);
+      const text = await until(() => /flag\\{lsb-hidden\\}/.test(panel.querySelector('.output')?.textContent ?? ''), 15000);
+      const recipes = !!panel.querySelector('.stego-lsb-recipes');
+      return (!!text && recipes) || { text: panel.querySelector('.output')?.textContent.slice(0, 60), recipes };
+    `),
+  },
+  {
+    name: 'stego-lsb-recipes',
+    url: `${base}/tools/stego-lab`,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadLsbPng('flag{lsb-hidden}');
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('LSB');
+      const panel = await until(() => document.querySelector('.stego-panel-lsb'), 20000);
+      await until(() => /flag\\{lsb-hidden\\}/.test(panel.querySelector('.output')?.textContent ?? ''), 15000);
+      panel.querySelector('.stego-lsb-recipes').click();
+      await until(() => location.pathname === '/tools/recipes' && document.querySelector('.steps .step-name'), 15000);
+      const names = [...document.querySelectorAll('.steps .step-name')].map(e => e.textContent.trim());
+      return names.join() === 'From Hex' || { names };
+    `),
+  },
+  {
+    name: 'stego-strings',
+    url: `${base}/tools/stego-lab`,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadStegoPng();
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('Strings');
+      const panel = await until(() => document.querySelector('.stego-panel-strings'), 20000);
+      await until(() => /flag\\{test\\}/.test(panel.textContent), 12000);
+      // Filtrer réduit la liste.
+      const before = panel.querySelectorAll('.row').length;
+      panel.querySelector('.search input, .search textarea, input').value = 'flag';
+      panel.querySelector('.search input, .search textarea, input').dispatchEvent(new Event('input', { bubbles: true }));
+      await sleep(300);
+      const after = panel.querySelectorAll('.row').length;
+      return (/flag\\{test\\}/.test(panel.textContent) && after <= before) || { before, after };
     `),
   },
   {
