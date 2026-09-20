@@ -1,11 +1,12 @@
 # Builds the image and publishes it to ghcr.io/kenzoportela/cybertools, for amd64
-# and arm64: on every push to main (latest) and on every vX.Y.Z tag (version).
+# and arm64: on every push to main (latest), on every push to dev (dev) and on
+# every vX.Y.Z tag (version).
 # On a pull request the image is built but not published.
 name: Docker image
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
     tags: ['v*.*.*']
   pull_request:
   workflow_dispatch:
@@ -45,6 +46,7 @@ jobs:
           images: ${{ env.IMAGE }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=dev,enable=${{ github.ref == 'refs/heads/dev' }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=sha,format=short
@@ -56,7 +58,7 @@ jobs:
         with:
           context: .
           # Une pull request ne vérifie que la construction : une seule
-          # architecture suffit, les deux ne sont publiées que sur main et sur un tag.
+          # architecture suffit, les deux ne sont publiées que sur main, dev et sur un tag.
           platforms: ${{ github.event_name == 'pull_request' && 'linux/amd64' || 'linux/amd64,linux/arm64' }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
