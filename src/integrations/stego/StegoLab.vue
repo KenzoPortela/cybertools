@@ -3,17 +3,18 @@
  * Stego Lab : déposer une image et l'analyser entièrement dans le navigateur —
  * métadonnées, plans de bits, LSB, structure. Rien n'est envoyé à un serveur.
  *
- * Lot 1 : squelette. Dépôt/collage/décodage de l'image, visualiseur partagé,
- * barre d'onglets (un seul onglet « Original » pour l'instant), et un
- * aller-retour vers le Web Worker qui prouve que la CSP le laisse tourner. Les
- * panneaux d'analyse arrivent aux lots suivants.
+ * Dépôt/collage/décodage de l'image, visualiseur partagé, et les panneaux
+ * d'analyse en onglets. Tout le calcul pixel se fait dans un Web Worker
+ * (`StegoEngine`), hors du thread principal.
  */
 import { useEventListener } from '@vueuse/core';
 import { NAlert, NSpin, NTabPane, NTabs } from 'naive-ui';
 import { formatBytes } from '~/integrations/cyberchef/output';
+import PanelBitPlanes from '~/integrations/stego/panels/PanelBitPlanes.vue';
+import PanelChannels from '~/integrations/stego/panels/PanelChannels.vue';
+import PanelEntropy from '~/integrations/stego/panels/PanelEntropy.vue';
+import { StegoEngine } from '~/integrations/stego/stego-engine';
 import StegoResultCanvas from '~/integrations/stego/StegoResultCanvas.vue';
-import StegoWorker from '~/integrations/stego/stego-worker?worker';
-import type { StegoResponse } from '~/integrations/stego/stego-worker';
 import { useStegoImage } from '~/integrations/stego/useStegoImage';
 
 const { t } = useI18n();
@@ -22,6 +23,10 @@ const { image, busy, error, load, clear } = useStegoImage();
 const fileInput = ref<HTMLInputElement>();
 const dragging = ref(false);
 const activeTab = ref('original');
+
+// Un seul worker pour tous les panneaux : il garde l'image et calcule les vues.
+const engine = new StegoEngine();
+const engineReady = engine.ready;
 
 /** Base du nom pour les fichiers exportés (sans extension). */
 const baseName = computed(() => (image.value?.name ?? 'image').replace(/\.[^.]+$/, ''));
@@ -48,30 +53,13 @@ useEventListener(window, 'paste', (event: ClipboardEvent) => {
   if (file) load(file);
 });
 
-// --- Web Worker : preuve que la CSP le laisse tourner (lot 1) ----------------
-
-const engineReady = ref(false);
-let worker: Worker | undefined;
-let ticket = 0;
-
-function pingWorker(width: number, height: number) {
-  if (!worker) worker = new StegoWorker();
-  const id = ++ticket;
-  const onMessage = (event: MessageEvent<StegoResponse>) => {
-    if (event.data.id !== id) return;
-    engineReady.value = event.data.pixels === width * height;
-    worker!.removeEventListener('message', onMessage);
-  };
-  worker.addEventListener('message', onMessage);
-  worker.postMessage({ id, type: 'ping', width, height });
-}
-
+// Chaque nouvelle image est chargée dans le worker ; les panneaux s'appuient
+// ensuite dessus.
 watch(image, (value) => {
-  engineReady.value = false;
-  if (value) pingWorker(value.width, value.height);
+  if (value) engine.load(value.data);
 });
 
-onBeforeUnmount(() => worker?.terminate());
+onBeforeUnmount(() => engine.terminate());
 </script>
 
 <template>
@@ -131,7 +119,16 @@ onBeforeUnmount(() => worker?.terminate());
         <NTabPane name="original" :tab="t('app.stego.tabs.original')">
           <StegoResultCanvas :image="image.data" :filename="baseName" />
         </NTabPane>
-        <!-- Lots 2–5 : plans de bits, canaux, métadonnées, structure, LSB, ELA… -->
+        <NTabPane name="bitplanes" :tab="t('app.stego.tabs.bitPlanes')">
+          <PanelBitPlanes :engine="engine" :image="image" :active="activeTab === 'bitplanes'" :filename="baseName" />
+        </NTabPane>
+        <NTabPane name="channels" :tab="t('app.stego.tabs.channels')">
+          <PanelChannels :engine="engine" :image="image" :active="activeTab === 'channels'" :filename="baseName" />
+        </NTabPane>
+        <NTabPane name="entropy" :tab="t('app.stego.tabs.entropy')">
+          <PanelEntropy :engine="engine" :image="image" :active="activeTab === 'entropy'" :filename="baseName" />
+        </NTabPane>
+        <!-- Lots 3–5 : métadonnées, structure, LSB, ELA… -->
       </NTabs>
     </div>
 

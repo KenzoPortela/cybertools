@@ -464,6 +464,36 @@ app:
     errorTitle: Impossible d'ouvrir cette image
     tabs:
       original: Original
+      bitPlanes: Plans de bits
+      channels: Canaux
+      entropy: Entropie
+    bitPlanes:
+      channel: Canal
+      bit: Bit
+      colour: Couleur
+      hint: Le bit 0 est le moins significatif — la cachette habituelle des données en LSB.
+    channels:
+      view: Vue
+      enhance: Rehausser
+      level: Seuil
+      views:
+        rgb: RVB
+        r: Rouge
+        g: Vert
+        b: Bleu
+        a: Alpha
+        luma: Luminance
+      enhancers:
+        none: Aucun
+        invert: Inverser
+        threshold: Seuil
+        stretch: Étirer
+        equalise: Égaliser
+    entropy:
+      block: Bloc
+      low: faible
+      high: forte
+      hint: Les blocs vifs sont à forte entropie — les données chiffrées ou compressées ressortent.
     errors:
       read: Ce fichier n'a pas pu être lu.
       decode: Ce fichier n'a pas pu être décodé comme image.

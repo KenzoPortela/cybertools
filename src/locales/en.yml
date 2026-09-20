@@ -203,6 +203,36 @@ app:
     errorTitle: Cannot open this image
     tabs:
       original: Original
+      bitPlanes: Bit planes
+      channels: Channels
+      entropy: Entropy
+    bitPlanes:
+      channel: Channel
+      bit: Bit
+      colour: Colour
+      hint: Bit 0 is the least significant — the usual hiding place for LSB data.
+    channels:
+      view: View
+      enhance: Enhance
+      level: Threshold
+      views:
+        rgb: RGB
+        r: Red
+        g: Green
+        b: Blue
+        a: Alpha
+        luma: Luminance
+      enhancers:
+        none: None
+        invert: Invert
+        threshold: Threshold
+        stretch: Stretch
+        equalise: Equalise
+    entropy:
+      block: Block
+      low: low
+      high: high
+      hint: Bright blocks are high-entropy — encrypted or compressed data stands out.
     errors:
       read: This file could not be read.
       decode: This file could not be decoded as an image.
