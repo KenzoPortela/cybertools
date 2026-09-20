@@ -37,6 +37,7 @@ const helpers = `
     input.files = dt.files;
     input.dispatchEvent(new Event('change', { bubbles: true }));
   };
+  const type = (el, value) => { el.value = value; el.dispatchEvent(new Event('input', { bubbles: true })); };
   const openTab = (label) => {
     const tab = [...document.querySelectorAll('.n-tabs-tab')].find(el => el.textContent.trim() === label);
     if (tab) tab.click();
@@ -420,6 +421,70 @@ const jobs = [
       [...panel.querySelectorAll('.n-radio-button')].find(el => /Grid/.test(el.textContent))?.click();
       const tiles = await until(() => { const n = panel.querySelectorAll('.tile').length; return n === 8 ? n : null; }, 15000);
       return tiles === 8 || { tiles };
+    `),
+  },
+  {
+    name: 'hide-tool-lsb',
+    url: `${base}/tools/stego-hide`,
+    scheme: 'dark',
+    fullPage: true,
+    script: script(`
+      const drop = await until(() => document.querySelector('.stego-hide-drop'));
+      if (!drop) return 'outil absent';
+      const c = document.createElement('canvas'); c.width = 80; c.height = 60;
+      c.getContext('2d').fillStyle = '#4080c0'; c.getContext('2d').fillRect(0, 0, 80, 60);
+      const png = await new Promise(r => c.toBlob(r, 'image/png'));
+      const input = document.querySelector('.stego-hide-input');
+      const dt = new DataTransfer(); dt.items.add(new File([png], 'cover.png', { type: 'image/png' }));
+      input.files = dt.files; input.dispatchEvent(new Event('change', { bubbles: true }));
+      const msg = await until(() => document.querySelector('.stego-hide-message textarea'), 15000);
+      type(msg, 'secret{lsb-42}');
+      await sleep(200);
+      document.querySelector('.stego-hide-run').click();
+      const out = await until(() => document.querySelector('.stego-hide-output'), 15000);
+      await sleep(300);
+      return (!!out && /verified by re-reading/.test(out.textContent)) || out?.textContent.slice(0, 60);
+    `),
+  },
+  {
+    name: 'hide-tool-password',
+    url: `${base}/tools/stego-hide`,
+    script: script(`
+      await until(() => document.querySelector('.stego-hide-drop'));
+      const c = document.createElement('canvas'); c.width = 80; c.height = 60;
+      c.getContext('2d').fillStyle = '#4080c0'; c.getContext('2d').fillRect(0, 0, 80, 60);
+      const png = await new Promise(r => c.toBlob(r, 'image/png'));
+      const input = document.querySelector('.stego-hide-input');
+      const dt = new DataTransfer(); dt.items.add(new File([png], 'cover.png', { type: 'image/png' }));
+      input.files = dt.files; input.dispatchEvent(new Event('change', { bubbles: true }));
+      const msg = await until(() => document.querySelector('.stego-hide-message textarea'), 15000);
+      type(document.querySelector('.password input'), 'hunter2');
+      type(msg, 'top secret with password');
+      await sleep(200);
+      document.querySelector('.stego-hide-run').click();
+      const out = await until(() => document.querySelector('.stego-hide-output'), 15000);
+      await sleep(300);
+      // Le round-trip AES-GCM doit se vérifier.
+      return (!!out && /verified by re-reading/.test(out.textContent)) || out?.textContent.slice(0, 60);
+    `),
+  },
+  {
+    name: 'hide-lab-append',
+    url: `${base}/tools/stego-lab`,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadImage(64, 48);
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('Hide');
+      const panel = await until(() => document.querySelector('.stego-panel-lab, .hide'), 20000) || document.querySelector('.hide');
+      const hide = await until(() => document.querySelector('.hide'), 20000);
+      [...hide.querySelectorAll('.n-radio-button')].find(el => /Append/.test(el.textContent)).click();
+      const msg = await until(() => hide.querySelector('.stego-hide-message textarea'), 15000);
+      type(msg, 'appended flag{eof}');
+      await sleep(200);
+      hide.querySelector('.stego-hide-run').click();
+      const out = await until(() => hide.querySelector('.stego-hide-output'), 15000);
+      return (!!out && /verified by re-reading/.test(out.textContent)) || out?.textContent.slice(0, 60);
     `),
   },
   {

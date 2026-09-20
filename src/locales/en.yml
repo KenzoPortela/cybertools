@@ -188,6 +188,9 @@ app:
     stegoLab:
       title: Stego Lab
       description: Inspect an image for hidden data — metadata, bit planes, LSB, structure. Nothing is uploaded, everything runs in your browser.
+    stegoHide:
+      title: Hide in image
+      description: Hide a message inside an image (LSB, PNG text chunk, append), with an optional password. Nothing is uploaded — everything runs in your browser.
   stego:
     drop: 'Drop an image, click to choose, or paste'
     formats: 'PNG, JPEG, GIF, BMP, WebP — never uploaded'
@@ -217,6 +220,7 @@ app:
       strings: Strings
       ela: ELA
       compare: Compare
+      hide: Hide
     bitPlanes:
       single: Single
       grid: Grid
@@ -350,6 +354,30 @@ app:
       clean: The PNG was already valid.
       stillBroken: Repaired the checksums, but the image still does not render.
       download: Download repaired PNG
+    hide:
+      hideMode: Hide
+      revealMode: Reveal
+      source: Drop or choose a cover image
+      method: Method
+      methods:
+        lsb: LSB (pixels)
+        text: PNG text chunk
+        append: Append after end
+      password: Password (optional)
+      message: Message to hide
+      capacity: '{used} / {total} bytes'
+      hideAction: Hide
+      revealAction: Reveal
+      download: Download stego image
+      verified: Hidden and verified by re-reading
+      notVerified: Hidden, but verification failed
+      revealed: Revealed message
+      errors:
+        too-large: The message is larger than the image can hold.
+        no-message: No hidden message found with this method.
+        password-required: This message is encrypted — enter the password.
+        wrong-password: Wrong password, or not encrypted this way.
+        truncated: The hidden data is incomplete.
     errors:
       read: This file could not be read.
       decode: This file could not be decoded as an image.

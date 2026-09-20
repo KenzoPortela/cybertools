@@ -20,6 +20,7 @@ import PanelEntropy from '~/integrations/stego/panels/PanelEntropy.vue';
 import PanelInfo from '~/integrations/stego/panels/PanelInfo.vue';
 import PanelPngcheck from '~/integrations/stego/panels/PanelPngcheck.vue';
 import PanelRepair from '~/integrations/stego/panels/PanelRepair.vue';
+import StegoHide from '~/integrations/stego/StegoHide.vue';
 import PanelLsb from '~/integrations/stego/panels/PanelLsb.vue';
 import PanelMetadata from '~/integrations/stego/panels/PanelMetadata.vue';
 import PanelStrings from '~/integrations/stego/panels/PanelStrings.vue';
@@ -171,6 +172,9 @@ onBeforeUnmount(() => engine.terminate());
         </NTabPane>
         <NTabPane name="compare" :tab="t('app.stego.tabs.compare')">
           <PanelCompare :engine="engine" :image="image" :active="activeTab === 'compare'" :filename="baseName" />
+        </NTabPane>
+        <NTabPane name="hide" :tab="t('app.stego.tabs.hide')">
+          <StegoHide :cover="image" :active="activeTab === 'hide'" />
         </NTabPane>
       </NTabs>
     </div>

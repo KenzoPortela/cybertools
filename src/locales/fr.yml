@@ -449,6 +449,9 @@ app:
     stegoLab:
       title: Stego Lab
       description: Analysez une image à la recherche de données cachées — métadonnées, plans de bits, LSB, structure. Rien n'est envoyé, tout se passe dans votre navigateur.
+    stegoHide:
+      title: Cacher dans une image
+      description: Cachez un message dans une image (LSB, chunk texte PNG, ajout), avec un mot de passe facultatif. Rien n'est envoyé — tout se passe dans votre navigateur.
   stego:
     drop: 'Déposez une image, cliquez pour choisir, ou collez'
     formats: 'PNG, JPEG, GIF, BMP, WebP — jamais envoyée'
@@ -478,6 +481,7 @@ app:
       strings: Chaînes
       ela: ELA
       compare: Comparer
+      hide: Cacher
     bitPlanes:
       single: Unique
       grid: Grille
@@ -611,6 +615,30 @@ app:
       clean: Le PNG était déjà valide.
       stillBroken: CRC corrigés, mais l'image ne s'affiche toujours pas.
       download: Télécharger le PNG réparé
+    hide:
+      hideMode: Cacher
+      revealMode: Révéler
+      source: Déposez ou choisissez une image support
+      method: Méthode
+      methods:
+        lsb: LSB (pixels)
+        text: Chunk texte PNG
+        append: Ajout après la fin
+      password: Mot de passe (facultatif)
+      message: Message à cacher
+      capacity: '{used} / {total} octets'
+      hideAction: Cacher
+      revealAction: Révéler
+      download: Télécharger l'image
+      verified: Caché et vérifié par relecture
+      notVerified: Caché, mais la vérification a échoué
+      revealed: Message révélé
+      errors:
+        too-large: Le message dépasse ce que l'image peut contenir.
+        no-message: Aucun message caché trouvé avec cette méthode.
+        password-required: Ce message est chiffré — entrez le mot de passe.
+        wrong-password: Mauvais mot de passe, ou chiffrement différent.
+        truncated: Les données cachées sont incomplètes.
     errors:
       read: Ce fichier n'a pas pu être lu.
       decode: Ce fichier n'a pas pu être décodé comme image.

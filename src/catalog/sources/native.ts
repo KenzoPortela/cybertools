@@ -4,6 +4,7 @@
  */
 import IconMagic from '~icons/mdi/auto-fix';
 import IconChefHat from '~icons/mdi/chef-hat';
+import IconHide from '~icons/mdi/lock-outline';
 import IconStego from '~icons/mdi/image-search-outline';
 import type { ToolDef } from '~/catalog/tool.types';
 
@@ -47,6 +48,18 @@ export function nativeSource(): ToolDef[] {
       renderer: { kind: 'vue', component: () => import('~/integrations/stego/StegoLab.vue') },
       layout: 'wide',
       aliases: ['/steg', '/steganography', '/aperisolve'],
+    },
+    {
+      id: 'stego-hide',
+      slug: 'stego-hide',
+      source: 'native',
+      title: { keys: ['app.native.stegoHide.title'], fallback: 'Hide in image' },
+      description: { keys: ['app.native.stegoHide.description'], fallback: 'Hide a message inside an image — LSB, PNG text, append. Optional password. Nothing uploaded.' },
+      category: 'forensics',
+      keywords: ['steganography', 'hide', 'embed', 'conceal', 'lsb', 'openstego', 'steghide', 'encode', 'stéganographie', 'cacher', 'dissimuler', 'message caché', 'encoder'],
+      icon: IconHide,
+      renderer: { kind: 'vue', component: () => import('~/integrations/stego/StegoHide.vue') },
+      aliases: ['/hide', '/embed', '/steg-hide'],
     },
   ];
 }
