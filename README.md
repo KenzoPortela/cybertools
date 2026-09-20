@@ -4,8 +4,7 @@
 
 # cybertools
 
-**[CyberChef](https://github.com/gchq/CyberChef) and [IT-Tools](https://github.com/CorentinTh/it-tools) in a single interface.**
-540 tools for encoding, cryptography, networking and analysis - everything runs in your browser.
+540 encoding, crypto and analysis tools behind a single interface, running entirely client-side.
 
 [![CI](https://github.com/KenzoPortela/cybertools/actions/workflows/ci.yml/badge.svg)](https://github.com/KenzoPortela/cybertools/actions/workflows/ci.yml)
 [![Docker image](https://github.com/KenzoPortela/cybertools/actions/workflows/docker.yml/badge.svg)](https://github.com/KenzoPortela/cybertools/actions/workflows/docker.yml)
