@@ -12,9 +12,11 @@ import { NAlert, NSpin, NTabPane, NTabs } from 'naive-ui';
 import { formatBytes } from '~/integrations/cyberchef/output';
 import PanelBitPlanes from '~/integrations/stego/panels/PanelBitPlanes.vue';
 import PanelChannels from '~/integrations/stego/panels/PanelChannels.vue';
+import PanelColorMap from '~/integrations/stego/panels/PanelColorMap.vue';
 import PanelCompare from '~/integrations/stego/panels/PanelCompare.vue';
 import PanelEla from '~/integrations/stego/panels/PanelEla.vue';
 import PanelEntropy from '~/integrations/stego/panels/PanelEntropy.vue';
+import PanelInfo from '~/integrations/stego/panels/PanelInfo.vue';
 import PanelLsb from '~/integrations/stego/panels/PanelLsb.vue';
 import PanelMetadata from '~/integrations/stego/panels/PanelMetadata.vue';
 import PanelStrings from '~/integrations/stego/panels/PanelStrings.vue';
@@ -125,11 +127,17 @@ onBeforeUnmount(() => engine.terminate());
         <NTabPane name="original" :tab="t('app.stego.tabs.original')">
           <StegoResultCanvas :image="image.data" :filename="baseName" />
         </NTabPane>
+        <NTabPane name="info" :tab="t('app.stego.tabs.info')">
+          <PanelInfo :image="image" :active="activeTab === 'info'" />
+        </NTabPane>
         <NTabPane name="bitplanes" :tab="t('app.stego.tabs.bitPlanes')">
           <PanelBitPlanes :engine="engine" :image="image" :active="activeTab === 'bitplanes'" :filename="baseName" />
         </NTabPane>
         <NTabPane name="channels" :tab="t('app.stego.tabs.channels')">
           <PanelChannels :engine="engine" :image="image" :active="activeTab === 'channels'" :filename="baseName" />
+        </NTabPane>
+        <NTabPane name="colormap" :tab="t('app.stego.tabs.colorMap')">
+          <PanelColorMap :image="image" :active="activeTab === 'colormap'" :filename="baseName" />
         </NTabPane>
         <NTabPane name="entropy" :tab="t('app.stego.tabs.entropy')">
           <PanelEntropy :engine="engine" :image="image" :active="activeTab === 'entropy'" :filename="baseName" />

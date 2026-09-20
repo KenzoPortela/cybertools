@@ -464,6 +464,8 @@ app:
     errorTitle: Impossible d'ouvrir cette image
     tabs:
       original: Original
+      info: Infos
+      colorMap: Color remapping
       bitPlanes: Plans de bits
       channels: Canaux
       entropy: Entropie
@@ -474,6 +476,8 @@ app:
       ela: ELA
       compare: Comparer
     bitPlanes:
+      single: Unique
+      grid: Grille
       channel: Canal
       bit: Bit
       colour: Couleur
@@ -552,6 +556,37 @@ app:
       opacity: Opacité
       change: Changer
       mismatch: Les deux images n'ont pas la même taille ; seule la zone commune est comparée.
+    info:
+      properties: Propriétés
+      format: Format
+      dimensions: Dimensions
+      size: Taille du fichier
+      colourType: Type de couleur
+      bitDepth: Profondeur
+      bits: bits
+      dpi: Résolution
+      colours: Couleurs uniques
+      hashes: Empreintes
+      channels: Statistiques par canal
+      mean: moyenne
+      std: écart-type
+      entropy: entropie
+    colormap:
+      back: Retour à la grille
+      remaps:
+        original: Original
+        invert: Inverser
+        rbg: R-B-V
+        grb: V-R-B
+        gbr: V-B-R
+        brg: B-R-V
+        bgr: B-V-R
+        red: Rouge en gris
+        green: Vert en gris
+        blue: Bleu en gris
+        invRed: Inverser rouge
+        invGreen: Inverser vert
+        invBlue: Inverser bleu
     errors:
       read: Ce fichier n'a pas pu être lu.
       decode: Ce fichier n'a pas pu être décodé comme image.

@@ -203,6 +203,8 @@ app:
     errorTitle: Cannot open this image
     tabs:
       original: Original
+      info: Info
+      colorMap: Color remapping
       bitPlanes: Bit planes
       channels: Channels
       entropy: Entropy
@@ -213,6 +215,8 @@ app:
       ela: ELA
       compare: Compare
     bitPlanes:
+      single: Single
+      grid: Grid
       channel: Channel
       bit: Bit
       colour: Colour
@@ -291,6 +295,37 @@ app:
       opacity: Opacity
       change: Change
       mismatch: The two images differ in size; only the overlapping area is compared.
+    info:
+      properties: Properties
+      format: Format
+      dimensions: Dimensions
+      size: File size
+      colourType: Colour type
+      bitDepth: Bit depth
+      bits: bits
+      dpi: Resolution
+      colours: Unique colours
+      hashes: Checksums
+      channels: Channel statistics
+      mean: mean
+      std: std
+      entropy: entropy
+    colormap:
+      back: Back to grid
+      remaps:
+        original: Original
+        invert: Invert
+        rbg: R-B-G
+        grb: G-R-B
+        gbr: G-B-R
+        brg: B-R-G
+        bgr: B-G-R
+        red: Red as grey
+        green: Green as grey
+        blue: Blue as grey
+        invRed: Invert red
+        invGreen: Invert green
+        invBlue: Invert blue
     errors:
       read: This file could not be read.
       decode: This file could not be decoded as an image.

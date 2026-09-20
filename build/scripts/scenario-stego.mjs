@@ -285,6 +285,59 @@ const jobs = [
     `),
   },
   {
+    name: 'stego-info',
+    url: `${base}/tools/stego-lab`,
+    scheme: 'dark',
+    fullPage: true,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadImage(64, 48);
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('Info');
+      const panel = await until(() => document.querySelector('.stego-panel-info'), 20000);
+      const sha = await until(() => {
+        const hs = [...panel.querySelectorAll('.hash')].map(e => e.textContent.trim());
+        return hs.length === 3 && /^[0-9a-f]{64}$/.test(hs[2]) && /^[0-9a-f]{32}$/.test(hs[0]) ? hs : null;
+      }, 15000);
+      const stats = panel.querySelectorAll('.stat').length;
+      const format = /PNG/.test(panel.textContent);
+      await sleep(200);
+      return (!!sha && stats >= 5 && format) || { sha: !!sha, stats, format };
+    `),
+  },
+  {
+    name: 'stego-colormap',
+    url: `${base}/tools/stego-lab`,
+    scheme: 'dark',
+    fullPage: true,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadImage(96, 64);
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('Color remapping');
+      const panel = await until(() => document.querySelector('.stego-panel-colormap'), 20000);
+      const tiles = await until(() => { const n = panel.querySelectorAll('.tile').length; return n >= 13 ? n : null; }, 15000);
+      panel.querySelector('.tile').click();
+      const canvas = await until(() => panel.querySelector('.viewer canvas'), 15000);
+      await until(() => drawn(panel), 15000);
+      return (tiles >= 13 && !!canvas) || { tiles, canvas: !!canvas };
+    `),
+  },
+  {
+    name: 'stego-bitgrid',
+    url: `${base}/tools/stego-lab`,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadImage(96, 64);
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('Bit planes');
+      const panel = await until(() => document.querySelector('.stego-panel-bitplanes'), 20000);
+      [...panel.querySelectorAll('.n-radio-button')].find(el => /Grid/.test(el.textContent))?.click();
+      const tiles = await until(() => { const n = panel.querySelectorAll('.tile').length; return n === 8 ? n : null; }, 15000);
+      return tiles === 8 || { tiles };
+    `),
+  },
+  {
     name: 'stego-ela',
     url: `${base}/tools/stego-lab`,
     scheme: 'dark',
