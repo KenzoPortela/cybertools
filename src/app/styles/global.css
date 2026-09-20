@@ -1,28 +1,47 @@
 /*
- * Styles globaux : arrondi unique et détails typographiques, appliqués aussi
+ * Styles globaux : paliers d'arrondi et détails typographiques, appliqués aussi
  * au kit `c-*` d'IT-Tools.
  *
  * Leurs composants écrivent « border-radius: 4px » en dur dans des styles
  * scopés. Plutôt que de surcharger six fichiers pour une seule valeur, on les
  * réaligne ici, en doublant la classe pour l'emporter sur leur sélecteur scopé.
+ *
+ * Chaque sélecteur reçoit le palier de sa taille : ce qu'on clique prend
+ * `control`, ce qui contient prend `panel`, ce qui flotte prend `float`.
  */
 
+/* Contrôles : bouton, lien-bouton, champ, liste déroulante et ses options. */
 .c-button.c-button:not(.round):not(.circle),
-.c-card.c-card,
 .c-link.c-link,
 .c-input-text.c-input-text .input-wrapper,
 .c-select.c-select .c-select-input,
-.c-select.c-select .c-select-dropdown,
-.c-select.c-select .c-select-dropdown-option,
-.c-modal--container.c-modal--container {
-  border-radius: var(--ct-radius);
+.c-select.c-select .c-select-dropdown-option {
+  border-radius: var(--ct-radius-control);
 }
 
-/* Utilitaires UnoCSS « rounded » d'IT-Tools (tableaux, zones de dépôt, infobulles). */
-.tool-content .rounded,
+/* Conteneurs. */
+.c-card.c-card {
+  border-radius: var(--ct-radius-panel);
+}
+
+/* Ce qui se détache du plan : modale et menu déroulant. */
+.c-modal--container.c-modal--container,
+.c-select.c-select .c-select-dropdown {
+  border-radius: var(--ct-radius-float);
+}
+
+/*
+ * Utilitaires UnoCSS « rounded » d'IT-Tools (tableaux, zones de dépôt,
+ * infobulles). Leur suffixe dit déjà la taille de l'objet : on le respecte au
+ * lieu de tout aplatir sur une seule valeur.
+ */
+.tool-content .rounded {
+  border-radius: var(--ct-radius-control);
+}
+
 .tool-content .rounded-md,
 .tool-content .rounded-lg {
-  border-radius: var(--ct-radius);
+  border-radius: var(--ct-radius-panel);
 }
 
 /* Touches clavier : un micro-élément, qui garde un petit arrondi. */

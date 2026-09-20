@@ -45,9 +45,20 @@ export default defineConfig({
     'bg-surface': 'bg-[var(--ct-surface)]',
     'bg-background': 'bg-[var(--ct-background)]',
 
-    // Les nôtres.
+    // Les nôtres : un raccourci par jeton, pour ne pas réécrire
+    // `bg-[var(--ct-…)]` à chaque fois.
+    'bg-chassis': 'bg-[var(--ct-chassis)]',
+    'bg-surface-raised': 'bg-[var(--ct-surface-raised)]',
     'bg-elevated': 'bg-[var(--ct-elevated)]',
     'border-base': 'border-[var(--ct-border)]',
+    'border-strong': 'border-[var(--ct-border-strong)]',
     'text-muted': 'text-[var(--ct-text-muted)]',
+    'text-faint': 'text-[var(--ct-text-faint)]',
+
+    // Paliers d'arrondi, dans l'ordre des tailles d'objet.
+    'rounded-micro': 'rounded-[var(--ct-radius-micro)]',
+    'rounded-control': 'rounded-[var(--ct-radius-control)]',
+    'rounded-panel': 'rounded-[var(--ct-radius-panel)]',
+    'rounded-float': 'rounded-[var(--ct-radius-float)]',
   },
 });

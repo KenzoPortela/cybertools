@@ -27,16 +27,27 @@ export interface ThemeTokens {
   /** Boutons neutres : fond presque transparent qui fonce au survol. */
   neutral: { color: string; hover: string; pressed: string };
 
+  /** Plan 0 : le châssis (rail, barre d'état), sous le contenu. */
+  chassis: string;
   background: string;
   surface: string;
+  /**
+   * Panneau actif, au-dessus des autres. En clair, les deux surfaces sont
+   * blanches : c'est le filet qui les sépare, pas le fond.
+   */
+  surfaceRaised: string;
   /** Surface au-dessus d'une surface : survol d'option, menu ouvert. */
   elevated: string;
   border: string;
+  /** Séparation marquée : bord d'un panneau actif, limite de colonne. */
+  borderStrong: string;
   inputBackground: string;
   inputBorder: string;
 
   text: string;
   textMuted: string;
+  /** Étiquettes de 10–11 px : le palier le plus pâle encore lisible à 4,5:1. */
+  textFaint: string;
   shadow: string;
 }
 
@@ -58,41 +69,66 @@ const STATUS = {
   },
 };
 
-/** Gris légèrement teintés : chaque thème a les siens, pour que l'accent s'y fonde. */
+/**
+ * Gris légèrement teintés : chaque thème a les siens, pour que l'accent s'y fonde.
+ *
+ * La famille `green` est la référence — c'est elle qui a été dessinée, du plan 0
+ * (`chassis`) au texte le plus pâle (`textFaint`). Les deux autres en sont
+ * dérivées : on garde la luminosité et la saturation de chaque palier, on ne
+ * tourne que la teinte (green ≈ 150°, indigo 236°, graphite 220°). Une seule
+ * rampe à maintenir, et les cinq thèmes gardent le même rendu de densité.
+ *
+ * Tout couple texte/fond est vérifié à 4,5:1 : le cas le plus serré est
+ * `textFaint` sur `elevated`, à 4,6:1. C'est lui qui fixe le palier — d'où les
+ * deux gris de texte remontés en indigo et en graphite, où le bleu porte moins
+ * de luminance que le vert.
+ */
 const NEUTRALS: Record<'green' | 'indigo' | 'graphite', Record<'light' | 'dark', Neutrals>> = {
   green: {
     light: {
-      background: '#f3f6f4', surface: '#ffffff', elevated: '#eaf0ec', border: '#dde5e0',
-      inputBackground: '#ffffff', inputBorder: '#d0d9d4', text: '#15201b', textMuted: '#5b6a63',
+      chassis: '#edf2ef', background: '#f7f9f8', surface: '#ffffff', surfaceRaised: '#ffffff',
+      elevated: '#eaf0ed', border: '#e2e8e5', borderStrong: '#d2dcd7',
+      inputBackground: '#ffffff', inputBorder: '#d2dcd7',
+      text: '#0f1613', textMuted: '#4a5651', textFaint: '#5d6a64',
       shadow: 'rgba(16, 32, 24, 0.08) 0px 8px 24px',
     },
     dark: {
-      background: '#0a0e0c', surface: '#101613', elevated: '#18201c', border: '#1e2824',
-      inputBackground: '#0d1310', inputBorder: '#26322c', text: '#dce6e0', textMuted: '#84958c',
+      chassis: '#070a09', background: '#0b0f0d', surface: '#0e1312', surfaceRaised: '#111614',
+      elevated: '#161d1a', border: '#1c2421', borderStrong: '#28322e',
+      inputBackground: '#0b0f0d', inputBorder: '#28322e',
+      text: '#e4ebe7', textMuted: '#97a59e', textFaint: '#7c8b84',
       shadow: 'rgba(0, 0, 0, 0.45) 0px 8px 24px',
     },
   },
   indigo: {
     light: {
-      background: '#f6f7fb', surface: '#ffffff', elevated: '#f1f2f7', border: '#e6e8f0',
-      inputBackground: '#ffffff', inputBorder: '#dcdfea', text: '#1f2230', textMuted: '#6b7185',
+      chassis: '#ededf2', background: '#f7f7f9', surface: '#ffffff', surfaceRaised: '#ffffff',
+      elevated: '#eaeaf0', border: '#e2e2e8', borderStrong: '#d2d3dc',
+      inputBackground: '#ffffff', inputBorder: '#d2d3dc',
+      text: '#0f0f16', textMuted: '#4a4b56', textFaint: '#5d5e6a',
       shadow: 'rgba(31, 34, 48, 0.08) 0px 8px 24px',
     },
     dark: {
-      background: '#131318', surface: '#1b1b22', elevated: '#262630', border: '#2a2a35',
-      inputBackground: '#22222b', inputBorder: '#30303c', text: '#e8e9f0', textMuted: '#9296a8',
-      shadow: 'rgba(0, 0, 0, 0.35) 0px 8px 24px',
+      chassis: '#07070a', background: '#0b0b0f', surface: '#0e0e13', surfaceRaised: '#111116',
+      elevated: '#16161d', border: '#1c1d24', borderStrong: '#282932',
+      inputBackground: '#0b0b0f', inputBorder: '#282932',
+      text: '#e4e4eb', textMuted: '#9798a5', textFaint: '#7f808d',
+      shadow: 'rgba(0, 0, 0, 0.45) 0px 8px 24px',
     },
   },
   graphite: {
     light: {
-      background: '#f5f6f8', surface: '#ffffff', elevated: '#eef0f3', border: '#e1e4e9',
-      inputBackground: '#ffffff', inputBorder: '#d5d9df', text: '#1a1d22', textMuted: '#636974',
+      chassis: '#edeff2', background: '#f7f8f9', surface: '#ffffff', surfaceRaised: '#ffffff',
+      elevated: '#eaecf0', border: '#e2e4e8', borderStrong: '#d2d5dc',
+      inputBackground: '#ffffff', inputBorder: '#d2d5dc',
+      text: '#0f1116', textMuted: '#4a4e56', textFaint: '#5d616a',
       shadow: 'rgba(20, 24, 32, 0.08) 0px 8px 24px',
     },
     dark: {
-      background: '#0d0e11', surface: '#14161a', elevated: '#1c1f24', border: '#24272d',
-      inputBackground: '#111317', inputBorder: '#2c3037', text: '#e5e7eb', textMuted: '#8e939d',
+      chassis: '#07080a', background: '#0b0c0f', surface: '#0e1013', surfaceRaised: '#111316',
+      elevated: '#16181d', border: '#1c1f24', borderStrong: '#282b32',
+      inputBackground: '#0b0c0f', inputBorder: '#282b32',
+      text: '#e4e6eb', textMuted: '#979ca5', textFaint: '#7d828b',
       shadow: 'rgba(0, 0, 0, 0.45) 0px 8px 24px',
     },
   },
@@ -182,20 +218,55 @@ export const fonts = {
 };
 
 /**
- * Un seul arrondi pour tout le site ; seules les barres de recherche sont en
- * pilule. Les anciens paliers (small, medium) restent comme alias, pour ne pas
- * réintroduire de valeurs divergentes.
+ * Un palier d'arrondi par taille d'objet. Un seul rayon de 12 px arrondissait
+ * les pastilles de 22 px en galets et amollissait les grands panneaux.
+ *
+ * `base`, `small`, `medium` et `large` restent comme alias des nouveaux paliers :
+ * les 34 usages de `var(--ct-radius)` et les surcharges naive-ui continuent de
+ * fonctionner, et le code neuf nomme directement le palier qu'il veut.
  */
-const RADIUS = '12px';
-
 export const radii = {
-  base: RADIUS,
-  small: RADIUS,
-  medium: RADIUS,
-  large: RADIUS,
-  pill: '999px',
-  /** Micro-éléments (touche clavier, case à cocher) : 12 px en ferait des cercles. */
+  /** Touche clavier, case à cocher, pastille de numéro. */
   micro: '4px',
+  /** Bouton, champ, onglet, ligne de liste. */
+  control: '6px',
+  /** Carte, panneau, bloc. */
+  panel: '10px',
+  /** Palette, modale, menu — ce qui flotte au-dessus du reste. */
+  float: '14px',
+  /** Interrupteur, barre de recherche ronde. */
+  pill: '999px',
+
+  // Alias historiques. `base` vaut le palier « panneau » : c'est ce que la
+  // grande majorité des `var(--ct-radius)` existants encadrent.
+  base: '10px',
+  small: '6px',
+  medium: '10px',
+  large: '10px',
+};
+
+/**
+ * Échelle typographique. Elle plafonne à 20 px : un outil ouvert dix fois par
+ * jour n'a pas besoin d'un titre d'affiche.
+ *
+ * `ui` (13 px) est la base de **notre** châssis et de nos pages. L'intérieur des
+ * outils reste à 14 px, la taille pour laquelle les 86 composants d'IT-Tools ont
+ * été dessinés — voir `overridesFor()`. Deux échelles cohabitent donc, chacune
+ * sur son territoire, la frontière étant le cadre de l'outil.
+ */
+export const fontSizes = {
+  /** 20 / 600 — titre de page. */
+  pageTitle: '20px',
+  /** 15 / 600 — titre de panneau. */
+  panelTitle: '15px',
+  /** 13 / 400 — base d'interface. */
+  ui: '13px',
+  /** 12 / 400 — secondaire, descriptions. */
+  secondary: '12px',
+  /** 12,5 mono — la donnée elle-même. */
+  data: '12.5px',
+  /** 10 mono majuscules espacées — étiquettes de section. */
+  label: '10px',
 };
 
 function overridesFor(t: ThemeTokens): GlobalThemeOverrides {
@@ -203,9 +274,11 @@ function overridesFor(t: ThemeTokens): GlobalThemeOverrides {
     common: {
       fontFamily: fonts.sans,
       fontFamilyMono: fonts.mono,
+      // 14 px, et pas les 13 px du châssis : naive-ui habille l'intérieur des
+      // outils, dessinés par IT-Tools à cette taille.
       fontSize: '14px',
-      borderRadius: radii.base,
-      borderRadiusSmall: radii.base,
+      borderRadius: radii.control,
+      borderRadiusSmall: radii.micro,
 
       primaryColor: t.primary.color,
       primaryColorHover: t.primary.hover,
@@ -245,7 +318,7 @@ function overridesFor(t: ThemeTokens): GlobalThemeOverrides {
     Card: {
       color: t.surface,
       borderColor: t.border,
-      borderRadius: radii.large,
+      borderRadius: radii.panel,
     },
     Input: {
       color: t.inputBackground,
@@ -293,23 +366,40 @@ export function applyCssVariables(t: ThemeTokens, root: HTMLElement = document.d
     'error': t.error.color,
     'neutral': t.neutral.color,
     'neutral-hover': t.neutral.hover,
+    'chassis': t.chassis,
     'background': t.background,
     'surface': t.surface,
+    'surface-raised': t.surfaceRaised,
     'elevated': t.elevated,
     'border': t.border,
+    'border-strong': t.borderStrong,
     'input-background': t.inputBackground,
     'input-border': t.inputBorder,
     'text': t.text,
     'text-muted': t.textMuted,
+    'text-faint': t.textFaint,
     'shadow': t.shadow,
     'font-sans': fonts.sans,
     'font-mono': fonts.mono,
+
+    'radius-micro': radii.micro,
+    'radius-control': radii.control,
+    'radius-panel': radii.panel,
+    'radius-float': radii.float,
+    'radius-pill': radii.pill,
+    // Alias : `--ct-radius` reste le rayon de panneau, `--ct-radius-small` celui
+    // d'un contrôle.
     'radius': radii.base,
     'radius-small': radii.small,
     'radius-medium': radii.medium,
     'radius-large': radii.large,
-    'radius-pill': radii.pill,
-    'radius-micro': radii.micro,
+
+    'font-size-page-title': fontSizes.pageTitle,
+    'font-size-panel-title': fontSizes.panelTitle,
+    'font-size-ui': fontSizes.ui,
+    'font-size-secondary': fontSizes.secondary,
+    'font-size-data': fontSizes.data,
+    'font-size-label': fontSizes.label,
   };
 
   for (const [name, value] of Object.entries(vars)) {
