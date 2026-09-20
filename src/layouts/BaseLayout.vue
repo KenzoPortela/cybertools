@@ -73,7 +73,7 @@ const version = __APP_VERSION__;
           {{ t('app.footer.privacy') }}
         </span>
         <span class="footer-meta">
-          <span>beta v{{ version }}</span>
+          <span>v{{ version }}</span>
           <span aria-hidden="true">·</span>
           <span>GPL-3.0</span>
           <span aria-hidden="true">·</span>
