@@ -17,7 +17,7 @@
 ![The cybertools home page](docs/screenshots/home.png)
 
 > **Beta — v0.1.0.** Some tools may not behave perfectly yet, and the interface
-> is still far from finished. I am happy with the current state of cybertools to release it to the public as a beta, so that you can discover cybertools. I am doing my best to make the interface more polished and fix the broken behaviours. If something is broken,
+> is still far from finished. I am happy enough with the current state of cybertools to release it to the public as a beta, so that you can discover cybertools. I am doing my best to make the interface more polished and fix the broken behaviours. If something is broken,
 > confusing or simply annoying, please
 > [open an issue](https://github.com/KenzoPortela/cybertools/issues/new/choose) —
 > I will be happy to fix it.
