@@ -1,14 +1,14 @@
-# cybertools derrière un proxy inverse (Traefik, Caddy, nginx, ou une plateforme
-# qui en gère un pour vous).
+# cybertools behind a reverse proxy (Traefik, Caddy, nginx, or a platform
+# that manages one for you).
 #
-# Fichier autonome : aucun port n'est publié sur l'hôte, le proxy joint le
-# conteneur sur son port 8080 par le réseau Docker. À utiliser tel quel :
+# Standalone setup: no ports are published on the host; the proxy connects to
+# the container on port 8080 via the Docker network. Use as-is:
 #
 #   docker compose -f docker-compose.proxy.yml up -d
 #
-# (Le docker-compose.yml, lui, publie 8080 sur l'hôte : c'est le plus simple
-# quand on n'a que Docker, mais cela entre en conflit avec un proxy qui écoute
-# déjà sur ce port.)
+# (The docker-compose.yml file, by contrast, publishes port 8080 on the host:
+# this is the simplest approach when using only Docker, but it conflicts
+# with a proxy already listening on that port.)
 
 services:
   cybertools:
