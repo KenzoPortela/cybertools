@@ -467,6 +467,8 @@ app:
       bitPlanes: Plans de bits
       channels: Canaux
       entropy: Entropie
+      metadata: Métadonnées
+      structure: Structure
     bitPlanes:
       channel: Canal
       bit: Bit
@@ -494,6 +496,28 @@ app:
       low: faible
       high: forte
       hint: Les blocs vifs sont à forte entropie — les données chiffrées ou compressées ressortent.
+    metadata:
+      reading: Lecture des métadonnées…
+      none: Aucune métadonnée dans cette image. Les captures d'écran et images retouchées n'en portent en général pas.
+      search: Filtrer les métadonnées
+      noMatch: Aucune métadonnée ne correspond.
+      copy: Copier
+      copied: Coordonnées copiées
+    structure:
+      format: Format
+      unknown: inconnu
+      texts: Texte caché
+      trailing: Données ajoutées
+      trailingInfo: '{size} après la fin logique, à {offset}'
+      download: Télécharger
+      embedded: Fichiers embarqués
+      chunks: Chunks / segments
+      noChunks: Pas de liste de chunks pour ce format.
+      name: Nom
+      offset: Décalage
+      size: Taille
+      polyglotTitle: Ce fichier en cache un autre
+      polyglotBody: Un conteneur (archive, PDF…) a été trouvé dans l'image — une cachette classique.
     errors:
       read: Ce fichier n'a pas pu être lu.
       decode: Ce fichier n'a pas pu être décodé comme image.

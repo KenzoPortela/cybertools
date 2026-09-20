@@ -206,6 +206,8 @@ app:
       bitPlanes: Bit planes
       channels: Channels
       entropy: Entropy
+      metadata: Metadata
+      structure: Structure
     bitPlanes:
       channel: Channel
       bit: Bit
@@ -233,6 +235,28 @@ app:
       low: low
       high: high
       hint: Bright blocks are high-entropy — encrypted or compressed data stands out.
+    metadata:
+      reading: Reading metadata…
+      none: No metadata found in this image. Screenshots and edited images usually carry none.
+      search: Filter metadata
+      noMatch: No metadata matches.
+      copy: Copy
+      copied: Coordinates copied
+    structure:
+      format: Format
+      unknown: unknown
+      texts: Hidden text
+      trailing: Trailing data
+      trailingInfo: '{size} after the logical end, at {offset}'
+      download: Download
+      embedded: Embedded files
+      chunks: Chunks / segments
+      noChunks: No chunk listing for this format.
+      name: Name
+      offset: Offset
+      size: Size
+      polyglotTitle: This file hides another file
+      polyglotBody: A container (archive, PDF…) was found inside the image — a classic hiding place.
     errors:
       read: This file could not be read.
       decode: This file could not be decoded as an image.

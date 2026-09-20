@@ -13,6 +13,8 @@ import { formatBytes } from '~/integrations/cyberchef/output';
 import PanelBitPlanes from '~/integrations/stego/panels/PanelBitPlanes.vue';
 import PanelChannels from '~/integrations/stego/panels/PanelChannels.vue';
 import PanelEntropy from '~/integrations/stego/panels/PanelEntropy.vue';
+import PanelMetadata from '~/integrations/stego/panels/PanelMetadata.vue';
+import PanelStructure from '~/integrations/stego/panels/PanelStructure.vue';
 import { StegoEngine } from '~/integrations/stego/stego-engine';
 import StegoResultCanvas from '~/integrations/stego/StegoResultCanvas.vue';
 import { useStegoImage } from '~/integrations/stego/useStegoImage';
@@ -128,7 +130,13 @@ onBeforeUnmount(() => engine.terminate());
         <NTabPane name="entropy" :tab="t('app.stego.tabs.entropy')">
           <PanelEntropy :engine="engine" :image="image" :active="activeTab === 'entropy'" :filename="baseName" />
         </NTabPane>
-        <!-- Lots 3–5 : métadonnées, structure, LSB, ELA… -->
+        <NTabPane name="metadata" :tab="t('app.stego.tabs.metadata')">
+          <PanelMetadata :image="image" :active="activeTab === 'metadata'" />
+        </NTabPane>
+        <NTabPane name="structure" :tab="t('app.stego.tabs.structure')">
+          <PanelStructure :image="image" :active="activeTab === 'structure'" :filename="baseName" />
+        </NTabPane>
+        <!-- Lots 4–5 : LSB, strings, ELA, comparaison… -->
       </NTabs>
     </div>
 

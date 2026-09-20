@@ -115,6 +115,7 @@ declare module 'vue' {
     IconMdiImport: typeof import('~icons/mdi/import')['default']
     IconMdiLayersOutline: typeof import('~icons/mdi/layers-outline')['default']
     IconMdiMagnify: typeof import('~icons/mdi/magnify')['default']
+    IconMdiMapMarker: typeof import('~icons/mdi/map-marker')['default']
     IconMdiMinus: typeof import('~icons/mdi/minus')['default']
     IconMdiPaperclip: typeof import('~icons/mdi/paperclip')['default']
     IconMdiPause: typeof import('~icons/mdi/pause')['default']
