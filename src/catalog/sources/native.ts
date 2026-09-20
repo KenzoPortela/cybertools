@@ -4,6 +4,7 @@
  */
 import IconMagic from '~icons/mdi/auto-fix';
 import IconChefHat from '~icons/mdi/chef-hat';
+import IconStego from '~icons/mdi/image-search-outline';
 import type { ToolDef } from '~/catalog/tool.types';
 
 export function nativeSource(): ToolDef[] {
@@ -33,6 +34,19 @@ export function nativeSource(): ToolDef[] {
       renderer: { kind: 'vue', component: () => import('~/integrations/cyberchef/components/MagicTool.vue') },
       layout: 'wide',
       aliases: ['/magic'],
+    },
+    {
+      id: 'stego-lab',
+      slug: 'stego-lab',
+      source: 'native',
+      title: { keys: ['app.native.stegoLab.title'], fallback: 'Stego Lab' },
+      description: { keys: ['app.native.stegoLab.description'], fallback: 'Inspect an image for hidden data — nothing is uploaded.' },
+      category: 'forensics',
+      keywords: ['steganography', 'stego', 'aperisolve', 'stegsolve', 'zsteg', 'exif', 'metadata', 'lsb', 'bit plane', 'ela', 'forensics', 'stégano', 'stéganographie', 'métadonnées', 'image cachée', 'dissimulation'],
+      icon: IconStego,
+      renderer: { kind: 'vue', component: () => import('~/integrations/stego/StegoLab.vue') },
+      layout: 'wide',
+      aliases: ['/steg', '/steganography', '/aperisolve'],
     },
   ];
 }

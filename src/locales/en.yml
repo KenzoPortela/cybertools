@@ -185,6 +185,28 @@ app:
     magic:
       title: Magic
       description: Automatically detects how unknown data is encoded (base64, hex, compression…) and suggests the recipe to decode it.
+    stegoLab:
+      title: Stego Lab
+      description: Inspect an image for hidden data — metadata, bit planes, LSB, structure. Nothing is uploaded, everything runs in your browser.
+  stego:
+    drop: 'Drop an image, click to choose, or paste'
+    formats: 'PNG, JPEG, GIF, BMP, WebP — never uploaded'
+    dimensions: '{w} × {h} px'
+    engineReady: 'Analysis engine ready'
+    change: Change image
+    exportPng: Export PNG
+    zoomIn: Zoom in
+    zoomOut: Zoom out
+    fit: Fit
+    pixel: 'x {x}, y {y}'
+    hoverHint: Hover the image to read a pixel
+    errorTitle: Cannot open this image
+    tabs:
+      original: Original
+    errors:
+      read: This file could not be read.
+      decode: This file could not be decoded as an image.
+      tooLarge: This image is too large to analyse in the browser.
   recipes:
     addPlaceholder: "Add an operation: base64, hex, gzip, xor…"
     suggested: Suggestions

@@ -222,8 +222,8 @@ configuration, using IT-Tools' components. The tables in
 - the ten **flow control** operations (Fork, Jump, Merge…) only make sense inside
   a recipe and are not listed as tools.
 
-The catalogue therefore holds 538 tools: 86 from IT-Tools, 450 CyberChef
-operations, the recipe workbench and Magic.
+The catalogue therefore holds 539 tools: 86 from IT-Tools, 450 CyberChef
+operations, the recipe workbench, Magic and the Stego Lab.
 
 ### Recipes and Magic
 

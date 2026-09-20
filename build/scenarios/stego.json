@@ -1,0 +1,35 @@
+[
+  {
+    "scheme": "light",
+    "wait": 300,
+    "name": "stego-empty",
+    "url": "http://localhost:5173/tools/stego-lab",
+    "script": "(async () => {\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const until = async (test, timeout = 15000) => {\n    for (const started = performance.now(); performance.now() - started < timeout;) {\n      const value = test();\n      if (value) return value;\n      await sleep(100);\n    }\n    return null;\n  };\n  // Fabrique une petite image PNG déterministe et la dépose dans le champ fichier.\n  const loadImage = async (w = 64, h = 48) => {\n    const c = document.createElement('canvas');\n    c.width = w; c.height = h;\n    const ctx = c.getContext('2d');\n    ctx.fillStyle = '#101613'; ctx.fillRect(0, 0, w, h);\n    ctx.fillStyle = '#3dd68c'; ctx.fillRect(8, 8, 20, 20);\n    const blob = await new Promise(r => c.toBlob(r, 'image/png'));\n    const file = new File([blob], 'test.png', { type: 'image/png' });\n    const input = document.querySelector('.stego-file-input');\n    const dt = new DataTransfer();\n    dt.items.add(file);\n    input.files = dt.files;\n    input.dispatchEvent(new Event('change', { bubbles: true }));\n  };\n\n      const drop = await until(() => document.querySelector('.stego-drop'));\n      return (!!drop && !document.querySelector('.stego-dims')) || 'zone de dépôt absente';\n    })()"
+  },
+  {
+    "scheme": "light",
+    "wait": 300,
+    "name": "stego-load",
+    "url": "http://localhost:5173/tools/stego-lab",
+    "script": "(async () => {\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const until = async (test, timeout = 15000) => {\n    for (const started = performance.now(); performance.now() - started < timeout;) {\n      const value = test();\n      if (value) return value;\n      await sleep(100);\n    }\n    return null;\n  };\n  // Fabrique une petite image PNG déterministe et la dépose dans le champ fichier.\n  const loadImage = async (w = 64, h = 48) => {\n    const c = document.createElement('canvas');\n    c.width = w; c.height = h;\n    const ctx = c.getContext('2d');\n    ctx.fillStyle = '#101613'; ctx.fillRect(0, 0, w, h);\n    ctx.fillStyle = '#3dd68c'; ctx.fillRect(8, 8, 20, 20);\n    const blob = await new Promise(r => c.toBlob(r, 'image/png'));\n    const file = new File([blob], 'test.png', { type: 'image/png' });\n    const input = document.querySelector('.stego-file-input');\n    const dt = new DataTransfer();\n    dt.items.add(file);\n    input.files = dt.files;\n    input.dispatchEvent(new Event('change', { bubbles: true }));\n  };\n\n      await until(() => document.querySelector('.stego-drop'));\n      await loadImage(64, 48);\n      const dims = await until(() => document.querySelector('.stego-dims')?.textContent);\n      const engine = await until(() => document.querySelector('.stego-engine-ok'), 20000);\n      const canvas = document.querySelector('.viewer canvas');\n      const ok = /64/.test(dims ?? '') && /48/.test(dims ?? '') && !!engine && !!canvas;\n      return ok || { dimensions: dims, moteur: !!engine, canvas: !!canvas };\n    })()"
+  },
+  {
+    "scheme": "dark",
+    "wait": 300,
+    "name": "stego-dark",
+    "url": "http://localhost:5173/tools/stego-lab",
+    "fullPage": true,
+    "script": "(async () => {\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const until = async (test, timeout = 15000) => {\n    for (const started = performance.now(); performance.now() - started < timeout;) {\n      const value = test();\n      if (value) return value;\n      await sleep(100);\n    }\n    return null;\n  };\n  // Fabrique une petite image PNG déterministe et la dépose dans le champ fichier.\n  const loadImage = async (w = 64, h = 48) => {\n    const c = document.createElement('canvas');\n    c.width = w; c.height = h;\n    const ctx = c.getContext('2d');\n    ctx.fillStyle = '#101613'; ctx.fillRect(0, 0, w, h);\n    ctx.fillStyle = '#3dd68c'; ctx.fillRect(8, 8, 20, 20);\n    const blob = await new Promise(r => c.toBlob(r, 'image/png'));\n    const file = new File([blob], 'test.png', { type: 'image/png' });\n    const input = document.querySelector('.stego-file-input');\n    const dt = new DataTransfer();\n    dt.items.add(file);\n    input.files = dt.files;\n    input.dispatchEvent(new Event('change', { bubbles: true }));\n  };\n\n      await until(() => document.querySelector('.stego-drop'));\n      await loadImage(96, 64);\n      await until(() => document.querySelector('.stego-engine-ok'), 20000);\n      await sleep(400);\n      return true;\n    })()"
+  },
+  {
+    "scheme": "dark",
+    "wait": 300,
+    "name": "stego-mobile",
+    "url": "http://localhost:5173/tools/stego-lab",
+    "width": 390,
+    "height": 844,
+    "mobile": true,
+    "fullPage": true,
+    "script": "(async () => {\n  const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const until = async (test, timeout = 15000) => {\n    for (const started = performance.now(); performance.now() - started < timeout;) {\n      const value = test();\n      if (value) return value;\n      await sleep(100);\n    }\n    return null;\n  };\n  // Fabrique une petite image PNG déterministe et la dépose dans le champ fichier.\n  const loadImage = async (w = 64, h = 48) => {\n    const c = document.createElement('canvas');\n    c.width = w; c.height = h;\n    const ctx = c.getContext('2d');\n    ctx.fillStyle = '#101613'; ctx.fillRect(0, 0, w, h);\n    ctx.fillStyle = '#3dd68c'; ctx.fillRect(8, 8, 20, 20);\n    const blob = await new Promise(r => c.toBlob(r, 'image/png'));\n    const file = new File([blob], 'test.png', { type: 'image/png' });\n    const input = document.querySelector('.stego-file-input');\n    const dt = new DataTransfer();\n    dt.items.add(file);\n    input.files = dt.files;\n    input.dispatchEvent(new Event('change', { bubbles: true }));\n  };\n\n      await until(() => document.querySelector('.stego-drop'));\n      await loadImage(80, 100);\n      return (await until(() => document.querySelector('.stego-dims'))) !== null;\n    })()"
+  }
+]

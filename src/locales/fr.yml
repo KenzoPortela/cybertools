@@ -446,6 +446,28 @@ app:
     magic:
       title: Magic
       description: Détecte automatiquement l’encodage d’une donnée inconnue (base64, hexadécimal, compression…) et propose la recette pour la décoder.
+    stegoLab:
+      title: Stego Lab
+      description: Analysez une image à la recherche de données cachées — métadonnées, plans de bits, LSB, structure. Rien n'est envoyé, tout se passe dans votre navigateur.
+  stego:
+    drop: 'Déposez une image, cliquez pour choisir, ou collez'
+    formats: 'PNG, JPEG, GIF, BMP, WebP — jamais envoyée'
+    dimensions: '{w} × {h} px'
+    engineReady: 'Moteur d''analyse prêt'
+    change: Changer d'image
+    exportPng: Exporter en PNG
+    zoomIn: Zoomer
+    zoomOut: Dézoomer
+    fit: Ajuster
+    pixel: 'x {x}, y {y}'
+    hoverHint: Survolez l'image pour lire un pixel
+    errorTitle: Impossible d'ouvrir cette image
+    tabs:
+      original: Original
+    errors:
+      read: Ce fichier n'a pas pu être lu.
+      decode: Ce fichier n'a pas pu être décodé comme image.
+      tooLarge: Cette image est trop grande pour être analysée dans le navigateur.
   recipes:
     addPlaceholder: "Ajouter une opération : base64, hex, gzip, xor…"
     suggested: Suggestions
