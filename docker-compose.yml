@@ -1,16 +1,16 @@
-# cybertools — déploiement avec l'image publiée (méthode recommandée).
+# cybertools — deployment using the published image (recommended method).
 #
-# L'image est construite et publiée par GitHub Actions sur ghcr.io, pour amd64
-# et arm64 : le serveur n'a rien à compiler.
+# The image is built and published by GitHub Actions to ghcr.io for amd64
+# and arm64 architectures; the server does not need to compile anything.
 #
 #   docker compose up -d                                   → http://localhost:8080
-#   CYBERTOOLS_PORT=9000 docker compose up -d              → autre port
+#   CYBERTOOLS_PORT=9000 docker compose up -d              → custom port
 #   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
-#                                                          → construire depuis les sources
+#                                                          → build from source
 #
-# Derrière un proxy inverse (Traefik, Caddy, nginx…) qui joint les conteneurs
-# par le réseau Docker : retirer la section « ports » et laisser le proxy
-# atteindre le port 8080 du conteneur.
+# When using a reverse proxy (Traefik, Caddy, nginx, etc.) that connects to
+# the containers via the Docker network: remove the "ports" section and
+# allow the proxy to access the container's port 8080.
 
 services:
   cybertools:
