@@ -5,7 +5,7 @@
 # cybertools
 
 **[CyberChef](https://github.com/gchq/CyberChef) and [IT-Tools](https://github.com/CorentinTh/it-tools) in a single interface.**
-539 tools for encoding, cryptography, networking and analysis — everything runs in your browser.
+539 tools for encoding, cryptography, networking and analysis - everything runs in your browser.
 
 [![CI](https://github.com/KenzoPortela/cybertools/actions/workflows/ci.yml/badge.svg)](https://github.com/KenzoPortela/cybertools/actions/workflows/ci.yml)
 [![Docker image](https://github.com/KenzoPortela/cybertools/actions/workflows/docker.yml/badge.svg)](https://github.com/KenzoPortela/cybertools/actions/workflows/docker.yml)
@@ -16,10 +16,10 @@
 
 ![The cybertools home page](docs/screenshots/home.png)
 
-> **Beta — v0.1.0.** Some tools may not behave perfectly yet, and the interface
+> **Beta - v0.1.0.** Some tools may not behave perfectly yet, and the interface
 > is still far from finished. I am happy enough with the current state of cybertools to release it to the public as a beta, so that you can discover cybertools. I am doing my best to make the interface more polished and fix the broken behaviours. If something is broken,
 > confusing or simply annoying, please
-> [open an issue](https://github.com/KenzoPortela/cybertools/issues/new/choose) —
+> [open an issue](https://github.com/KenzoPortela/cybertools/issues/new/choose) -
 > I will be happy to fix it.
 
 ## Why
@@ -68,7 +68,7 @@ docker run -d --name cybertools -p 8080:8080 ghcr.io/kenzoportela/cybertools:lat
 ```
 
 Or with Docker Compose, using the repository's
-[`docker-compose.yml`](docker-compose.yml) — read-only container, no extra
+[`docker-compose.yml`](docker-compose.yml) - read-only container, no extra
 privileges, health check on `/healthz`:
 
 ```bash
@@ -93,7 +93,7 @@ docker compose -f docker-compose.proxy.yml up -d
 On a platform that generates the proxy configuration for you, point it at this
 file and give it the domain; `/healthz` answers `ok` for health checks.
 
-HTTPS is only needed for IT-Tools' camera recorder — browsers refuse the camera
+HTTPS is only needed for IT-Tools' camera recorder - browsers refuse the camera
 outside a secure context. Everything else works over plain HTTP.
 
 ### Building the image yourself
@@ -131,8 +131,8 @@ npm install
 npm run dev
 ```
 
-Node 24 or newer, and git. Everything else — architecture, catalogue, CyberChef
-engine, overrides, themes, verification in a real browser — is in
+Node 24 or newer, and git. Everything else - architecture, catalogue, CyberChef
+engine, overrides, themes, verification in a real browser - is in
 **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
 
 ## Known limitations
@@ -166,30 +166,30 @@ engine, overrides, themes, verification in a real browser — is in
 ## Feedback
 
 This is a beta, and feedback is what makes it better: a tool that computes the
-wrong thing, a layout that breaks, a word that reads badly, a missing shortcut —
+wrong thing, a layout that breaks, a word that reads badly, a missing shortcut -
 [open an issue](https://github.com/KenzoPortela/cybertools/issues/new/choose).
 Pull requests are welcome too; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 A bug that belongs to a tool itself is best reported to its own project
 ([CyberChef](https://github.com/gchq/CyberChef/issues),
-[IT-Tools](https://github.com/CorentinTh/it-tools/issues)) — fixes land here at
+[IT-Tools](https://github.com/CorentinTh/it-tools/issues)) - fixes land here at
 the next upstream update.
 
 ## Credits
 
 The tools come from two projects, used **without modifying their sources**:
 
-- **[CyberChef](https://github.com/gchq/CyberChef)** (GCHQ, Apache-2.0) — the
+- **[CyberChef](https://github.com/gchq/CyberChef)** (GCHQ, Apache-2.0) - the
   operation engine, recipes and the Magic automatic detection;
 - **[IT-Tools](https://github.com/CorentinTh/it-tools)** (Corentin Thomasset,
-  GPL-3.0) — the developer tools and their component kit.
+  GPL-3.0) - the developer tools and their component kit.
 
 See [`CREDITS.md`](CREDITS.md).
 
 ## License
 
-GPL-3.0-only — see [`LICENSE`](LICENSE). Not a preference, but a consequence of
+GPL-3.0-only - see [`LICENSE`](LICENSE). Not a preference, but a consequence of
 reusing IT-Tools' code. CyberChef's code remains under Apache-2.0.
 
-Built and adapted by **[Kenzo Portela](https://github.com/KenzoPortela)** —
+Built and adapted by **[Kenzo Portela](https://github.com/KenzoPortela)** -
 [kenzoportela.com](https://kenzoportela.com).
