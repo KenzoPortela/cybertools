@@ -5,7 +5,7 @@
 # cybertools
 
 **[CyberChef](https://github.com/gchq/CyberChef) and [IT-Tools](https://github.com/CorentinTh/it-tools) in a single interface.**
-539 tools for encoding, cryptography, networking and analysis - everything runs in your browser.
+540 tools for encoding, cryptography, networking and analysis - everything runs in your browser.
 
 [![CI](https://github.com/KenzoPortela/cybertools/actions/workflows/ci.yml/badge.svg)](https://github.com/KenzoPortela/cybertools/actions/workflows/ci.yml)
 [![Docker image](https://github.com/KenzoPortela/cybertools/actions/workflows/docker.yml/badge.svg)](https://github.com/KenzoPortela/cybertools/actions/workflows/docker.yml)
@@ -29,7 +29,7 @@ one-shot tasks. Using both means two interfaces, two searches, two habits.
 cybertools brings them together **without modifying either**: their sources are
 cloned as-is, and every adaptation lives in this repository.
 
-- **539 tools**: the 86 from IT-Tools, 450 CyberChef operations, the recipe
+- **540 tools**: the 86 from IT-Tools, 450 CyberChef operations, the recipe
   workbench, Magic and the Stego Lab, filed into ten categories, with no
   duplicates.
 - **One search**, in English or French, forgiving of typos ("caeser cipher"
