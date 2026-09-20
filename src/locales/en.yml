@@ -269,6 +269,11 @@ app:
       polyglotTitle: This file hides another file
       polyglotBody: A container (archive, PDF…) was found inside the image — a classic hiding place.
     lsb:
+      manual: Manual
+      auto: Auto
+      scanning: Scanning configurations…
+      scanned: '{n} configuration(s) with a result'
+      noResult: No configuration revealed text or a file.
       channels: Channels
       bits: Bits
       msbFirst: MSB first

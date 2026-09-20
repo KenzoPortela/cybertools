@@ -278,6 +278,28 @@ const jobs = [
     `),
   },
   {
+    name: 'stego-lsb-auto',
+    url: `${base}/tools/stego-lab`,
+    scheme: 'dark',
+    fullPage: true,
+    script: script(`
+      await until(() => document.querySelector('.stego-drop'));
+      await loadLsbPng('flag{lsb-hidden}');
+      await until(() => document.querySelector('.stego-engine-ok'), 20000);
+      openTab('LSB');
+      const panel = await until(() => document.querySelector('.stego-panel-lsb'), 20000);
+      [...panel.querySelectorAll('.mode .n-radio-button')].find(el => /Auto/.test(el.textContent)).click();
+      await until(() => document.querySelector('.stego-lsb-scan'), 25000);
+      const row = await until(() => [...panel.querySelectorAll('.scan-row')].find(r => /flag\\{lsb-hidden\\}/.test(r.textContent)), 15000);
+      if (!row) return { rows: [...panel.querySelectorAll('.scan-row')].slice(0, 4).map(r => r.textContent.trim()) };
+      const label = row.querySelector('.scan-label').textContent.trim();
+      row.click();
+      await sleep(400);
+      const output = panel.querySelector('.output')?.textContent ?? '';
+      return (/flag\\{lsb-hidden\\}/.test(output) && /rgb/.test(label)) || { label, output: output.slice(0, 40) };
+    `),
+  },
+  {
     name: 'stego-strings',
     url: `${base}/tools/stego-lab`,
     script: script(`

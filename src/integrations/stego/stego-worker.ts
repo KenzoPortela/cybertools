@@ -7,6 +7,7 @@
  *
  * Tout est réécrit ici, sans dépendance : ce sont des opérations pixel simples.
  */
+import { matchAt } from '~/integrations/stego/formats/signatures';
 
 export type Channel = 0 | 1 | 2 | 3;
 export type ChannelView = 'rgb' | 'r' | 'g' | 'b' | 'a' | 'luma';
@@ -18,9 +19,21 @@ export type StegoOp =
   | { type: 'channel'; view: ChannelView; enhance: Enhance; level: number }
   | { type: 'entropy'; block: number }
   | { type: 'lsb'; channels: Channel[]; bits: number; msbFirst: boolean; column: boolean; limit: number }
+  | { type: 'lsbScan'; limit: number }
   | { type: 'loadSecond'; width: number; height: number; data: ArrayBuffer }
   | { type: 'ela'; quality: number; scale: number }
   | { type: 'compare'; mode: 'diff' | 'xor' | 'overlay'; opacity: number };
+
+export interface LsbScanResult {
+  label: string;
+  bits: number;
+  channels: Channel[];
+  msbFirst: boolean;
+  column: boolean;
+  kind: 'text' | 'file';
+  preview: string;
+  score: number;
+}
 
 export interface StegoRequest {
   id: number;
@@ -32,6 +45,7 @@ export type StegoReply =
   | { id: number; type: 'loaded2' }
   | { id: number; type: 'result'; width: number; height: number; data: ArrayBuffer }
   | { id: number; type: 'bytes'; data: ArrayBuffer }
+  | { id: number; type: 'scan'; results: LsbScanResult[] }
   | { id: number; type: 'error'; message: string };
 
 const ctx = self as unknown as Worker;
@@ -294,6 +308,64 @@ function compare(mode: 'diff' | 'xor' | 'overlay', opacity: number): Uint8Clampe
   return out;
 }
 
+/**
+ * Balayage LSB automatique (façon zsteg) : essaie de nombreuses configurations
+ * (bits × canaux × ordre × sens), et ne retient que celles qui révèlent une
+ * signature de fichier ou une suite de texte imprimable.
+ */
+const SCAN_CHANNELS: { ch: Channel[]; name: string }[] = [
+  { ch: [0], name: 'r' },
+  { ch: [1], name: 'g' },
+  { ch: [2], name: 'b' },
+  { ch: [3], name: 'a' },
+  { ch: [0, 1, 2], name: 'rgb' },
+  { ch: [2, 1, 0], name: 'bgr' },
+  { ch: [0, 1, 2, 3], name: 'rgba' },
+];
+
+function analyseScan(bytes: Uint8Array): Pick<LsbScanResult, 'kind' | 'preview' | 'score'> | null {
+  const signature = matchAt(bytes, 0);
+  if (signature) return { kind: 'file', preview: `file: ${signature.name}`, score: 1000 };
+  let best = '';
+  let current = '';
+  for (let i = 0; i < bytes.length; i++) {
+    const b = bytes[i];
+    if (b >= 0x20 && b <= 0x7E) {
+      current += String.fromCharCode(b);
+    }
+    else {
+      if (current.length > best.length) best = current;
+      current = '';
+    }
+  }
+  if (current.length > best.length) best = current;
+  if (best.length >= 6) return { kind: 'text', preview: `text: ${best.slice(0, 90)}`, score: best.length };
+  return null;
+}
+
+function lsbScan(limit: number): LsbScanResult[] {
+  const results: LsbScanResult[] = [];
+  for (const bits of [1, 2, 3]) {
+    for (const set of SCAN_CHANNELS) {
+      for (const msbFirst of [false, true]) {
+        for (const column of [false, true]) {
+          const found = analyseScan(lsb(set.ch, bits, msbFirst, column, limit));
+          if (!found) continue;
+          results.push({
+            label: `b${bits},${set.name},${msbFirst ? 'msb' : 'lsb'},${column ? 'yx' : 'xy'}`,
+            bits,
+            channels: set.ch,
+            msbFirst,
+            column,
+            ...found,
+          });
+        }
+      }
+    }
+  }
+  return results.sort((a, b) => b.score - a.score).slice(0, 60);
+}
+
 // --- Réception ----------------------------------------------------------------
 
 ctx.addEventListener('message', async (event: MessageEvent<StegoRequest>) => {
@@ -329,6 +401,9 @@ ctx.addEventListener('message', async (event: MessageEvent<StegoRequest>) => {
       const bytes = lsb(op.channels, op.bits, op.msbFirst, op.column, op.limit).slice();
       const buffer = bytes.buffer as ArrayBuffer;
       reply({ id, type: 'bytes', data: buffer }, [buffer]);
+    }
+    else if (op.type === 'lsbScan') {
+      reply({ id, type: 'scan', results: lsbScan(op.limit) });
     }
     else if (op.type === 'ela') {
       result(id, await ela(op.quality, op.scale));

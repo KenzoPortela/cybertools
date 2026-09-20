@@ -1,8 +1,8 @@
 import { ref } from 'vue';
 import StegoWorker from '~/integrations/stego/stego-worker?worker';
-import type { StegoOp, StegoReply, StegoRequest } from '~/integrations/stego/stego-worker';
+import type { LsbScanResult, StegoOp, StegoReply, StegoRequest } from '~/integrations/stego/stego-worker';
 
-type Output = ImageData | Uint8Array | null;
+type Output = ImageData | Uint8Array | LsbScanResult[] | null;
 
 /**
  * Client du Web Worker du Stego Lab. Charge l'image une fois dans le worker,
@@ -34,6 +34,9 @@ export class StegoEngine {
       else if (message.type === 'bytes' && request) {
         request.resolve(new Uint8Array(message.data));
       }
+      else if (message.type === 'scan' && request) {
+        request.resolve(message.results);
+      }
       else if (message.type === 'error' && request) {
         request.reject(new Error(message.message));
       }
@@ -64,6 +67,11 @@ export class StegoEngine {
   /** Extraction d'octets bruts (LSB). */
   runBytes(op: Extract<StegoOp, { type: 'lsb' }>): Promise<Uint8Array> {
     return this.send(op) as Promise<Uint8Array>;
+  }
+
+  /** Balayage LSB automatique (zsteg-like). */
+  runScan(op: Extract<StegoOp, { type: 'lsbScan' }>): Promise<LsbScanResult[]> {
+    return this.send(op) as Promise<LsbScanResult[]>;
   }
 
   private send(op: StegoOp, transfer: Transferable[] = []) {

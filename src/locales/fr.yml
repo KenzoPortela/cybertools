@@ -530,6 +530,11 @@ app:
       polyglotTitle: Ce fichier en cache un autre
       polyglotBody: Un conteneur (archive, PDF…) a été trouvé dans l'image — une cachette classique.
     lsb:
+      manual: Manuel
+      auto: Auto
+      scanning: Balayage des configurations…
+      scanned: '{n} configuration(s) avec un résultat'
+      noResult: Aucune configuration ne révèle de texte ni de fichier.
       channels: Canaux
       bits: Bits
       msbFirst: MSB d'abord
