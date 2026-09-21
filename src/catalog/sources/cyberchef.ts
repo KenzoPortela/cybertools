@@ -192,13 +192,23 @@ const duplicated = new Set(Object.values(DUPLICATES_OF_IT_TOOLS).flat());
  *              slug de l'opération reçoit le suffixe « -cyberchef » plutôt que
  *              de faire échouer le registre après une mise à jour amont.
  */
+/**
+ * Notre catégorie pour une opération CyberChef : la correction propre à
+ * l'opération, sinon celle de sa catégorie amont. Sert au catalogue comme au
+ * panneau d'opérations de l'atelier, pour qu'une opération soit rangée au même
+ * endroit partout.
+ */
+export function operationCategory(entry: { name: string; category: string }): CategoryId {
+  return CATEGORY_BY_OPERATION[entry.name] ?? CATEGORY_BY_UPSTREAM[entry.category] ?? 'misc';
+}
+
 export function cyberchefSource(taken: Set<string>): ToolDef[] {
   return index
     .filter(entry => !entry.flowControl && !(entry.name in EXCLUDED_OPERATIONS) && !duplicated.has(entry.name))
     .map((entry) => {
       const base = operationSlug(entry.name);
       const slug = taken.has(base) ? `${base}-cyberchef` : base;
-      const category = CATEGORY_BY_OPERATION[entry.name] ?? CATEGORY_BY_UPSTREAM[entry.category] ?? 'misc';
+      const category = operationCategory(entry);
 
       return {
         id: slug,

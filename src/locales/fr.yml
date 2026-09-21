@@ -210,6 +210,8 @@ app:
 
   cc:
     parameters: Paramètres
+    switchOn: activé
+    switchOff: désactivé
     input: Entrée
     output: Sortie
     inputPlaceholder: 'Saisissez ou collez vos données ici…'
@@ -742,6 +744,13 @@ app:
     resizeSteps: 'Redimensionner le panneau de la recette'
     autoBake: auto
     autoBakeHelp: 'Recalculer à chaque modification (aussi dans les paramètres)'
+    filterOperations: 'Filtrer les opérations'
+    operationCount: '0 opération | 1 opération | {n} opérations'
+    bestMatches: 'Meilleurs résultats'
+    flowControl: 'Contrôle de flux'
+    hintAdd: ajouter
+    hintReplace: remplacer
+    noSettings: 'aucun réglage'
     resume: Reprendre la dernière recette ({count} étape) | Reprendre la dernière recette ({count} étapes)
     openIn: Ouvrir dans les Recettes
     continueIn: Continuer dans les Recettes

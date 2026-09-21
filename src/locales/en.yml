@@ -210,6 +210,8 @@ app:
 
   cc:
     parameters: Parameters
+    switchOn: 'on'
+    switchOff: 'off'
     input: Input
     output: Output
     inputPlaceholder: 'Type or paste your data here…'
@@ -481,6 +483,13 @@ app:
     resizeSteps: 'Resize the recipe pane'
     autoBake: auto
     autoBakeHelp: 'Recalculate on every change (also in the settings)'
+    filterOperations: 'Filter operations'
+    operationCount: '0 operations | 1 operation | {n} operations'
+    bestMatches: 'Best matches'
+    flowControl: 'Flow control'
+    hintAdd: add
+    hintReplace: replace
+    noSettings: 'no settings'
     resume: Resume last recipe ({count} step) | Resume last recipe ({count} steps)
     openIn: Open in Recipes
     continueIn: Continue in Recipes

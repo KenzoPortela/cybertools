@@ -6,7 +6,11 @@
 import CcArgField from '~/integrations/cyberchef/components/CcArgField.vue';
 import { type OperationConfig, applyPopulate, disabledArgs } from '~/integrations/cyberchef/operations';
 
-const props = defineProps<{ config: OperationConfig }>();
+const props = defineProps<{
+  config: OperationConfig;
+  /** Étape de recette : deux colonnes serrées, libellés en étiquettes. */
+  compact?: boolean;
+}>();
 const args = defineModel<unknown[]>('args', { required: true });
 
 const disabled = computed(() => disabledArgs(props.config, args.value));
@@ -25,13 +29,14 @@ function onPopulate(target: number | number[], value: unknown) {
 </script>
 
 <template>
-  <div class="params-grid">
+  <div class="params-grid" :class="{ 'params-grid--compact': compact }">
     <CcArgField
       v-for="(arg, index) in config.args"
       :key="index"
       :arg="arg"
       :value="args[index]"
       :disabled="disabled.has(index)"
+      :compact="compact"
       @update:value="(value: unknown) => setArg(index, value)"
       @populate="onPopulate"
     />
@@ -43,5 +48,11 @@ function onPopulate(target: number | number[], value: unknown) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
+}
+
+/* Deux colonnes, même dans un panneau étroit : la recette se lit d'un coup d'œil. */
+.params-grid--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
 }
 </style>

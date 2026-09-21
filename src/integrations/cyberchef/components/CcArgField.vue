@@ -17,7 +17,19 @@ const props = defineProps<{
   arg: ArgConfig;
   value: unknown;
   disabled?: boolean;
+  /** Étape de recette : libellé en étiquette, interrupteur réduit et son état écrit. */
+  compact?: boolean;
 }>();
+
+const { t } = useI18n();
+
+/**
+ * Interrupteur de 22 × 13 dans une étape. Au doigt, on garde la taille
+ * ordinaire : une cible de 13 px de haut ne se vise pas.
+ */
+const SMALL_SWITCH = { railWidthSmall: '22px', railHeightSmall: '13px', buttonWidthSmall: '9px', buttonHeightSmall: '9px', buttonWidthPressedSmall: '11px' };
+const finePointer = typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const switchOverrides = computed(() => (props.compact && finePointer ? SMALL_SWITCH : undefined));
 
 const emit = defineEmits<{
   'update:value': [value: unknown];
@@ -56,18 +68,23 @@ const searchable = computed(() => options.value.length > 8 || named.value.length
 <template>
   <div
     class="field"
-    :class="{ 'field--wide': arg.type === 'text' || arg.type === 'toggleString', 'field--disabled': disabled }"
+    :class="{ 'field--wide': arg.type === 'text' || arg.type === 'toggleString', 'field--disabled': disabled, 'field--compact': compact }"
     :title="arg.hint || undefined"
     :aria-disabled="disabled || undefined"
   >
     <label v-if="arg.type !== 'label'" class="field-label">{{ arg.name }}</label>
 
-    <NSwitch
-      v-if="arg.type === 'boolean'"
-      :value="Boolean(value)"
-      :disabled="disabled"
-      @update:value="(v: boolean) => emit('update:value', v)"
-    />
+    <div v-if="arg.type === 'boolean'" class="switch-row">
+      <NSwitch
+        :value="Boolean(value)"
+        :disabled="disabled"
+        :size="compact ? 'small' : 'medium'"
+        :theme-overrides="switchOverrides"
+        :aria-label="arg.name"
+        @update:value="(v: boolean) => emit('update:value', v)"
+      />
+      <span v-if="compact" class="switch-state">{{ value ? t('app.cc.switchOn') : t('app.cc.switchOff') }}</span>
+    </div>
 
     <NInputNumber
       v-else-if="arg.type === 'number'"
@@ -183,13 +200,34 @@ const searchable = computed(() => options.value.length > 8 || named.value.length
 }
 
 /* Un interrupteur garde sa largeur naturelle, aligné sous son libellé. */
-.field > :deep(.n-switch) {
-  align-self: flex-start;
+.switch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.switch-state {
+  color: var(--ct-text-muted);
+  font-size: var(--ct-font-size-secondary);
 }
 
 .field-label {
   font-size: 13px;
   color: var(--ct-text-muted);
+}
+
+/* Dans une étape : l'étiquette mono des maquettes, en capitales espacées. */
+.field--compact {
+  gap: 4px;
+}
+
+.field--compact .field-label {
+  color: var(--ct-text-faint);
+  font-family: var(--ct-font-mono);
+  font-size: var(--ct-font-size-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .field-note {

@@ -20,7 +20,7 @@ import { chefClient } from '~/integrations/cyberchef/chef-client';
 import CcInput, { type InputFile } from '~/integrations/cyberchef/components/CcInput.vue';
 import CcOutput from '~/integrations/cyberchef/components/CcOutput.vue';
 import MagicPanel from '~/integrations/cyberchef/components/MagicPanel.vue';
-import RecipeOpPicker from '~/integrations/cyberchef/components/RecipeOpPicker.vue';
+import RecipeOpsPane from '~/integrations/cyberchef/components/RecipeOpsPane.vue';
 import RecipeStepCard from '~/integrations/cyberchef/components/RecipeStepCard.vue';
 import { type OperationConfig, completeArgs, loadOperationConfig } from '~/integrations/cyberchef/operations';
 import { isRecipeOperation } from '~/integrations/cyberchef/recipe-operations';
@@ -82,6 +82,11 @@ function prepare(recipe: RecipeStep[]): WorkbenchStep[] {
 async function add(name: string) {
   await configsReady;
   steps.value = [...steps.value, ...prepare([{ op: name, args: [] }])];
+}
+
+/** Maj+Entrée : la recette devient cette seule opération (« Reprendre » la rend). */
+function replaceWith(name: string) {
+  replace([{ op: name, args: [] }]);
 }
 
 async function append(recipe: RecipeStep[]) {
@@ -309,11 +314,8 @@ onMounted(async () => {
       </div>
     </Teleport>
 
-    <section class="pane pane--ops" aria-labelledby="pane-ops">
-      <h2 id="pane-ops" class="pane-label ct-mono">
-        {{ t('app.recipes.operations') }}
-      </h2>
-      <RecipeOpPicker class="picker" @add="add" />
+    <section class="pane pane--ops" :aria-label="t('app.recipes.operations')">
+      <RecipeOpsPane @add="add" @replace="replaceWith" />
     </section>
 
     <PaneResizer v-model="opsWidth" :min="180" :max="400" :label="t('app.recipes.resizeOps')" class="pane-resizer" />
@@ -484,6 +486,9 @@ onMounted(async () => {
 }
 
 .pane--ops {
+  /* Le panneau gère lui-même son défilement : champ et raccourcis restent en place. */
+  padding: 0;
+  overflow: hidden;
   background: var(--ct-chassis);
 }
 
@@ -558,6 +563,13 @@ onMounted(async () => {
   .pane {
     overflow: visible;
     padding: 16px;
+  }
+
+  /* Empilé, le panneau des opérations garde une hauteur bornée. */
+  .pane--ops {
+    height: 360px;
+    padding: 0;
+    overflow: hidden;
   }
 
   .pane-resizer {
