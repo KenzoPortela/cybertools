@@ -37,7 +37,23 @@ app:
   nav:
     settings: Settings
     home: Home
+    about: About
     switchLocale: 'Passer en français'
+
+  shell:
+    navLabel: 'Main navigation'
+    workbench: Workbench
+    pinned: Pinned
+    pinnedEmpty: 'Star a tool to pin it here.'
+    collapse: 'Collapse the rail'
+    expand: 'Expand the rail'
+    openMenu: 'Open navigation'
+    tabs:
+      label: Shortcuts
+      home: Home
+      search: Search
+      recipes: Recipes
+      pinned: Pinned
 
   theme:
     auto: 'Theme: automatic (follows system)'
@@ -107,6 +123,8 @@ app:
         magenta: Magenta
       language: Language
       languageHelp: 'Interface language. Some tools keep their inner labels in English.'
+      railCollapsed: 'Collapsed navigation rail'
+      railCollapsedHelp: 'Shrinks the rail to a column of icons, on large screens. Also toggled from the bottom of the rail.'
     recipes:
       title: Recipes and operations
       autoBake: Live calculation

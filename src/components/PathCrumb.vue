@@ -26,15 +26,16 @@ const { t } = useI18n();
 </template>
 
 <style scoped>
+/* Dans la barre du haut : une seule ligne, qui se tronque plutôt que de déborder. */
 .crumb {
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
   gap: 0 2px;
-  margin-bottom: 14px;
-  font-size: 12.5px;
-  color: var(--ct-text-muted);
   min-width: 0;
+  overflow: hidden;
+  font-size: var(--ct-font-size-data);
+  white-space: nowrap;
+  color: var(--ct-text-muted);
 }
 
 .crumb a {
@@ -57,7 +58,8 @@ const { t } = useI18n();
 }
 
 .current {
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: var(--ct-text);
-  overflow-wrap: anywhere;
 }
 </style>

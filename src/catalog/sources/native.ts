@@ -20,7 +20,7 @@ export function nativeSource(): ToolDef[] {
       keywords: ['recipe', 'recette', 'cyberchef', 'chain', 'enchaîner', 'pipeline', 'bake', 'workbench', 'atelier'],
       icon: IconChefHat,
       renderer: { kind: 'vue', component: () => import('~/integrations/cyberchef/components/RecipeWorkbench.vue') },
-      layout: 'wide',
+      layout: 'full',
       aliases: ['/recettes', '/recipes'],
     },
     {
@@ -46,7 +46,7 @@ export function nativeSource(): ToolDef[] {
       keywords: ['steganography', 'stego', 'aperisolve', 'stegsolve', 'zsteg', 'exif', 'metadata', 'lsb', 'bit plane', 'ela', 'forensics', 'stégano', 'stéganographie', 'métadonnées', 'image cachée', 'dissimulation'],
       icon: IconStego,
       renderer: { kind: 'vue', component: () => import('~/integrations/stego/StegoLab.vue') },
-      layout: 'wide',
+      layout: 'full',
       aliases: ['/steg', '/steganography', '/aperisolve'],
     },
     {

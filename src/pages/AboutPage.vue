@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { AUTHOR } from '~/app/author';
+import { useShellCrumbs } from '~/app/shell';
 
 const { t } = useI18n();
+
+useShellCrumbs(() => [{ label: t('app.nav.about').toLowerCase() }]);
 
 const sources = [
   {
@@ -22,61 +25,63 @@ const sources = [
 </script>
 
 <template>
-  <article class="about">
-    <h1 class="title">
-      {{ t('app.about.title') }}
-    </h1>
-    <p class="lead">
-      {{ t('app.about.intro') }}
-    </p>
-
-    <section class="author" :aria-label="t('app.about.authorTitle')">
-      <p class="author-text">
-        <i18n-t keypath="app.about.author" tag="span" scope="global">
-          <template #name>
-            <strong>{{ AUTHOR.name }}</strong>
-          </template>
-        </i18n-t>
+  <div class="page">
+    <article class="about">
+      <h1 class="title">
+        {{ t('app.about.title') }}
+      </h1>
+      <p class="lead">
+        {{ t('app.about.intro') }}
       </p>
-      <div class="author-links">
-        <a :href="AUTHOR.github" target="_blank" rel="noopener noreferrer" class="author-link">
-          <icon-mdi-github aria-hidden="true" />
-          <span class="ct-mono">github.com/KenzoPortela</span>
-        </a>
-        <a :href="AUTHOR.website" target="_blank" rel="noopener noreferrer" class="author-link">
-          <icon-mdi-web aria-hidden="true" />
-          <span class="ct-mono">kenzoportela.com</span>
-        </a>
-      </div>
-    </section>
 
-    <section class="block">
-      <h2>{{ t('app.about.privacyTitle') }}</h2>
-      <p>{{ t('app.about.privacyBody') }}</p>
-    </section>
+      <section class="author" :aria-label="t('app.about.authorTitle')">
+        <p class="author-text">
+          <i18n-t keypath="app.about.author" tag="span" scope="global">
+            <template #name>
+              <strong>{{ AUTHOR.name }}</strong>
+            </template>
+          </i18n-t>
+        </p>
+        <div class="author-links">
+          <a :href="AUTHOR.github" target="_blank" rel="noopener noreferrer" class="author-link">
+            <icon-mdi-github aria-hidden="true" />
+            <span class="ct-mono">github.com/KenzoPortela</span>
+          </a>
+          <a :href="AUTHOR.website" target="_blank" rel="noopener noreferrer" class="author-link">
+            <icon-mdi-web aria-hidden="true" />
+            <span class="ct-mono">kenzoportela.com</span>
+          </a>
+        </div>
+      </section>
 
-    <section class="block">
-      <h2>{{ t('app.about.creditsTitle') }}</h2>
-      <p>{{ t('app.about.creditsBody') }}</p>
+      <section class="block">
+        <h2>{{ t('app.about.privacyTitle') }}</h2>
+        <p>{{ t('app.about.privacyBody') }}</p>
+      </section>
 
-      <ul class="sources">
-        <li v-for="source in sources" :key="source.key" class="source">
-          <div class="source-head">
-            <a :href="source.url" target="_blank" rel="noopener noreferrer" class="source-name">{{ source.name }}</a>
-            <span class="source-license">{{ source.license }}</span>
-          </div>
-          <p class="source-meta">
-            {{ t('app.about.by', { author: source.author }) }} — {{ t(`app.about.${source.key}`) }}
-          </p>
-        </li>
-      </ul>
-    </section>
+      <section class="block">
+        <h2>{{ t('app.about.creditsTitle') }}</h2>
+        <p>{{ t('app.about.creditsBody') }}</p>
 
-    <section class="block">
-      <h2>{{ t('app.about.licenseTitle') }}</h2>
-      <p>{{ t('app.about.licenseBody') }}</p>
-    </section>
-  </article>
+        <ul class="sources">
+          <li v-for="source in sources" :key="source.key" class="source">
+            <div class="source-head">
+              <a :href="source.url" target="_blank" rel="noopener noreferrer" class="source-name">{{ source.name }}</a>
+              <span class="source-license">{{ source.license }}</span>
+            </div>
+            <p class="source-meta">
+              {{ t('app.about.by', { author: source.author }) }} — {{ t(`app.about.${source.key}`) }}
+            </p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="block">
+        <h2>{{ t('app.about.licenseTitle') }}</h2>
+        <p>{{ t('app.about.licenseBody') }}</p>
+      </section>
+    </article>
+  </div>
 </template>
 
 <style scoped>

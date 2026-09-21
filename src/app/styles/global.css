@@ -89,3 +89,45 @@ textarea {
   scrollbar-width: thin;
   scrollbar-color: var(--ct-border) transparent;
 }
+
+/*
+ * Châssis : dimensions partagées entre AppShell et les pages qui doivent s'y
+ * caler (colonne collante de l'atelier, défilement vers un élément focalisé).
+ */
+:root {
+  --ct-rail-width: 224px;
+  --ct-rail-collapsed-width: 48px;
+  --ct-topbar-height: 48px;
+  --ct-statusbar-height: 28px;
+  --ct-tabbar-height: 56px;
+}
+
+/* Un élément atteint au clavier ne doit pas finir sous une barre collante. */
+html {
+  scroll-padding-top: calc(var(--ct-topbar-height) + 8px);
+  scroll-padding-bottom: var(--ct-statusbar-height);
+}
+
+@media (max-width: 639.98px) {
+  html {
+    scroll-padding-bottom: calc(var(--ct-tabbar-height) + env(safe-area-inset-bottom));
+  }
+}
+
+/*
+ * Largeur de page. Le châssis ne contraint plus rien : chaque page déclare la
+ * sienne. Celles qui se lisent (accueil, catégories, paramètres…) prennent
+ * `.page` ; l'atelier et le Stego Lab s'en passent et occupent tout l'écran.
+ */
+.page {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding: 32px 24px 64px;
+}
+
+@media (max-width: 639.98px) {
+  .page {
+    padding: 20px 16px 48px;
+  }
+}

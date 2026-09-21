@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useShellCrumbs } from '~/app/shell';
 import { type CategoryId, categoryById } from '~/catalog/categories';
-import PathCrumb from '~/components/PathCrumb.vue';
 
 /**
  * Cadre de la page d'un outil, identique quelle que soit la source.
@@ -21,27 +21,32 @@ const props = withDefaults(defineProps<{
    * `wide` lève cette contrainte (mode Recettes, éditeurs).
    */
   wide?: boolean;
+  /**
+   * Tout l'écran, sans la largeur de page : l'atelier et le Stego Lab sont des
+   * espaces de travail, pas des pages à lire.
+   */
+  full?: boolean;
 }>(), {
   description: '',
   category: undefined,
   slug: undefined,
   wide: false,
+  full: false,
 });
 
 const { t } = useI18n();
 const category = computed(() => (props.category ? categoryById.get(props.category) : undefined));
 
-const crumbs = computed(() => [
+// Le fil d'Ariane s'affiche dans la barre du haut du châssis.
+useShellCrumbs(() => [
   ...(category.value ? [{ label: t(category.value.labelKey).toLowerCase(), to: `/categories/${category.value.id}` }] : []),
   ...(props.slug ? [{ label: props.slug }] : []),
 ]);
 </script>
 
 <template>
-  <article class="tool">
+  <article class="tool" :class="full ? 'tool--full' : 'page'">
     <header class="tool-header" :class="{ 'tool-header--wide': wide }">
-      <PathCrumb :segments="crumbs" />
-
       <div class="title-row">
         <h1 class="title">
           {{ title }}
@@ -63,6 +68,17 @@ const crumbs = computed(() => [
 </template>
 
 <style scoped>
+/* Espace de travail : pas de largeur de page, seulement une marge. */
+.tool--full {
+  padding: 24px 24px 32px;
+}
+
+@media (max-width: 639.98px) {
+  .tool--full {
+    padding: 20px 16px 32px;
+  }
+}
+
 /*
  * Même largeur que les cartes des outils (600 px) : l'en-tête et la première
  * carte partagent ainsi leur bord gauche, comme chez IT-Tools.

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head';
 import { useRoute } from 'vue-router';
+import { useShellCrumbs } from '~/app/shell';
 import { catalog } from '~/catalog/catalog';
 import { type CategoryId, categoryById } from '~/catalog/categories';
-import PathCrumb from '~/components/PathCrumb.vue';
 import ToolCard from '~/components/ToolCard.vue';
 import NotFoundPage from '~/pages/NotFoundPage.vue';
 
@@ -14,14 +14,14 @@ const category = computed(() => categoryById.get(String(route.params.id) as Cate
 const tools = computed(() => (category.value ? catalog.inCategory(category.value.id) : []));
 
 useHead(computed(() => ({ title: category.value ? t(category.value.labelKey) : undefined })));
+// Catégorie inconnue : c'est la page 404, rendue à la place, qui déclare son chemin.
+useShellCrumbs(() => (category.value ? [{ label: t(category.value.labelKey).toLowerCase() }] : []));
 </script>
 
 <template>
   <NotFoundPage v-if="!category" />
 
-  <section v-else>
-    <PathCrumb :segments="[{ label: t(category.labelKey).toLowerCase() }]" />
-
+  <section v-else class="page">
     <header class="header">
       <span class="icon" aria-hidden="true">
         <component :is="category.icon" />

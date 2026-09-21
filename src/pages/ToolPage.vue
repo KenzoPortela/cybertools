@@ -4,7 +4,6 @@ import { NAlert } from 'naive-ui';
 import { type Component, defineAsyncComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { catalog } from '~/catalog/catalog';
-import { registry } from '~/catalog/registry';
 import type { LocalizedTool } from '~/catalog/tool.types';
 import FavoriteButton from '~/components/FavoriteButton.vue';
 import { ToolLoadError, ToolLoading } from '~/components/tool-states';
@@ -66,16 +65,8 @@ function openInRecipes() {
   router.push('/tools/recipes');
 }
 
-/**
- * L'outil du slug demandé. Un ancien slug (celui d'IT-Tools, ou « recettes »
- * avant le passage des adresses en anglais) passe par la table des alias : un
- * lien déjà partagé continue d'ouvrir le bon outil.
- */
-const tool = computed(() => {
-  const slug = String(route.params.slug);
-  const bySlug = catalog.bySlug.value;
-  return bySlug.get(slug) ?? bySlug.get(registry.aliases.get(`/${slug}`) ?? '');
-});
+/** L'outil du slug demandé, anciens slugs compris. */
+const tool = computed(() => catalog.toolForSlug(String(route.params.slug)));
 const component = computed(() => (tool.value ? componentFor(tool.value) : undefined));
 
 watch(() => tool.value?.id, (id) => {
@@ -97,7 +88,8 @@ useHead(computed(() => ({
     :description="tool.localizedDescription"
     :category="tool.category"
     :slug="tool.slug"
-    :wide="tool.renderer.kind !== 'vue' || tool.layout === 'wide'"
+    :wide="tool.renderer.kind !== 'vue' || tool.layout !== undefined"
+    :full="tool.layout === 'full'"
   >
     <template #actions>
       <c-button v-if="tool.alsoAvailableAs?.kind === 'cc-recipe'" size="small" class="recipes-link" @click="openInRecipes">

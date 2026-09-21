@@ -131,7 +131,7 @@
     "height": 844,
     "mobile": true,
     "scheme": "dark",
-    "script": "(async () => { document.querySelector('.search-trigger').click(); await new Promise(r => setTimeout(r, 400)); return !!document.querySelector('.palette'); })()"
+    "script": "(async () => { [...document.querySelectorAll('.tab-bar .tab')][1].click(); await new Promise(r => setTimeout(r, 400)); return !!document.querySelector('.palette'); })()"
   },
   {
     "name": "cat-francais",

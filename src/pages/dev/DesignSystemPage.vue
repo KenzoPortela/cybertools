@@ -5,10 +5,11 @@
  * Elle montre d'un coup d'œil si le kit d'IT-Tools a bien adopté notre palette :
  * les démos affichées ci-dessous sont les leurs, prises telles quelles dans
  * vendor/, mais rendues avec nos surcharges de thème. Basculer le thème depuis
- * l'en-tête doit tout faire changer d'un bloc, sans une trace de leur vert.
+ * le rail doit tout faire changer d'un bloc, sans une trace de leur vert.
  */
 import type { Component } from 'vue';
 import { useRoute } from 'vue-router';
+import { useShellCrumbs } from '~/app/shell';
 import { fontSizes, palette, radii } from '~/app/theme';
 import { useThemePreference } from '~/app/theme-preference';
 
@@ -25,6 +26,9 @@ const route = useRoute();
 const active = computed(() => demos.find(demo => demo.name === route.params.component) ?? demos[0]);
 
 const { isDark } = useThemePreference();
+
+useShellCrumbs([{ label: '_design' }]);
+
 const tokens = computed(() => (isDark.value ? palette.dark : palette.light));
 
 const accents = computed(() => [
@@ -80,7 +84,7 @@ const sample = reactive({ text: 'Bonjour', number: 42, enabled: true, checked: f
 </script>
 
 <template>
-  <section>
+  <section class="page">
     <h1 class="page-title">
       Design system
     </h1>

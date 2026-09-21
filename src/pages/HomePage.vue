@@ -3,6 +3,7 @@ import { useRouteQuery } from '@vueuse/router';
 import { NInput } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import { paletteShortcutLabel } from '~/app/command-palette';
+import { useShellCrumbs } from '~/app/shell';
 import { catalog } from '~/catalog/catalog';
 import { categories } from '~/catalog/categories';
 import { registry } from '~/catalog/registry';
@@ -14,6 +15,8 @@ const { t } = useI18n();
 const router = useRouter();
 const favorites = useFavoritesStore();
 const recents = useRecentsStore();
+
+useShellCrumbs(() => [{ label: t('app.nav.home').toLowerCase() }]);
 
 // Dans l'URL : une recherche se partage et survit au bouton « retour ».
 const query = useRouteQuery<string>('q', '', { mode: 'replace' });
@@ -32,127 +35,129 @@ function openFirstResult() {
 </script>
 
 <template>
-  <section class="hero">
-    <div class="hero-grid" aria-hidden="true" />
+  <div class="page">
+    <section class="hero">
+      <div class="hero-grid" aria-hidden="true" />
 
-    <p class="eyebrow ct-mono">
-      <span class="eyebrow-dot" aria-hidden="true" />
-      {{ t('app.home.eyebrow', { count: registry.tools.length }) }}
-    </p>
-    <h1 class="hero-title">
-      {{ t('app.home.title') }}
-    </h1>
-    <p class="hero-subtitle">
-      {{ t('app.home.subtitle', { count: registry.tools.length }) }}
-    </p>
-
-    <div class="search">
-      <NInput
-        v-model:value="query"
-        size="large"
-        round
-        clearable
-        class="search-input"
-        :autofocus="autofocus"
-        :placeholder="t('app.home.searchPlaceholder')"
-        :input-props="{ 'aria-label': t('app.home.searchPlaceholder'), 'type': 'search' }"
-        @keydown.enter="openFirstResult"
-      >
-        <template #prefix>
-          <span class="prompt ct-mono" aria-hidden="true">&gt;</span>
-        </template>
-      </NInput>
-      <p class="search-hint">
-        <i18n-t keypath="app.home.paletteHint" tag="span" scope="global">
-          <template #shortcut>
-            <kbd>{{ paletteShortcutLabel }}</kbd>
-          </template>
-        </i18n-t>
+      <p class="eyebrow ct-mono">
+        <span class="eyebrow-dot" aria-hidden="true" />
+        {{ t('app.home.eyebrow', { count: registry.tools.length }) }}
       </p>
-    </div>
-  </section>
+      <h1 class="hero-title">
+        {{ t('app.home.title') }}
+      </h1>
+      <p class="hero-subtitle">
+        {{ t('app.home.subtitle', { count: registry.tools.length }) }}
+      </p>
 
-  <section v-if="searching" :aria-label="t('app.home.results')">
-    <h2 class="section-title ct-mono">
-      {{ t('app.home.resultCount', { count: results.length, query: query.trim() }, results.length) }}
-    </h2>
-    <div v-if="results.length" class="grid">
-      <ToolCard v-for="tool in results" :key="tool.id" :tool="tool" show-category />
-    </div>
-    <p v-else class="empty">
-      {{ t('app.home.noResult') }}
-    </p>
-  </section>
-
-  <template v-else>
-    <section class="featured" :aria-label="t('app.home.featured')">
-      <RouterLink to="/tools/recipes" class="feature feature--primary">
-        <span class="feature-icon" aria-hidden="true"><icon-mdi-chef-hat /></span>
-        <span class="feature-body">
-          <span class="feature-tag ct-mono">{{ t('app.home.recipesTag') }}</span>
-          <span class="feature-title">{{ t('app.native.recipes.title') }}</span>
-          <span class="feature-text">{{ t('app.home.recipesPitch') }}</span>
-        </span>
-        <icon-mdi-arrow-right class="feature-arrow" aria-hidden="true" />
-      </RouterLink>
-      <RouterLink to="/tools/magic" class="feature">
-        <span class="feature-icon" aria-hidden="true"><icon-mdi-auto-fix /></span>
-        <span class="feature-body">
-          <span class="feature-tag ct-mono">{{ t('app.home.magicTag') }}</span>
-          <span class="feature-title">{{ t('app.native.magic.title') }}</span>
-          <span class="feature-text">{{ t('app.home.magicPitch') }}</span>
-        </span>
-        <icon-mdi-arrow-right class="feature-arrow" aria-hidden="true" />
-      </RouterLink>
-    </section>
-
-    <section v-if="favorites.tools.length" class="block">
-      <h2 class="section-title ct-mono">
-        {{ t('app.home.favorites') }}
-        <span class="section-count">{{ favorites.tools.length }}</span>
-      </h2>
-      <div class="grid">
-        <ToolCard v-for="tool in favorites.tools" :key="tool.id" :tool="tool" show-category />
-      </div>
-    </section>
-
-    <section v-if="recentTools.length" class="block">
-      <div class="section-head">
-        <h2 class="section-title ct-mono">
-          {{ t('app.home.recents') }}
-        </h2>
-        <button type="button" class="link-button ct-mono" @click="recents.clear()">
-          {{ t('app.home.clearRecents') }}
-        </button>
-      </div>
-      <div class="grid">
-        <ToolCard v-for="tool in recentTools" :key="tool.id" :tool="tool" show-category />
-      </div>
-    </section>
-
-    <section class="block">
-      <h2 class="section-title ct-mono">
-        {{ t('app.home.categories') }}
-        <span class="section-count">{{ categories.length }}</span>
-      </h2>
-      <div class="categories">
-        <RouterLink
-          v-for="category in categories"
-          :key="category.id"
-          :to="`/categories/${category.id}`"
-          class="category-card"
+      <div class="search">
+        <NInput
+          v-model:value="query"
+          size="large"
+          round
+          clearable
+          class="search-input"
+          :autofocus="autofocus"
+          :placeholder="t('app.home.searchPlaceholder')"
+          :input-props="{ 'aria-label': t('app.home.searchPlaceholder'), 'type': 'search' }"
+          @keydown.enter="openFirstResult"
         >
-          <span class="category-icon" aria-hidden="true">
-            <component :is="category.icon" />
-          </span>
-          <span class="category-text">
-            <span class="category-label">{{ t(category.labelKey) }}</span>
-            <span class="category-count ct-mono">{{ t('app.category.count', registry.countByCategory.get(category.id) ?? 0) }}</span>
-          </span>
-        </RouterLink>
+          <template #prefix>
+            <span class="prompt ct-mono" aria-hidden="true">&gt;</span>
+          </template>
+        </NInput>
+        <p class="search-hint">
+          <i18n-t keypath="app.home.paletteHint" tag="span" scope="global">
+            <template #shortcut>
+              <kbd>{{ paletteShortcutLabel }}</kbd>
+            </template>
+          </i18n-t>
+        </p>
       </div>
     </section>
-  </template>
+
+    <section v-if="searching" :aria-label="t('app.home.results')">
+      <h2 class="section-title ct-mono">
+        {{ t('app.home.resultCount', { count: results.length, query: query.trim() }, results.length) }}
+      </h2>
+      <div v-if="results.length" class="grid">
+        <ToolCard v-for="tool in results" :key="tool.id" :tool="tool" show-category />
+      </div>
+      <p v-else class="empty">
+        {{ t('app.home.noResult') }}
+      </p>
+    </section>
+
+    <template v-else>
+      <section class="featured" :aria-label="t('app.home.featured')">
+        <RouterLink to="/tools/recipes" class="feature feature--primary">
+          <span class="feature-icon" aria-hidden="true"><icon-mdi-chef-hat /></span>
+          <span class="feature-body">
+            <span class="feature-tag ct-mono">{{ t('app.home.recipesTag') }}</span>
+            <span class="feature-title">{{ t('app.native.recipes.title') }}</span>
+            <span class="feature-text">{{ t('app.home.recipesPitch') }}</span>
+          </span>
+          <icon-mdi-arrow-right class="feature-arrow" aria-hidden="true" />
+        </RouterLink>
+        <RouterLink to="/tools/magic" class="feature">
+          <span class="feature-icon" aria-hidden="true"><icon-mdi-auto-fix /></span>
+          <span class="feature-body">
+            <span class="feature-tag ct-mono">{{ t('app.home.magicTag') }}</span>
+            <span class="feature-title">{{ t('app.native.magic.title') }}</span>
+            <span class="feature-text">{{ t('app.home.magicPitch') }}</span>
+          </span>
+          <icon-mdi-arrow-right class="feature-arrow" aria-hidden="true" />
+        </RouterLink>
+      </section>
+
+      <section v-if="favorites.tools.length" class="block">
+        <h2 class="section-title ct-mono">
+          {{ t('app.home.favorites') }}
+          <span class="section-count">{{ favorites.tools.length }}</span>
+        </h2>
+        <div class="grid">
+          <ToolCard v-for="tool in favorites.tools" :key="tool.id" :tool="tool" show-category />
+        </div>
+      </section>
+
+      <section v-if="recentTools.length" class="block">
+        <div class="section-head">
+          <h2 class="section-title ct-mono">
+            {{ t('app.home.recents') }}
+          </h2>
+          <button type="button" class="link-button ct-mono" @click="recents.clear()">
+            {{ t('app.home.clearRecents') }}
+          </button>
+        </div>
+        <div class="grid">
+          <ToolCard v-for="tool in recentTools" :key="tool.id" :tool="tool" show-category />
+        </div>
+      </section>
+
+      <section class="block">
+        <h2 class="section-title ct-mono">
+          {{ t('app.home.categories') }}
+          <span class="section-count">{{ categories.length }}</span>
+        </h2>
+        <div class="categories">
+          <RouterLink
+            v-for="category in categories"
+            :key="category.id"
+            :to="`/categories/${category.id}`"
+            class="category-card"
+          >
+            <span class="category-icon" aria-hidden="true">
+              <component :is="category.icon" />
+            </span>
+            <span class="category-text">
+              <span class="category-label">{{ t(category.labelKey) }}</span>
+              <span class="category-count ct-mono">{{ t('app.category.count', registry.countByCategory.get(category.id) ?? 0) }}</span>
+            </span>
+          </RouterLink>
+        </div>
+      </section>
+    </template>
+  </div>
 </template>
 
 <style scoped>

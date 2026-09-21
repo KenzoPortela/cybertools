@@ -2,12 +2,16 @@
   {
     "name": "accueil-clair",
     "url": "http://localhost:5173/",
-    "scheme": "light"
+    "scheme": "light",
+    "script": "(() => { const rail = document.querySelector('.rail'); const cats = rail.querySelectorAll('a[href^=\"/categories/\"]'); const counts = [...rail.querySelectorAll('a[href^=\"/categories/\"] .rail-count')].map(c => Number(c.textContent)); const crumb = document.querySelector('.top-bar .crumb')?.textContent.replace(/\\s+/g, ''); const ok = cats.length === 10 && counts.every(n => n > 0) && Math.round(rail.getBoundingClientRect().width) === 224 && !rail.inert && crumb === '~/home' && getComputedStyle(document.querySelector('.top-bar-menu')).display === 'none'; return ok || { cats: cats.length, counts, width: rail.getBoundingClientRect().width, crumb }; })()"
   },
   {
-    "name": "accueil-sombre",
+    "name": "accueil-sombre-large",
     "url": "http://localhost:5173/",
-    "scheme": "dark"
+    "width": 1440,
+    "height": 900,
+    "scheme": "dark",
+    "script": "(() => { const page = document.querySelector('.page').getBoundingClientRect(); const main = document.querySelector('.shell-content').getBoundingClientRect(); return (page.width <= 1120 && Math.abs((page.left - main.left) - (main.right - page.right)) < 2) || { page: page.width, main: main.width }; })()"
   },
   {
     "name": "accueil-mobile",
@@ -15,25 +19,59 @@
     "width": 390,
     "height": 844,
     "mobile": true,
-    "scheme": "light"
+    "scheme": "light",
+    "script": "(() => { const tabs = [...document.querySelectorAll('.tab-bar .tab')]; const sizes = tabs.map(t => Math.round(t.getBoundingClientRect().height)); const rail = document.querySelector('.rail'); const hidden = rail.inert && rail.getBoundingClientRect().right <= 0; const status = getComputedStyle(document.querySelector('.status-bar')).display; return (tabs.length === 4 && sizes.every(h => h >= 44) && hidden && status === 'none') || { tabs: tabs.length, sizes, hidden, status }; })()"
+  },
+  {
+    "name": "tiroir-ouvert",
+    "url": "http://localhost:5173/tools/hash-text",
+    "width": 900,
+    "height": 800,
+    "scheme": "dark",
+    "script": "(async () => { const menu = document.querySelector('.top-bar-menu'); menu.click(); await new Promise(r => setTimeout(r, 400)); const rail = document.querySelector('.rail'); const r = rail.getBoundingClientRect(); return (!rail.inert && r.left === 0 && document.querySelector('.shell-main').inert === true && menu.getAttribute('aria-expanded') === 'true' && rail.contains(document.activeElement)) || { left: r.left, inert: document.querySelector('.shell-main').inert, focus: document.activeElement?.className }; })()"
+  },
+  {
+    "name": "tiroir-echap",
+    "url": "http://localhost:5173/tools/hash-text",
+    "width": 900,
+    "height": 800,
+    "scheme": "light",
+    "script": "(async () => { const menu = document.querySelector('.top-bar-menu'); menu.click(); await new Promise(r => setTimeout(r, 400)); document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise(r => setTimeout(r, 400)); const rail = document.querySelector('.rail'); return (rail.inert && !document.querySelector('.shell-main').inert && document.activeElement === menu) || { inert: rail.inert, focus: document.activeElement?.className }; })()"
+  },
+  {
+    "name": "tiroir-lien",
+    "url": "http://localhost:5173/",
+    "width": 900,
+    "height": 800,
+    "scheme": "light",
+    "script": "(async () => { document.querySelector('.top-bar-menu').click(); await new Promise(r => setTimeout(r, 400)); document.querySelector('.rail a[href=\"/categories/crypto\"]').click(); await new Promise(r => setTimeout(r, 800)); return (location.pathname === '/categories/crypto' && document.querySelector('.rail').inert) || location.pathname; })()"
+  },
+  {
+    "name": "mobile-epingles",
+    "url": "http://localhost:5173/",
+    "width": 390,
+    "height": 844,
+    "mobile": true,
+    "scheme": "dark",
+    "script": "(async () => { [...document.querySelectorAll('.tab-bar .tab')][3].click(); await new Promise(r => setTimeout(r, 400)); return (document.activeElement?.id === 'rail-pinned' && !document.querySelector('.rail').inert) || document.activeElement?.id; })()"
   },
   {
     "name": "a-propos",
     "url": "http://localhost:5173/about",
     "scheme": "dark",
-    "script": "(() => { const links = [...document.querySelectorAll('.author a, .footer a')].map(a => a.getAttribute('href')); return (links.includes('https://github.com/KenzoPortela') && links.includes('https://kenzoportela.com') && /Kenzo Portela/.test(document.querySelector('.footer').textContent)) || links; })()"
+    "script": "(() => { const links = [...document.querySelectorAll('.author a, .status-bar a')].map(a => a.getAttribute('href')); return (links.includes('https://github.com/KenzoPortela') && links.includes('https://kenzoportela.com') && /Kenzo Portela/.test(document.querySelector('.status-bar').textContent)) || links; })()"
   },
   {
     "name": "404",
     "url": "http://localhost:5173/page-inexistante",
     "scheme": "light",
-    "script": "document.querySelector('h1')?.textContent.trim() === '404'"
+    "script": "document.querySelector('h1')?.textContent.trim() === '404' && document.querySelector('.top-bar .crumb')?.textContent.replace(/\\s+/g, '') === '~/404'"
   },
   {
     "name": "outil-base64",
     "url": "http://localhost:5173/tools/base64-string-converter",
     "scheme": "light",
-    "script": "(async () => { const [src, out] = document.querySelectorAll('textarea'); src.value = 'Bonjour CyberTools'; src.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(r => setTimeout(r, 400)); return out.value === 'Qm9uam91ciBDeWJlclRvb2xz'; })()"
+    "script": "(async () => { const [src, out] = document.querySelectorAll('textarea'); src.value = 'Bonjour CyberTools'; src.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(r => setTimeout(r, 400)); const crumb = document.querySelector('.top-bar .crumb')?.textContent.replace(/\\s+/g, ''); const active = document.querySelector('.rail .rail-item--active')?.getAttribute('href'); return (out.value === 'Qm9uam91ciBDeWJlclRvb2xz' && crumb === '~/encoding/base64-string-converter' && active === '/categories/encoding') || { out: out.value, crumb, active }; })()"
   },
   {
     "name": "outil-hash-mobile",
@@ -44,10 +82,24 @@
     "scheme": "dark"
   },
   {
+    "name": "atelier-pleine-largeur",
+    "url": "http://localhost:5173/tools/recipes",
+    "width": 1440,
+    "height": 900,
+    "scheme": "dark",
+    "script": "(() => { const tool = document.querySelector('.tool'); const active = document.querySelector('.rail .rail-item--active')?.getAttribute('href'); return (tool.classList.contains('tool--full') && tool.getBoundingClientRect().width > 1120 && active === '/tools/recipes' && document.querySelectorAll('.rail .rail-item--active').length === 1) || { width: tool.getBoundingClientRect().width, active }; })()"
+  },
+  {
     "name": "cycle-theme",
     "url": "http://localhost:5173/",
     "scheme": "light",
     "script": "(async () => { localStorage.removeItem('cybertools:theme'); const btn = () => [...document.querySelectorAll('button')].find(b => /Thème|Theme/.test(b.getAttribute('aria-label') || '')); const seen = []; for (let i = 0; i < 3; i++) { btn().click(); await new Promise(r => setTimeout(r, 250)); seen.push(localStorage.getItem('cybertools:theme') + ':' + document.documentElement.classList.contains('dark')); } return seen.join(' → ') === 'light:false → dark:true → auto:false'; })()"
+  },
+  {
+    "name": "bascule-langue",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(async () => { const btn = document.querySelector('.rail-locale'); const before = btn.textContent.trim(); btn.click(); await new Promise(r => setTimeout(r, 300)); const after = btn.textContent.trim(); const label = document.querySelector('#rail-workbench').textContent.trim(); btn.click(); await new Promise(r => setTimeout(r, 300)); return (before === 'EN' && after === 'FR' && label === 'Atelier') || { before, after, label }; })()"
   },
   {
     "name": "lien-parametres",
@@ -60,5 +112,11 @@
     "url": "http://localhost:5173/_design/c-button",
     "scheme": "dark",
     "fullPage": true
+  },
+  {
+    "name": "rail-replie",
+    "url": "http://localhost:5173/tools/hash-text",
+    "scheme": "dark",
+    "script": "(async () => { document.querySelector('.rail-collapse').click(); await new Promise(r => setTimeout(r, 500)); const rail = document.querySelector('.rail'); const label = rail.querySelector('a[href=\"/categories/crypto\"] .rail-item-label'); const settings = JSON.parse(localStorage.getItem('cybertools:settings') || '{}'); const stored = settings.shellRailCollapsed; localStorage.setItem('cybertools:settings', JSON.stringify({ ...settings, shellRailCollapsed: false })); return (Math.round(rail.getBoundingClientRect().width) === 48 && label.textContent.trim().length > 0 && label.getBoundingClientRect().width <= 1 && stored === true) || { width: rail.getBoundingClientRect().width, stored }; })()"
   }
 ]

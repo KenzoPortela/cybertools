@@ -4,7 +4,7 @@ import { NConfigProvider, NGlobalStyle, NMessageProvider, NNotificationProvider,
 import { RouterView } from 'vue-router';
 import { useThemePreference } from '~/app/theme-preference';
 import { applyCssVariables, darkThemeOverrides, lightThemeOverrides, palette } from '~/app/theme';
-import BaseLayout from '~/layouts/BaseLayout.vue';
+import AppShell from '~/layouts/AppShell.vue';
 
 const { isDark } = useThemePreference();
 
@@ -39,9 +39,9 @@ const naiveDateLocale = computed(() => (locale.value === 'fr' ? dateFrFR : dateE
     <NGlobalStyle />
     <NMessageProvider placement="bottom">
       <NNotificationProvider placement="bottom-right">
-        <BaseLayout>
+        <AppShell>
           <RouterView />
-        </BaseLayout>
+        </AppShell>
       </NNotificationProvider>
     </NMessageProvider>
   </NConfigProvider>

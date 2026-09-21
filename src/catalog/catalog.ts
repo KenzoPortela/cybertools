@@ -41,6 +41,15 @@ function createCatalog() {
   const byId = computed(() => new Map(tools.value.map(tool => [tool.id, tool])));
   const bySlug = computed(() => new Map(tools.value.map(tool => [tool.slug, tool])));
 
+  /**
+   * L'outil d'un slug. Un ancien slug (celui d'IT-Tools, ou « recettes » avant
+   * le passage des adresses en anglais) passe par la table des alias : un lien
+   * déjà partagé continue d'ouvrir le bon outil.
+   */
+  function toolForSlug(slug: string): LocalizedTool | undefined {
+    return bySlug.value.get(slug) ?? bySlug.value.get(registry.aliases.get(`/${slug}`) ?? '');
+  }
+
   function inCategory(id: CategoryId) {
     return tools.value.filter(tool => tool.category === id);
   }
@@ -60,7 +69,7 @@ function createCatalog() {
     return index.value.search(query, limit);
   }
 
-  return { tools, byId, bySlug, inCategory, search, resolveText };
+  return { tools, byId, bySlug, toolForSlug, inCategory, search, resolveText };
 }
 
 // Instance unique, détachée de tout composant.

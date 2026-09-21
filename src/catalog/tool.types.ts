@@ -54,10 +54,13 @@ export interface ToolDef {
 
   renderer: ToolRenderer;
   /**
-   * Mise en page large, sans la grille de cartes de 600 px d'IT-Tools : atelier
-   * de recettes, Magic. Les opérations CyberChef l'ont d'office.
+   * Mise en page, hors de la grille de cartes de 600 px d'IT-Tools :
+   *  - `wide` : toute la largeur de la page (Magic ; les opérations CyberChef
+   *    l'ont d'office) ;
+   *  - `full` : tout l'écran, sans largeur de page — l'atelier et le Stego Lab,
+   *    qui sont des espaces de travail plus que des pages.
    */
-  layout?: 'wide';
+  layout?: 'wide' | 'full';
 
   /** Anciennes URL (celles d'IT-Tools notamment), redirigées vers /tools/<slug>. */
   aliases?: string[];

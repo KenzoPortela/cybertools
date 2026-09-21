@@ -23,6 +23,8 @@ export interface Settings {
   magicDepth: number;
   /** Magic : mode intensif par défaut. */
   magicIntensive: boolean;
+  /** Rail de navigation réduit à une colonne d'icônes (grand écran seulement). */
+  shellRailCollapsed: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -32,6 +34,7 @@ export const DEFAULT_SETTINGS: Settings = {
   magicAutoDepth: true,
   magicDepth: 3,
   magicIntensive: false,
+  shellRailCollapsed: false,
 };
 
 export const useSettingsStore = defineStore('settings', () => {

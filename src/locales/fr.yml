@@ -37,7 +37,23 @@ app:
   nav:
     settings: Paramètres
     home: Accueil
+    about: À propos
     switchLocale: 'Switch to English'
+
+  shell:
+    navLabel: 'Navigation principale'
+    workbench: Atelier
+    pinned: Épinglés
+    pinnedEmpty: 'Épinglez un outil avec son étoile pour le retrouver ici.'
+    collapse: 'Replier le rail'
+    expand: 'Déplier le rail'
+    openMenu: 'Ouvrir la navigation'
+    tabs:
+      label: Raccourcis
+      home: Accueil
+      search: Chercher
+      recipes: Recettes
+      pinned: Épinglés
 
   theme:
     auto: 'Thème : automatique (suit le système)'
@@ -107,6 +123,8 @@ app:
         magenta: Magenta
       language: Langue
       languageHelp: 'Langue de l''interface. Les libellés internes de certains outils restent en anglais.'
+      railCollapsed: 'Rail de navigation replié'
+      railCollapsedHelp: 'Réduit le rail à une colonne d''icônes, sur grand écran. Se bascule aussi depuis le bas du rail.'
     recipes:
       title: Recettes et opérations
       autoBake: Calcul en direct

@@ -437,7 +437,8 @@ onMounted(async () => {
   gap: 16px;
   min-width: 0;
   position: sticky;
-  top: 76px;
+  /* Sous la barre du haut du châssis, avec une marge. */
+  top: calc(var(--ct-topbar-height) + 16px);
 }
 
 @media (max-width: 1000px) {
