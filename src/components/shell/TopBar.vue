@@ -133,5 +133,13 @@ defineExpose({ focusMenu: () => menuButton.value?.focus() });
     height: 44px;
     margin-left: -12px;
   }
+
+  /* La taille seulement : l'affichage reste celui du tiroir (sous 1024 px). */
+  .top-bar-brand {
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+  }
 }
 </style>

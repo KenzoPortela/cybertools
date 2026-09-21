@@ -703,7 +703,7 @@ kbd {
   }
 
   .scope {
-    height: 36px;
+    height: 44px;
   }
 }
 

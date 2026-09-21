@@ -15,9 +15,11 @@
 
 ![The cybertools home page](docs/screenshots/home.png)
 
-> **Beta - v0.1.0.** Some tools may not behave perfectly yet, and the interface
-> is still far from finished. I am happy enough with the current state of cybertools to release it to the public as a beta, so that you can discover cybertools. I am doing my best to make the interface more polished and fix the broken behaviours. If something is broken,
-> confusing or simply annoying, please
+> **Beta - v0.1.0.** Some tools may not behave perfectly yet. The interface has
+> just been redesigned around a permanent navigation rail and a three-pane recipe
+> workbench, and I am happy enough with it to release cybertools to the public as
+> a beta, so that you can discover it. I keep fixing the broken behaviours. If
+> something is broken, confusing or simply annoying, please
 > [open an issue](https://github.com/KenzoPortela/cybertools/issues/new/choose) -
 > I will be happy to fix it.
 
@@ -33,16 +35,23 @@ cloned as-is, and every adaptation lives in this repository.
   duplicates.
 - **One search**, in English or French, forgiving of typos ("caeser cipher"
   finds *Caesar Box Cipher* and *ROT13*), with a command palette
-  (<kbd>Ctrl</kbd> <kbd>K</kbd>), favourites and recent tools.
-- **Recipes**: CyberChef operations chained with a live result. Recipe links are
-  exchanged with cyberchef.org both ways.
+  (<kbd>Ctrl</kbd> <kbd>K</kbd>) that narrows to categories, the saved recipe or
+  commands (`/`, `#`, `>`), pinned tools, and a home page that resumes where you
+  left off.
+- **An application, not a website**: a permanent navigation rail with the ten
+  categories, a breadcrumb, and a status bar.
+- **Recipes**: CyberChef operations chained with a live result, in three
+  full-height panes - operations, recipe, input and output (hex view, JSON tree,
+  diff against the input). Recipe links are exchanged with cyberchef.org both
+  ways.
 - **Magic**, with automatic depth detection: it peels layer after layer until
   there is nothing left to decode.
 - **Nothing leaves the browser.** No server, no analytics; the Content Security
   Policy served by the image forbids the browser any connection to another
-  origin.
+  origin - and the status bar shows the requests sent to another site, as
+  counted by the browser itself.
 - Light or dark theme, **five accent colours**, English and French, usable on a
-  phone.
+  phone or a tablet (touch targets of 44 px).
 
 | Recipes | Magic |
 |---|---|

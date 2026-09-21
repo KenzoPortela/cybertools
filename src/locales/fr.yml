@@ -158,7 +158,8 @@ app:
     bake: '{input} → {output} · {duration} ms · {operations}'
     failed: 'en échec'
     network: '0 requête externe | 1 requête externe | {n} requêtes externes'
-    networkNone: 'Requêtes envoyées à un autre site depuis l''ouverture de la page, telles que le navigateur les enregistre. La politique de sécurité les interdit : ce chiffre doit rester à 0.'
+    networkNone: 'Requêtes envoyées à un autre site depuis l''ouverture de la page, telles que le navigateur les enregistre. La politique de sécurité les interdit : ce chiffre doit rester à 0. Les tentatives qu''elle refuse ne sont jamais parties, et sont comptées à part, comme bloquées.'
+    blocked: '0 bloquée | 1 bloquée | {n} bloquées'
     networkSome: 'Requêtes envoyées à un autre site depuis l''ouverture de la page : {origins}'
 
   settings:

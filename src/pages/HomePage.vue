@@ -576,8 +576,18 @@ function exactDate(at: number) {
 }
 
 @media (hover: none) {
-  .category-row {
+  .category-row,
+  .usage-link {
     min-height: 44px;
+  }
+
+  .usage-link {
+    align-items: center;
+  }
+
+  .link-button {
+    min-height: 44px;
+    padding: 0 8px;
   }
 }
 

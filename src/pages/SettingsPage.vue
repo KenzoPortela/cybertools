@@ -3,6 +3,7 @@
  * Paramètres : apparence, comportement des Recettes, données enregistrées dans
  * le navigateur. Tout est local, rien n'est envoyé nulle part.
  */
+import { useMediaQuery } from '@vueuse/core';
 import { useHead } from '@vueuse/head';
 import { NInputNumber, NPopconfirm, NRadioButton, NRadioGroup, NSwitch, useMessage } from 'naive-ui';
 import { storeToRefs } from 'pinia';
@@ -24,6 +25,16 @@ const recents = useRecentsStore();
 
 useHead({ title: () => t('app.settings.title') });
 useShellCrumbs(() => [{ label: t('app.nav.settings').toLowerCase() }]);
+
+/**
+ * Au doigt, le champ numérique passe à 44 px : naive-ui fixe sa hauteur en
+ * style en ligne, qu'une feuille de style ne peut pas surcharger. Ses boutons
+ * + et − (18 px, sans nom accessible) sont retirés : on tape la valeur, au
+ * clavier numérique.
+ */
+const coarse = useMediaQuery('(hover: none)');
+const numberSize = computed(() => (coarse.value ? 'large' : 'small'));
+const NUMBER_TOUCH = { peers: { Input: { heightLarge: '44px' } } };
 
 const themes: ThemePreference[] = ['auto', 'light', 'dark'];
 const LOCALE_NAMES: Record<string, string> = { fr: 'Français', en: 'English' };
@@ -187,7 +198,7 @@ function resetAll() {
             <span class="row-label">{{ t('app.settings.magic.depth') }}</span>
             <span class="row-help">{{ t('app.settings.magic.depthHelp') }}</span>
           </div>
-          <NInputNumber v-model:value="settings.magicDepth" :min="1" :max="10" size="small" class="setting-magic-depth" :disabled="settings.magicAutoDepth" :aria-label="t('app.settings.magic.depth')" />
+          <NInputNumber v-model:value="settings.magicDepth" :min="1" :max="10" :size="numberSize" :theme-overrides="coarse ? NUMBER_TOUCH : undefined" :show-button="!coarse" class="setting-magic-depth" :disabled="settings.magicAutoDepth" :aria-label="t('app.settings.magic.depth')" />
         </div>
 
         <label class="row">

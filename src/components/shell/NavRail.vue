@@ -498,5 +498,20 @@ svg.rail-icon {
     width: 44px;
     height: 44px;
   }
+
+  .brand {
+    min-height: 44px;
+  }
+
+  /* Cinq boutons de 44 px ne tiennent pas dans 224 : ils passent sur deux lignes. */
+  .rail-footer {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 4px 8px;
+  }
+
+  .rail-locale {
+    margin-left: 0;
+  }
 }
 </style>

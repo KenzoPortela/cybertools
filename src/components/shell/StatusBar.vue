@@ -14,7 +14,7 @@ import { useSessionStore } from '~/stores/session';
  *    un autre site, comptées par le navigateur, puis version et licence.
  */
 const { t } = useI18n();
-const { operations, bytesProcessed, networkRequests, networkOrigins } = storeToRefs(useSessionStore());
+const { operations, bytesProcessed, networkRequests, networkOrigins, networkBlocked } = storeToRefs(useSessionStore());
 const version = __APP_VERSION__;
 
 const items = computed<StatusItem[]>(() => shellStatus.value ?? [{
@@ -42,6 +42,9 @@ const networkTitle = computed(() => (networkRequests.value
       <span class="status-item status-network" :title="networkTitle">
         <span class="status-dot" :class="networkRequests ? 'status-dot--warning' : 'status-dot--live'" aria-hidden="true" />
         {{ t('app.status.network', networkRequests) }}
+        <template v-if="networkBlocked">
+          · {{ t('app.status.blocked', networkBlocked) }}
+        </template>
       </span>
       <span class="status-sep" aria-hidden="true">·</span>
       <span>v{{ version }}</span>
@@ -155,6 +158,15 @@ const networkTitle = computed(() => (networkRequests.value
 
 .status-author {
   color: var(--ct-text-muted);
+}
+
+/* Au doigt, la barre passe à 44 px (voir global.css) : ses liens en prennent la hauteur. */
+@media (hover: none) {
+  .status-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }
 
 /* Sur téléphone, la barre d'onglets prend la place du bas. */

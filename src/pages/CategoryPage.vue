@@ -176,8 +176,9 @@ const shown = computed(() => {
 }
 
 @media (hover: none) {
+  /* Le champ lui-même, bordure déduite, fait 44 px. */
   .filter {
-    height: 44px;
+    height: 46px;
   }
 }
 

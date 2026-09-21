@@ -249,7 +249,7 @@ const collapseLabel = computed(() => (props.step.collapsed ? t('app.recipes.expa
   }
 
   .step-action {
-    width: 40px;
+    width: 44px;
     height: 44px;
   }
 

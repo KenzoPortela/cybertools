@@ -158,7 +158,8 @@ app:
     bake: '{input} → {output} · {duration} ms · {operations}'
     failed: failed
     network: '0 external requests | 1 external request | {n} external requests'
-    networkNone: 'Requests sent to another site since this page opened, as recorded by the browser. The security policy forbids them: this figure should stay at 0.'
+    networkNone: 'Requests sent to another site since this page opened, as recorded by the browser. The security policy forbids them: this figure should stay at 0. Attempts it refused never left, and are counted apart, as blocked.'
+    blocked: '0 blocked | 1 blocked | {n} blocked'
     networkSome: 'Requests sent to another site since this page opened: {origins}'
 
   settings:

@@ -89,7 +89,6 @@ declare module 'vue' {
     IbanValidatorAndParser: typeof import('./../../vendor/it-tools/src/tools/iban-validator-and-parser/iban-validator-and-parser.vue')['default']
     'IconMdi:contentCopy': typeof import('~icons/mdi/content-copy')['default']
     IconMdiArrowDown: typeof import('~icons/mdi/arrow-down')['default']
-    IconMdiArrowRight: typeof import('~icons/mdi/arrow-right')['default']
     IconMdiArrowRightBottom: typeof import('~icons/mdi/arrow-right-bottom')['default']
     IconMdiArrowUp: typeof import('~icons/mdi/arrow-up')['default']
     IconMdiAutoFix: typeof import('~icons/mdi/auto-fix')['default']

@@ -197,4 +197,13 @@ const sources = [
   font-size: 14px;
   color: var(--ct-text-muted);
 }
+
+@media (hover: none) {
+  .author-link,
+  .source-name {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
 </style>

@@ -138,7 +138,7 @@
     "name": "etat-reseau",
     "url": "http://localhost:5173/",
     "scheme": "light",
-    "script": "(async () => { const img = new Image(); img.src = 'http://[::1]:5173/favicon.svg?sonde=' + Date.now(); await new Promise(r => { img.onload = img.onerror = r; }); await new Promise(r => setTimeout(r, 500)); const net = document.querySelector('.status-network'); return (net.textContent.trim() === '1 external request' && !!net.querySelector('.status-dot--warning') && net.title.includes('http://[::1]:5173')) || { text: net.textContent.trim(), title: net.title }; })()"
+    "script": "(async () => { let violated = false; document.addEventListener('securitypolicyviolation', () => { violated = true; }); const img = new Image(); img.src = 'http://[::1]:5173/favicon.svg?sonde=' + Date.now(); await new Promise(r => { img.onload = img.onerror = r; }); await new Promise(r => setTimeout(r, 500)); const net = document.querySelector('.status-network'); const text = net.textContent.replace(/\\s+/g, ' ').trim(); const ok = violated ? (text === '0 external requests · 1 blocked' && !!net.querySelector('.status-dot--live')) : (text === '1 external request' && !!net.querySelector('.status-dot--warning') && net.title.includes('http://[::1]:5173')); return ok || { violated, text, title: net.title }; })()"
   },
   {
     "name": "outil-en-tete",

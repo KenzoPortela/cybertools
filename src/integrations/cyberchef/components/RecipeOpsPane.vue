@@ -316,8 +316,9 @@ function onKeydown(event: KeyboardEvent) {
     min-height: 44px;
   }
 
+  /* Le champ lui-même, bordure déduite, fait 44 px. */
   .ops-field {
-    height: 44px;
+    height: 46px;
   }
 
   /* Pas de clavier physique : les raccourcis n'ont rien à apprendre. */

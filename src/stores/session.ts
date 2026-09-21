@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref, shallowRef } from 'vue';
-import { externalOrigins, externalRequests } from '~/app/network-watch';
+import { blockedRequests, externalOrigins, externalRequests } from '~/app/network-watch';
 import { type BakeRecord, chefClient } from '~/integrations/cyberchef/chef-client';
 
 /** Dernière exécution, datée pour qu'une page ne montre que les siennes. */
@@ -34,6 +34,7 @@ export const useSessionStore = defineStore('session', () => {
   // Lus depuis la mesure du navigateur : des getters, que rien ne peut réécrire.
   const networkRequests = computed(() => externalRequests.value);
   const networkOrigins = computed(() => externalOrigins.value);
+  const networkBlocked = computed(() => blockedRequests.value);
 
-  return { operations, bytesProcessed, lastBake, networkRequests, networkOrigins };
+  return { operations, bytesProcessed, lastBake, networkRequests, networkOrigins, networkBlocked };
 });

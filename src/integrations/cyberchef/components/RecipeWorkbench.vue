@@ -39,7 +39,7 @@ const router = useRouter();
 const store = useRecipeStore();
 const { steps, input, saved } = storeToRefs(store);
 const { settings } = storeToRefs(useSettingsStore());
-const { networkRequests } = storeToRefs(useSessionStore());
+const { networkRequests, networkBlocked } = storeToRefs(useSessionStore());
 
 const file = ref<InputFile>();
 const configs = ref<Record<string, OperationConfig>>();
@@ -469,6 +469,9 @@ onMounted(async () => {
         <span class="run-network" :title="t('app.status.networkNone')">
           <span class="run-dot" :class="networkRequests ? 'run-dot--warning' : 'run-dot--live'" aria-hidden="true" />
           {{ t('app.status.network', networkRequests) }}
+          <template v-if="networkBlocked">
+            · {{ t('app.status.blocked', networkBlocked) }}
+          </template>
         </span>
       </footer>
     </section>
@@ -725,6 +728,13 @@ onMounted(async () => {
 
   .pane-resizer {
     display: none;
+  }
+}
+
+@media (hover: none) {
+  .link-button {
+    min-height: 44px;
+    padding: 0 8px;
   }
 }
 

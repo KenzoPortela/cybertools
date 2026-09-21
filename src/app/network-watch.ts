@@ -4,12 +4,16 @@
  *
  * « Rien ne quitte le navigateur » est l'argument de cybertools : la barre
  * d'état l'affiche comme une mesure, pas comme un badge. On lit la chronologie
- * des ressources (Resource Timing), où le navigateur inscrit chaque requête
- * partie, et on retient celles dont l'origine n'est pas la nôtre.
+ * des ressources (Resource Timing), où le navigateur inscrit chaque requête, et
+ * on retient celles dont l'origine n'est pas la nôtre.
  *
- * Ce que la mesure voit, et ce qu'elle ne voit pas :
- *  - une requête bloquée par la CSP (`connect-src 'self'`) n'est jamais partie :
- *    elle n'est pas inscrite, et elle n'est pas comptée ;
+ * Deux mesures, pas une : le navigateur inscrit aussi dans cette chronologie une
+ * requête que la CSP a refusée — durée nulle, aucun octet —, alors qu'elle n'est
+ * jamais partie. On écoute donc aussi les violations de la CSP
+ * (`securitypolicyviolation`) : une requête inscrite et refusée est comptée comme
+ * bloquée, pas comme envoyée. Une tentative déjouée reste une information.
+ *
+ * Ce que la mesure ne voit pas :
  *  - les workers (CyberChef, Stego Lab) ont leur propre chronologie, invisible
  *    d'ici. Ils ne chargent que leurs modules, servis par l'application, et la
  *    CSP s'applique à eux aussi ;
@@ -17,10 +21,12 @@
  *    par main.ts et observe ensuite tout en direct ; seul un démarrage de plus de
  *    250 fichiers (le serveur de développement, pas le build) peut en perdre.
  */
-import { readonly, ref } from 'vue';
+import { computed, ref } from 'vue';
 
-const count = ref(0);
-const origins = ref<string[]>([]);
+/** Adresses externes inscrites dans la chronologie, parties ou non. */
+const seen = ref<string[]>([]);
+/** Adresses externes refusées par la CSP. */
+const refused = ref<string[]>([]);
 
 function externalOrigin(url: string): string | undefined {
   try {
@@ -34,12 +40,8 @@ function externalOrigin(url: string): string | undefined {
 }
 
 function record(entries: PerformanceEntryList) {
-  for (const entry of entries) {
-    const origin = externalOrigin(entry.name);
-    if (!origin) continue;
-    count.value++;
-    if (!origins.value.includes(origin)) origins.value = [...origins.value, origin];
-  }
+  const external = entries.map(entry => entry.name).filter(url => externalOrigin(url));
+  if (external.length) seen.value = [...seen.value, ...external];
 }
 
 if (typeof PerformanceObserver !== 'undefined' && PerformanceObserver.supportedEntryTypes?.includes('resource')) {
@@ -47,7 +49,31 @@ if (typeof PerformanceObserver !== 'undefined' && PerformanceObserver.supportedE
   new PerformanceObserver(list => record(list.getEntries())).observe({ type: 'resource', buffered: true });
 }
 
+if (typeof document !== 'undefined') {
+  document.addEventListener('securitypolicyviolation', (event) => {
+    if (externalOrigin(event.blockedURI)) refused.value = [...refused.value, event.blockedURI];
+  }, true);
+}
+
+/**
+ * Les adresses réellement parties : celles de la chronologie, moins une
+ * occurrence par refus de la CSP. Les deux signaux arrivent dans un ordre
+ * quelconque ; le calcul, lui, ne dépend pas de l'ordre.
+ */
+const sent = computed(() => {
+  const pending = new Map<string, number>();
+  for (const url of refused.value) pending.set(url, (pending.get(url) ?? 0) + 1);
+  return seen.value.filter((url) => {
+    const left = pending.get(url) ?? 0;
+    if (!left) return true;
+    pending.set(url, left - 1);
+    return false;
+  });
+});
+
 /** Nombre de requêtes parties vers un autre site depuis l'ouverture de la page. */
-export const externalRequests = readonly(count);
-/** Les sites concernés, pour l'infobulle. */
-export const externalOrigins = readonly(origins);
+export const externalRequests = computed(() => sent.value.length);
+/** Nombre de requêtes vers un autre site que la CSP a empêchées de partir. */
+export const blockedRequests = computed(() => refused.value.length);
+/** Les sites effectivement contactés, pour l'infobulle. */
+export const externalOrigins = computed(() => [...new Set(sent.value.map(url => externalOrigin(url)!))]);

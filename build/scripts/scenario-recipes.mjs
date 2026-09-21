@@ -28,7 +28,7 @@ const helpers = `
     element.dispatchEvent(new Event('input', { bubbles: true }));
   };
   const addOperation = async (query) => {
-    const field = document.querySelector('.picker .field-input');
+    const field = document.querySelector('.ops-search');
     field.focus();
     type(field, query);
     await sleep(250);
@@ -43,7 +43,10 @@ const helpers = `
     return document.querySelectorAll('.io-column textarea')[1]?.value ?? null;
   };
   const inputField = () => document.querySelector('.io-column textarea');
-  await until(() => document.querySelector('.workbench, .magic-tool, .tool-content'));
+  // Prêt = interactif : le champ des opérations (atelier), la saisie (Magic),
+  // le contenu de l'outil sinon. \`.tool-content\` seul apparaît avant que
+  // l'atelier ou Magic aient fini de charger.
+  await until(() => { const path = location.pathname; if (path.endsWith('/recipes')) return document.querySelector('.workbench .pane--ops input'); if (path.endsWith('/magic')) return document.querySelector('.magic-tool textarea'); return document.querySelector('.tool-content'); });
 `;
 
 const script = body => `(async () => {${helpers}${body}})()`;
@@ -100,11 +103,11 @@ const jobs = [
     name: 'recettes-recherche-souple',
     url: `${base}/tools/recipes`,
     script: script(`
-      const field = document.querySelector('.picker .field-input');
+      const field = document.querySelector('.ops-search');
       field.focus();
       type(field, 'caeser cipher');
       await sleep(300);
-      const options = [...document.querySelectorAll('.picker [role=option]')].map(e => e.textContent.trim());
+      const options = [...document.querySelectorAll('.ops-list [role=option]')].map(e => e.textContent.trim());
       field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       type(field, '');
       const found = name => options.some(text => text.startsWith(name));
@@ -148,10 +151,10 @@ const jobs = [
     name: 'recettes-magic',
     url: `${base}/tools/recipes`,
     script: script(`
-      [...document.querySelectorAll('.toolbar-actions button')].find(b => /Vider|Clear/.test(b.textContent)).click();
+      document.querySelector('.recipe-clear')?.click();
       await sleep(300);
       type(inputField(), 'aGVsbG8gd29ybGQ=');
-      [...document.querySelectorAll('.toolbar-actions button')].find(b => b.textContent.includes('Magic')).click();
+      [...document.querySelectorAll('.workbench-actions button')].find(b => b.textContent.includes('Magic')).click();
       const first = await until(() => document.querySelector('.magic-card .candidate'), 20000);
       if (!first) return 'aucun candidat Magic';
       const label = first.querySelector('.candidate-recipe').textContent;
@@ -242,7 +245,7 @@ const jobs = [
     script: script(`
       (await until(() => document.querySelector('.workbench .empty .resume')))?.click();
       await until(() => stepNames().length);
-      [...document.querySelectorAll('.toolbar-actions button')].find(b => /Partager|Share/.test(b.textContent)).click();
+      [...document.querySelectorAll('.workbench-actions button')].find(b => /Partager|Share/.test(b.textContent)).click();
       const link = await until(() => document.querySelector('.share textarea')?.value);
       const cyberchef = document.querySelector('.share-actions a')?.getAttribute('href') ?? '';
       return (link.includes('/tools/recipes#recipe=To_Hex') && cyberchef.startsWith('https://gchq.github.io/CyberChef/#recipe=To_Hex')) || { lien: link, cyberchef };
@@ -276,10 +279,130 @@ const jobs = [
       return (await output()) === '68 65 6c 6c 6f';
     `),
   },
+  // Atelier en panneaux, panneau d'opérations, étapes, entrée et sortie.
+  {
+    name: 'atelier-panneaux',
+    url: `${base}/tools/recipes`,
+    width: 1440,
+    height: 900,
+    scheme: "dark",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .pane--ops input'); i++) await sleep(100); const widths = [...document.querySelectorAll('.workbench .pane')].map(p => Math.round(p.getBoundingClientRect().width)); const height = Math.round(document.querySelector('.workbench').getBoundingClientRect().height); const rail = Math.round(document.querySelector('.rail').getBoundingClientRect().width); const actions = document.querySelector('.workbench-actions').getBoundingClientRect().left; const star = document.querySelector('#ct-topbar-actions .favorite').getBoundingClientRect().left; const ok = widths[0] === 236 && widths[1] === 398 && widths[2] > 600 && height === 900 - 48 && !document.querySelector('.status-bar') && rail === 48 && actions < star; return ok || { widths, height, rail, actions, star }; })()`,
+  },
+  {
+    name: 'atelier-redimension',
+    url: `${base}/tools/recipes`,
+    width: 1440,
+    height: 900,
+    scheme: "light",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .pane--ops input'); i++) await sleep(100); const handle = document.querySelector('.pane-resizer'); handle.focus(); for (let i = 0; i < 2; i++) handle.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); await sleep(500); const width = Math.round(document.querySelector('.pane--ops').getBoundingClientRect().width); const saved = JSON.parse(localStorage.getItem('cybertools:settings')).recipesOpsWidth; for (let i = 0; i < 2; i++) handle.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); await sleep(500); const restored = JSON.parse(localStorage.getItem('cybertools:settings')).recipesOpsWidth; return (width === 268 && saved === 268 && restored === 236 && handle.getAttribute('role') === 'separator') || { width, saved, restored }; })()`,
+  },
+  {
+    name: 'atelier-rail-rappel',
+    url: `${base}/tools/recipes`,
+    width: 1440,
+    height: 900,
+    scheme: "light",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .pane--ops input'); i++) await sleep(100); const before = Math.round(document.querySelector('.rail').getBoundingClientRect().width); document.querySelector('.rail-collapse').click(); await sleep(500); const after = Math.round(document.querySelector('.rail').getBoundingClientRect().width); const setting = JSON.parse(localStorage.getItem('cybertools:settings') || '{}').shellRailCollapsed; return (before === 48 && after === 224 && !setting) || { before, after, setting }; })()`,
+  },
+  {
+    name: 'atelier-empile',
+    url: `${base}/tools/recipes`,
+    width: 900,
+    height: 900,
+    scheme: "dark",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .pane--ops input'); i++) await sleep(100); const panes = [...document.querySelectorAll('.workbench .pane')].map(p => p.getBoundingClientRect()); const stacked = panes[0].bottom <= panes[1].top && panes[1].bottom <= panes[2].top; const resizers = [...document.querySelectorAll('.pane-resizer')].every(r => getComputedStyle(r).display === 'none'); const io = ['.cc-input', '.cc-output', '.run-banner'].map(sel => document.querySelector(sel).getBoundingClientRect()); const ioStacked = io[0].bottom <= io[1].top + 1 && io[1].bottom <= io[2].top + 1 && io.every(b => b.height > 20); return (stacked && resizers && ioStacked) || { stacked, resizers, io: io.map(b => [Math.round(b.top), Math.round(b.height)]) }; })()`,
+  },
+  {
+    name: 'ops-groupes',
+    url: `${base}/tools/recipes`,
+    width: 1440,
+    height: 900,
+    scheme: "light",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .ops-search'); i++) await sleep(100); const labels = [...document.querySelectorAll('.ops-group-label span:first-child')].map(e => e.textContent.trim()); const count = Number(document.querySelector('.ops-count').textContent); const options = document.querySelectorAll('.ops-list [role=option]').length; return (labels[0] === 'Suggestions' && labels.includes('Encoding') && labels.includes('Flow control') && count > 400 && options > count) || { labels, count, options }; })()`,
+  },
+  {
+    name: 'ops-remplacer',
+    url: `${base}/tools/recipes#recipe=To_Base64('A-Za-z0-9%2B/%3D')To_Hex('Space',0)`,
+    width: 1440,
+    height: 900,
+    scheme: "light",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .ops-search'); i++) await sleep(100); const type = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); }; const names = () => [...document.querySelectorAll('.steps .step-name')].map(e => e.textContent.trim()); const key = (el, k, shift = false) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, shiftKey: shift, bubbles: true })); for (let i = 0; i < 50 && names().length < 2; i++) await sleep(100); const before = names(); const field = document.querySelector('.ops-search'); field.focus(); type(field, 'gunzip'); await sleep(300); key(field, 'Enter', true); await sleep(500); const after = names(); return (before.length === 2 && after.join() === 'Gunzip' && document.activeElement === field) || { before, after }; })()`,
+  },
+  {
+    name: 'etape-compacte',
+    url: `${base}/tools/recipes#recipe=From_Base64('A-Za-z0-9%2B/%3D',true,false)`,
+    width: 1440,
+    height: 900,
+    scheme: "dark",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .ops-search'); i++) await sleep(100); for (let i = 0; i < 50 && !document.querySelector('.steps .step'); i++) await sleep(100); const step = document.querySelector('.steps .step'); const head = Math.round(step.querySelector('.step-head').getBoundingClientRect().height); const columns = getComputedStyle(step.querySelector('.params-grid')).gridTemplateColumns.split(' ').length; const rail = step.querySelector('.n-switch__rail'); const switchSize = Math.round(rail.getBoundingClientRect().width) + 'x' + Math.round(rail.getBoundingClientRect().height); const move = getComputedStyle(step.querySelector('.step-action--move')).opacity; const label = step.querySelector('.n-switch').getAttribute('aria-label'); return (head === 32 && columns === 2 && switchSize === '22x13' && move === '0' && !!label) || { head, columns, switchSize, move, label }; })()`,
+  },
+  {
+    name: 'io-ressemble-et-bandeau',
+    url: `${base}/tools/recipes#recipe=From_Base64('A-Za-z0-9%2B/%3D',true,false)Gunzip()`,
+    width: 1440,
+    height: 900,
+    scheme: "dark",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const until = async (test, timeout = 15000) => { for (const t0 = performance.now(); performance.now() - t0 < timeout;) { const v = test(); if (v) return v; await sleep(100); } return null; };
+  const type = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+  const text = sel => document.querySelector(sel)?.textContent.replace(/\\s+/g, ' ').trim();
+  await until(() => document.querySelector('.io-column textarea'));
+  type(document.querySelector('.io-column textarea'), 'H4sIAAAAAAAACvNIzcnJVyjPL8pJ0VFIK8rPVUiuTEotKsnPzylWBAC4xs7eHQAAAA==');
+  await until(() => document.querySelector('.run-state--done'));
+  await sleep(400);
+  const strip = text('.cc-input .io-strip');
+  const banner = [...document.querySelectorAll('.run-banner > span')].map(e => e.textContent.replace(/\\s+/g, ' ').trim()).join(' | ');
+  const out = document.querySelectorAll('.io-column textarea')[1].value;
+  return (/looks like: base64 → GZIP/.test(strip) && /^done \\| 68 o → 29 o \\| \\d+ ms \\| 2 steps · 0 errors \\| 0 external requests$/.test(banner) && out === 'Hello world, from cybertools!') || { strip, banner, out };
+})()`,
+  },
+  {
+    name: 'io-gouttieres',
+    url: `${base}/tools/recipes#recipe=To_Upper_case('All')`,
+    width: 1440,
+    height: 900,
+    scheme: "light",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const until = async (test, timeout = 15000) => { for (const t0 = performance.now(); performance.now() - t0 < timeout;) { const v = test(); if (v) return v; await sleep(100); } return null; };
+  const type = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+  const text = sel => document.querySelector(sel)?.textContent.replace(/\\s+/g, ' ').trim();
+  await until(() => document.querySelector('.io-column textarea'));
+  type(document.querySelector('.io-column textarea'), 'un\\ndeux\\ntrois');
+  await until(() => document.querySelectorAll('.io-column textarea')[1].value === 'UN\\nDEUX\\nTROIS');
+  await sleep(300);
+  const gutters = [...document.querySelectorAll('.io-column .code-gutter')].map(g => [...g.querySelectorAll('.code-gutter-line')].map(l => l.textContent.trim()).join(','));
+  return (gutters[0] === '1,2,3' && gutters[1] === '00000000,00000003,00000008') || gutters;
+})()`,
+  },
+  {
+    name: 'io-onglets',
+    url: `${base}/tools/recipes#recipe=JSON_Minify()`,
+    width: 1440,
+    height: 900,
+    scheme: "dark",
+    script: `(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const until = async (test, timeout = 15000) => { for (const t0 = performance.now(); performance.now() - t0 < timeout;) { const v = test(); if (v) return v; await sleep(100); } return null; };
+  const type = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+  const text = sel => document.querySelector(sel)?.textContent.replace(/\\s+/g, ' ').trim();
+  await until(() => document.querySelector('.io-column textarea'));
+  type(document.querySelector('.io-column textarea'), '{ "a": 1, "b": [true, null] }');
+  await until(() => document.querySelectorAll('.io-column textarea')[1]?.value === '{"a":1,"b":[true,null]}');
+  const tabs = () => [...document.querySelectorAll('.cc-output [role=tab]')];
+  const pick = name => tabs().find(b => b.textContent.trim() === name).click();
+  const disabled = tabs().filter(b => b.disabled).map(b => b.textContent.trim());
+  pick('hex'); await sleep(300);
+  const hex = document.querySelector('.cc-output .io-pre')?.textContent.slice(0, 8);
+  pick('tree'); await sleep(300);
+  const leaves = [...document.querySelectorAll('.cc-output .leaf')].map(l => l.textContent.replace(/\\s+/g, '')).join(',');
+  pick('diff'); await sleep(300);
+  const diff = [...document.querySelectorAll('.cc-output .diff-line')].map(l => l.className.replace('diff-line diff-line--', '')[0]).join('');
+  return (disabled.length === 0 && hex === '00000000' && leaves === 'a1,0true,1null' && diff.startsWith('r') && diff.includes('a')) || { disabled, hex, leaves, diff };
+})()`,
+  },
   {
     name: 'accueil-a-la-une',
     url: `${base}/`,
-    script: `(() => [...document.querySelectorAll('.featured .feature')].map(a => a.getAttribute('href')).join() === '/tools/recipes,/tools/magic')()`,
+    script: `(() => [...document.querySelectorAll('.tiles .tile')].map(a => a.getAttribute('href')).join() === '/tools/recipes,/tools/magic,/tools/stego-lab')()`,
   },
 ].map(job => ({ scheme: 'light', wait: 300, ...job }));
 

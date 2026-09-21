@@ -51,4 +51,11 @@ function toggle(event: Event) {
 .favorite--active {
   color: var(--ct-warning);
 }
+
+@media (hover: none) {
+  .favorite {
+    width: 44px;
+    height: 44px;
+  }
+}
 </style>

@@ -136,10 +136,11 @@ the image carries — see "Updating the upstream sources".
 
 ```
 src/
-  app/            application shell: App, router, theme, i18n
-  layouts/        page layouts
+  app/            application: App, router, theme, i18n, shell state
+  layouts/        AppShell (the chassis) and ToolShell (a tool's frame)
   pages/          pages
-  components/     shell components (palette, cards, favourites)
+  components/     shell/ (rail, top bar, status bar, tab bar), palette,
+                  tool rows, context rail, pane resizer
   catalog/        data model shared by both sources, categories, search
   integrations/   CyberChef engine: worker client, forms, Recipes, Magic
   stores/         favourites, recents, current recipe, settings
@@ -187,11 +188,21 @@ search, palette, favourites, recents, router — only knows the registry.
   French words to the tools' English vocabulary ("déchiffrer" → *decrypt*), and
   `src/catalog/synonyms.ts` gives CyberChef operations the names people actually
   use ("caesar" → ROT13, "sha256" → SHA2).
-- **Palette**: Ctrl+K or ⌘K anywhere; `/` outside a text field.
-- **Favourites and recents**: in `localStorage`, by id.
-- **Settings** (`/settings`, the gear in the header): theme, accent colour,
-  language, live or on-demand computation, reopening the last recipe, Magic
-  defaults, clearing favourites and recents, JSON export and import, full reset.
+- **Palette** (`src/components/CommandPalette.vue`): Ctrl+K or ⌘K anywhere;
+  `/` outside a text field. Scopes by prefix or by the chips under the field:
+  nothing for everything, `/` categories, `#` the saved recipe, `>` commands.
+  Results are grouped after the search engine has ranked them: *best matches*
+  (the tool's name carries the words, one typo allowed), *also known as* (its
+  keywords do — ROT13 for "caesar"), *other results*, then *actions*. On a tool,
+  ⌘↵ adds it to the current recipe and ⌘F pins it.
+- **Favourites** (pinned tools): in `localStorage`, by id. **Recents**:
+  `{ id, at, count }` per tool, most recent first, 100 at most — the home page
+  shows when each tool was last opened and which are used most. The older
+  id-only format is read back without inventing dates.
+- **Settings** (`/settings`, the gear at the bottom of the rail): theme, accent
+  colour, language, collapsed rail, live or on-demand computation, reopening the
+  last recipe, Magic defaults, clearing favourites and recents, JSON export and
+  import, full reset.
   Settings live in `cybertools:settings` (`src/stores/settings.ts`); the import
   only accepts the application's own keys.
 
@@ -222,8 +233,9 @@ configuration, using IT-Tools' components. The tables in
 - the ten **flow control** operations (Fork, Jump, Merge…) only make sense inside
   a recipe and are not listed as tools.
 
-The catalogue therefore holds 539 tools: 86 from IT-Tools, 450 CyberChef
-operations, the recipe workbench, Magic and the Stego Lab.
+The catalogue therefore holds 540 tools: 86 from IT-Tools, 450 CyberChef
+operations, the recipe workbench, Magic, the Stego Lab and its companion tool to
+hide data in an image.
 
 ### Recipes and Magic
 
@@ -231,6 +243,23 @@ The recipe workbench (`/tools/recipes`, or `/recipes`) chains CyberChef
 operations with a live result. It offers every operation, including flow control
 and the IT-Tools duplicates; only the excluded operations are missing, and they
 are dropped (with a message) from an imported recipe.
+
+- **Three panes**, full height, each scrolling on its own: the operations
+  (`RecipeOpsPane.vue` — always open, filtered by the site's search engine,
+  grouped by category; ↵ adds, ⇧↵ replaces the recipe), the recipe
+  (`RecipeStepCard.vue` — 32 px headers, arguments on two columns), and input and
+  output (`CcInput.vue`, `CcOutput.vue`). The first two widths are resizable,
+  with the mouse or the keyboard (`PaneResizer.vue`), and remembered. Below
+  1000 px, the panes stack. Each pane has its own footer — shortcuts, step
+  count, the run banner (`68 o → 29 o · 1 ms · 2 steps · 0 errors`) — so the
+  global status bar steps aside on this page only.
+- **Input and output** are shared with the operation pages. Input: text with
+  line numbers, its bytes in hex, or a file; a strip shows the cursor position,
+  the entropy and what the data *looks like* ("base64 → GZIP": a guess made in
+  the tab — hex, base64, JSON, URL, then file signatures — not a decode).
+  Output: raw text with the byte offset of each line, hex, a tree when the
+  output is JSON, and a line diff against the input. The text areas are real
+  `<textarea>`s (`CodeView.vue`), with a gutter that only draws visible lines.
 
 - **CyberChef format.** Links are cyberchef.org's own:
   `#recipe=<recipe>&input=<base64 input>`. A link opens here or there, either
@@ -275,18 +304,63 @@ modules are imported, so the colour theme is read at load time
 (`cybertools:settings`) and changing it reloads the page; the light/dark toggle
 stays instant.
 
-**Shapes and typography.** A single radius, 12 px, across the whole site —
-naive-ui, IT-Tools' `c-*` kit (realigned by `src/app/styles/global.css`) and our
-components; only search bars are pill-shaped, and micro-elements (keyboard keys,
-checkboxes) keep 4 px. Inter for text, JetBrains Mono for technical labels
-(paths, counters, tags), both bundled through `@fontsource`: no request to a font
-server. Ligatures are off in fields, code and mono labels — "==" at the end of a
-base64 string must not become a single glyph.
+**Neutrals.** Ten per mode, from the chassis to the faintest text: `chassis`
+(rail, status bar), `background`, `surface`, `surface-raised`, `elevated`,
+`border`, `border-strong`, `text`, `text-muted`, `text-faint`. The green family
+(Terminal) is the one that was designed; Indigo and Graphite are derived from it
+by rotating the hue only, at constant lightness and saturation, so a single ramp
+is maintained. Every text/background pair is checked at 4.5:1 — the tightest is
+`text-faint` on `elevated`, at 4.6:1. Check any new pair before committing it.
+
+**Accent.** Reserved for two things: the main action, and what is alive — the
+cursor, a fresh result, the active item, a pinned tool. Never decoration.
+
+**Radii.** One tier per object size instead of a single value: `micro` 4 px
+(keyboard key, checkbox, number badge), `control` 6 px (button, field, tab, list
+row), `panel` 10 px (card, panel, block), `float` 14 px (palette, modal, menu),
+`pill` for switches. `global.css` spreads IT-Tools' `c-*` kit over them. The old
+`base` / `small` / `medium` / `large` names remain as aliases.
+
+**Typography.** Inter for text, JetBrains Mono for data and technical labels,
+both bundled through `@fontsource`: no request to a font server. The scale
+stops at 20 px: 20/600 page title, 15/600 panel title, 13/400 interface base,
+12/400 secondary, 12.5 mono for data, 10 mono uppercase for section labels.
+13 px is the chassis' own base (`--ct-font-size-ui`); naive-ui keeps 14 px, the
+size IT-Tools' 86 tools were drawn for — the tool's frame is the border between
+the two. Ligatures are off in fields, code and mono labels: "==" at the end of a
+base64 string must not become a single glyph. Spacing uses 4, 8, 12, 16, 24 and
+32 px, nothing in between.
+
+**The chassis** (`src/layouts/AppShell.vue`). A permanent navigation rail
+(224 px: workbench, pinned tools, the ten categories with their counts; it
+collapses to 48 px of icons, and does so by itself on the workbench and the
+Stego Lab), a top bar (the breadcrumb written as a path, `~/encoding/to-hex`,
+and the page's actions, teleported into `#ct-topbar-actions`) and a status bar.
+Below 1024 px the rail becomes a drawer; below 640 px a tab bar is added at the
+bottom. The document scrolls, not an inner area: rail and bars hold with
+`position: sticky`. Pages declare their own width with `.page` (1120 px at most)
+and tell the chassis where they are and what they measured through
+`useShellCrumbs` and `useShellStatus` (`src/app/shell.ts`).
+
+**The status bar tells the truth.** On the left, what the page knows (its
+source, its last run); failing that, the session's figures — CyberChef
+operations run and bytes processed, in memory only (`src/stores/session.ts`).
+On the right, the requests sent to another site, counted by the browser from
+its resource timeline (`src/app/network-watch.ts`, imported first by
+`main.ts`), rather than a hard-coded zero. The browser also records a request
+the Content Security Policy refused, with no duration and no bytes, although it
+never left: the page listens to `securitypolicyviolation` too, and such a
+request is counted as *blocked*, not as sent.
+
+**Touch.** Every target on our screens is at least 44 px under
+`@media (hover: none)`: each component sets it in its own style, and
+`global.css` does it for the kit components we use outside the tools. The
+inside of IT-Tools' tools keeps its own rendering. `build/scenarios/touch.json`
+measures it.
 
 **Identity.** Logo and favicon (`src/components/AppLogo.vue`,
-`public/favicon.svg`), a breadcrumb written as a path (`~/encoding/to-hex`), a
-status-bar footer. The author (name and links) is defined once, in
-`src/app/author.ts`, for the footer and the About page.
+`public/favicon.svg`). The author (name and links) is defined once, in
+`src/app/author.ts`, for the status bar and the About page.
 
 ### Overriding an IT-Tools file
 
@@ -316,7 +390,8 @@ Current overrides:
 
 ### Design page
 
-Under `npm run dev`, `/_design` shows the palette, the naive-ui components and
+Under `npm run dev`, `/_design` shows the accents, the ten neutrals, the radius
+tiers, the type scale and the spacing rhythm, then the naive-ui components and
 IT-Tools' `c-*` kit demos rendered with our overrides. Switching the theme should
 change everything at once. The page is absent from production builds, unless
 `VITE_DEV_PAGES=true`.
@@ -332,10 +407,11 @@ npm run screenshot -- build/scenarios/shell.json    # in another
 light or dark theme, a script run inside the page. For each page it reports
 horizontal overflow and any console error or warning, and drops a screenshot into
 `.screenshots/`. A scenario whose script returns `true` passed.
-`build/scenarios/shell.json` covers the shell: light, dark and mobile rendering,
-an IT-Tools tool that really encodes, the theme cycle, the settings link, 404.
-`build/scenarios/catalog.json` covers search, palette, favourites, recents,
-redirects, categories and the French translation.
+`build/scenarios/shell.json` covers the chassis: rail, collapse, drawer, tab
+bar, status bar and its network counter, tool pages and their context rail, the
+theme cycle, the language switch, 404. `build/scenarios/catalog.json` covers the
+home page, search, the palette and its scopes, favourites, recents and usage
+counts, redirects, categories and their filter, and the French translation.
 
 Generators cover the tools themselves, re-reading their list from `vendor/` on
 every run:
@@ -355,11 +431,39 @@ node build/scripts/scenario-recipes.mjs && npm run screenshot -- build/scenarios
 
 # settings (theme, colour, language, data)
 npm run screenshot -- build/scenarios/settings.json
+
+# is every target on our screens at least 44 px on a touch screen?
+node build/scripts/scenario-touch.mjs && npm run screenshot -- build/scenarios/touch.json
 ```
+
+The generated files are committed, but the generators are their source: change
+the generator, then regenerate — never the other way round.
 
 For a full sweep, aim at the production build (`npm run build && npm run
 preview`, then `--base http://localhost:5050`): the dev server reloads the page
 when a file changes or when it discovers a dependency, which skews the results.
+`screenshot.mjs` takes `--base` too, for the hand-written scenario files:
+
+```bash
+npm run screenshot -- build/scenarios/shell.json --base http://localhost:5050
+```
+
+Full-page captures (`fullPage: true`) enlarge the capture, not the window: the
+rail and the bars, which are sticky, stay where the first screen left them.
+Prefer viewport captures for anything meant to be looked at.
+
+The images in `docs/screenshots/` come from `build/scenarios/docs.json`, run
+against the production build: it prepares realistic local data (recent and
+pinned tools, a saved recipe), then captures the home page, the workbench,
+Magic, the phone layout and each colour theme in dark and light.
+
+```bash
+npm run screenshot -- build/scenarios/docs.json --base http://localhost:5050
+```
+
+Copy `docs-home`, `docs-recipes`, `docs-magic` and `docs-mobile` over their
+counterparts; `themes.png` assembles the ten `docs-theme-*` captures, five rows
+of dark and light side by side.
 
 Known, harmless console warnings are described in
 `build/scenarios/known-warnings.json`. The tool prints them with their

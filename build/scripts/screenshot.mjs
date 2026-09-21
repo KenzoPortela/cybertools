@@ -7,7 +7,7 @@
  * dans la page, et pour chaque page : capture, débordement horizontal, erreurs et
  * avertissements de la console.
  *
- * usage : node build/scripts/screenshot.mjs <scénario.json>
+ * usage : node build/scripts/screenshot.mjs <scénario.json> [--base <url>]
  *   [{ "name": "accueil", "url": "http://localhost:5173/",
  *      "width": 390, "height": 844, "mobile": true, "scheme": "dark",
  *      "fullPage": false, "wait": 1500,
@@ -27,6 +27,25 @@ const outDir = resolve('.screenshots');
 mkdirSync(outDir, { recursive: true });
 
 const jobs = JSON.parse(readFileSync(process.argv[2], 'utf8'));
+
+/**
+ * --base <url> : rejoue un scénario écrit pour le serveur de développement
+ * (http://localhost:5173) contre une autre adresse — le build de production
+ * (`npm run preview`, port 5050) ou le conteneur. Les adresses des pages et
+ * celles écrites dans les scripts suivent ; la sonde de requête externe vers
+ * [::1] garde le même port que la page.
+ */
+const baseIndex = process.argv.indexOf('--base');
+if (baseIndex > -1) {
+  const base = process.argv[baseIndex + 1].replace(/\/$/, '');
+  const { port } = new URL(base);
+  for (const job of jobs) {
+    job.url = job.url.replace('http://localhost:5173', base);
+    if (job.script) {
+      job.script = job.script.replaceAll('http://localhost:5173', base).replaceAll('[::1]:5173', `[::1]:${port}`);
+    }
+  }
+}
 
 /**
  * Avertissements connus et documentés (build/scenarios/known-warnings.json).

@@ -62,4 +62,21 @@ const { t } = useI18n();
   text-overflow: ellipsis;
   color: var(--ct-text);
 }
+
+/* Au doigt : chaque segment devient une cible de 44 px de haut ; « ~ » aussi de large. */
+@media (hover: none) {
+  .crumb a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* Une cible de 44 px centrée sur le « ~ », sans décaler le chemin : ses
+     marges négatives lui rendent sa place dans la ligne. */
+  .home {
+    justify-content: center;
+    min-width: 44px;
+    margin: 0 -18px;
+  }
+}
 </style>

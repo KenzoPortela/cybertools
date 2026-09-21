@@ -23,7 +23,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const recents = useRecentsStore();
-const { networkRequests } = storeToRefs(useSessionStore());
+const { networkRequests, networkBlocked } = storeToRefs(useSessionStore());
 
 const SIBLINGS = 8;
 
@@ -87,6 +87,9 @@ const shortcuts = computed(() => [
       <p class="offline-count ct-mono">
         <span class="offline-dot" :class="{ 'offline-dot--warning': networkRequests }" aria-hidden="true" />
         {{ t('app.status.network', networkRequests) }}
+        <template v-if="networkBlocked">
+          · {{ t('app.status.blocked', networkBlocked) }}
+        </template>
       </p>
     </section>
   </aside>
@@ -224,6 +227,12 @@ const shortcuts = computed(() => [
 
 @media (hover: none) {
   .context-link {
+    min-height: 44px;
+  }
+
+  .context-more {
+    display: inline-flex;
+    align-items: center;
     min-height: 44px;
   }
 }

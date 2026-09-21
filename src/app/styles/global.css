@@ -133,3 +133,30 @@ html {
     padding: 20px 16px 48px;
   }
 }
+
+/*
+ * Au doigt, des cibles de 44 px. Chaque composant à nous le règle chez lui ;
+ * ici, la barre d'état (ses liens tiennent dans sa hauteur) et les composants
+ * du kit d'IT-Tools et de naive-ui là où ils servent nos écrans — la barre du
+ * haut, les pages qui ne sont pas des outils. L'intérieur des outils garde son
+ * rendu.
+ */
+@media (hover: none) {
+  :root {
+    --ct-statusbar-height: 44px;
+  }
+
+  .top-bar .c-button.c-button,
+  .page:not(.tool) .c-button.c-button {
+    height: 44px;
+  }
+
+  .top-bar .n-switch,
+  .page:not(.tool) .n-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
