@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useShellCrumbs } from '~/app/shell';
 import { type CategoryId, categoryById } from '~/catalog/categories';
+import ToolContext from '~/components/ToolContext.vue';
 
 /**
  * Cadre de la page d'un outil, identique quelle que soit la source.
@@ -35,6 +36,8 @@ const props = withDefaults(defineProps<{
 });
 
 const { t } = useI18n();
+/** Le rail de contexte : pour une page d'outil, pas pour un espace de travail. */
+const hasContext = computed(() => !props.full && Boolean(props.category && props.slug));
 const category = computed(() => (props.category ? categoryById.get(props.category) : undefined));
 
 // Le fil d'Ariane s'affiche dans la barre du haut du châssis.
@@ -45,26 +48,29 @@ useShellCrumbs(() => [
 </script>
 
 <template>
-  <article class="tool" :class="full ? 'tool--full' : 'page'">
-    <header class="tool-header" :class="{ 'tool-header--wide': wide }">
-      <div class="title-row">
+  <div class="tool-layout" :class="{ 'tool-layout--context': hasContext }">
+    <article class="tool" :class="full ? 'tool--full' : 'page'">
+      <header class="tool-header" :class="{ 'tool-header--wide': wide }">
         <h1 class="title">
           {{ title }}
         </h1>
-        <div class="actions">
-          <slot name="actions" />
-        </div>
+        <p v-if="description" class="description">
+          {{ description }}
+        </p>
+      </header>
+
+      <div class="tool-content" :class="{ 'tool-content--wide': wide }">
+        <slot />
       </div>
+    </article>
 
-      <p v-if="description" class="description">
-        {{ description }}
-      </p>
-    </header>
+    <ToolContext v-if="hasContext" class="tool-context-rail" :category="props.category!" :slug="props.slug!" />
 
-    <div class="tool-content" :class="{ 'tool-content--wide': wide }">
-      <slot />
-    </div>
-  </article>
+    <!-- Les actions de l'outil vivent dans la barre du haut du châssis. -->
+    <Teleport defer to="#ct-topbar-actions">
+      <slot name="actions" />
+    </Teleport>
+  </div>
 </template>
 
 <style scoped>
@@ -85,40 +91,58 @@ useShellCrumbs(() => [
  */
 .tool-header {
   max-width: 600px;
-  margin: 0 auto 28px;
-  padding-top: 8px;
+  margin: 0 auto 24px;
 }
 
 .tool-header--wide {
   max-width: none;
 }
 
-.title-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
+/* 20 px au plus : un outil ouvert dix fois par jour n'a pas besoin d'un titre d'affiche. */
 .title {
   margin: 0;
-  font-size: clamp(24px, 4vw, 34px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-}
-
-.actions {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
+  font-size: var(--ct-font-size-page-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 
 .description {
-  margin: 10px 0 0;
+  margin: 4px 0 0;
   max-width: 68ch;
   color: var(--ct-text-muted);
-  line-height: 1.55;
+  font-size: var(--ct-font-size-ui);
+  line-height: 1.5;
+}
+
+/*
+ * Rail de contexte : à partir de 1280 px seulement. En dessous, il prendrait
+ * la place de l'outil pour des raccourcis dont on se passe.
+ */
+.tool-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.tool-layout .tool-context-rail {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .tool-layout--context {
+    grid-template-columns: minmax(0, 1fr) 256px;
+  }
+
+  .tool-layout .tool-context-rail {
+    display: flex;
+    position: sticky;
+    top: var(--ct-topbar-height);
+    align-self: start;
+    height: calc(100vh - var(--ct-topbar-height) - var(--ct-statusbar-height));
+    overflow-y: auto;
+    padding: 24px 16px;
+    border-left: 1px solid var(--ct-border);
+  }
 }
 
 /* Reprend la grille de tool.layout.vue d'IT-Tools, dont leurs outils dépendent. */

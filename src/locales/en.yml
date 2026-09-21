@@ -45,6 +45,20 @@ app:
   category:
     count: 'no tool | 1 tool | {n} tools'
     empty: 'No tool in this category yet.'
+    filterLabel: 'Filter this category'
+    filter: 'Filter… | Filter the tool… | Filter the {n} tools…'
+    noMatch: 'No tool in this category matches “{query}”.'
+
+  context:
+    label: 'Around this tool'
+    category: 'In this category'
+    all: 'The only tool | The only tool | All {n} tools'
+    shortcuts: Shortcuts
+    shortcutSearch: 'find a tool'
+    shortcutSlash: 'find, outside a field'
+    shortcutEscape: 'close the palette or drawer'
+    offline: Offline
+    offlineText: 'What you type here never leaves this tab. The site''s security policy forbids any connection to another domain — and the browser counts:'
 
   nav:
     settings: Settings

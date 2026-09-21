@@ -82,7 +82,7 @@
     "name": "cat-favori",
     "url": "http://localhost:5173/tools/hash-text",
     "scheme": "light",
-    "script": "(async () => { const star = document.querySelector('.actions .favorite'); star.click(); await new Promise(r => setTimeout(r, 200)); return { pressé: star.getAttribute('aria-pressed'), stockage: localStorage.getItem('cybertools:favorites') }; })()"
+    "script": "(async () => { const star = document.querySelector('#ct-topbar-actions .favorite'); star.click(); await new Promise(r => setTimeout(r, 200)); return { pressé: star.getAttribute('aria-pressed'), stockage: localStorage.getItem('cybertools:favorites') }; })()"
   },
   {
     "name": "cat-accueil-favoris-recents",
@@ -139,7 +139,19 @@
     "name": "cat-categorie",
     "url": "http://localhost:5173/categories/network",
     "scheme": "dark",
-    "script": "(() => { const ok = document.querySelector('h1').textContent.trim() === 'Network' && document.querySelector('.count').textContent.trim() === '33 tools' && document.querySelectorAll('.card').length === 33; return ok || { titre: document.querySelector('h1').textContent.trim(), compte: document.querySelector('.count').textContent.trim(), cartes: document.querySelectorAll('.card').length }; })()"
+    "script": "(() => { const ok = document.querySelector('h1').textContent.trim() === 'Network' && document.querySelector('.count').textContent.trim() === '33 tools' && document.querySelectorAll('.rows .tool-row').length === 33; return ok || { titre: document.querySelector('h1').textContent.trim(), compte: document.querySelector('.count').textContent.trim(), cartes: document.querySelectorAll('.rows .tool-row').length }; })()"
+  },
+  {
+    "name": "cat-categorie-filtre",
+    "url": "http://localhost:5173/categories/crypto?q=sha",
+    "scheme": "light",
+    "script": "(() => { const names = [...document.querySelectorAll('.rows .tool-row-name')].map(e => e.textContent.trim()); const field = document.querySelector('.filter-input'); return (field.value === 'sha' && names.length > 0 && names.length < 176 && names.slice(0, 3).includes('Hash text')) || { valeur: field.value, nombre: names.length, premiers: names.slice(0, 5) }; })()"
+  },
+  {
+    "name": "cat-categorie-filtre-vide",
+    "url": "http://localhost:5173/categories/crypto?q=zzqxw",
+    "scheme": "light",
+    "script": "(() => { const text = document.querySelector('.category .empty')?.textContent.trim(); return /^No tool in this category matches/.test(text ?? '') || text; })()"
   },
   {
     "name": "cat-outil-inconnu",

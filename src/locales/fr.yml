@@ -45,6 +45,20 @@ app:
   category:
     count: 'aucun outil | 1 outil | {n} outils'
     empty: 'Aucun outil dans cette catégorie pour le moment.'
+    filterLabel: 'Filtrer cette catégorie'
+    filter: 'Filtrer… | Filtrer l''outil… | Filtrer les {n} outils…'
+    noMatch: 'Aucun outil de cette catégorie ne correspond à « {query} ».'
+
+  context:
+    label: 'Autour de cet outil'
+    category: 'Dans cette catégorie'
+    all: 'Le seul outil | Le seul outil | Les {n} outils'
+    shortcuts: Raccourcis
+    shortcutSearch: 'chercher un outil'
+    shortcutSlash: 'chercher, hors d''un champ'
+    shortcutEscape: 'fermer la palette ou le tiroir'
+    offline: 'Hors ligne'
+    offlineText: 'Ce que vous saisissez ici ne quitte pas l''onglet. La politique de sécurité du site interdit toute connexion vers un autre domaine — et le navigateur compte :'
 
   nav:
     settings: Paramètres

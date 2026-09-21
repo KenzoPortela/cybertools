@@ -135,7 +135,13 @@ useHead(computed(() => ({
     :full="tool.layout === 'full'"
   >
     <template #actions>
-      <c-button v-if="tool.alsoAvailableAs?.kind === 'cc-recipe'" size="small" class="recipes-link" @click="openInRecipes">
+      <c-button
+        v-if="tool.alsoAvailableAs?.kind === 'cc-recipe'"
+        size="small"
+        class="recipes-link"
+        :aria-label="t('app.recipes.openIn')"
+        @click="openInRecipes"
+      >
         <icon-mdi-chef-hat class="recipes-link-icon" aria-hidden="true" />
         <span class="recipes-link-label">{{ t('app.recipes.openIn') }}</span>
       </c-button>

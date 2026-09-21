@@ -391,6 +391,11 @@ function exactDate(at: number) {
   font-size: 18px;
 }
 
+.tile-icon :deep(svg) {
+  width: 18px;
+  height: 18px;
+}
+
 .tile-body {
   display: flex;
   flex-direction: column;

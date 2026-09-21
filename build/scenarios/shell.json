@@ -79,7 +79,8 @@
     "width": 390,
     "height": 844,
     "mobile": true,
-    "scheme": "dark"
+    "scheme": "dark",
+    "script": "(() => { const button = document.querySelector('#ct-topbar-actions .recipes-link'); return (button?.getAttribute('aria-label') === 'Open in Recipes' && getComputedStyle(button.querySelector('.recipes-link-label')).display === 'none') || button?.outerHTML.slice(0, 200); })()"
   },
   {
     "name": "atelier-pleine-largeur",
@@ -138,6 +139,34 @@
     "url": "http://localhost:5173/",
     "scheme": "light",
     "script": "(async () => { const img = new Image(); img.src = 'http://[::1]:5173/favicon.svg?sonde=' + Date.now(); await new Promise(r => { img.onload = img.onerror = r; }); await new Promise(r => setTimeout(r, 500)); const net = document.querySelector('.status-network'); return (net.textContent.trim() === '1 external request' && !!net.querySelector('.status-dot--warning') && net.title.includes('http://[::1]:5173')) || { text: net.textContent.trim(), title: net.title }; })()"
+  },
+  {
+    "name": "outil-en-tete",
+    "url": "http://localhost:5173/tools/hash-text",
+    "width": 1440,
+    "height": 900,
+    "scheme": "dark",
+    "script": "(() => { const title = document.querySelector('.tool .title'); const rail = document.querySelector('.tool-context-rail'); const links = [...rail.querySelectorAll('.context-link')].map(a => a.getAttribute('href')); const more = rail.querySelector('.context-more')?.getAttribute('href'); const ok = !!document.querySelector('#ct-topbar-actions .favorite') && getComputedStyle(title).fontSize === '20px' && getComputedStyle(rail).display === 'flex' && links.length === 8 && !links.includes('/tools/hash-text') && more === '/categories/crypto'; return ok || { favori: !!document.querySelector('#ct-topbar-actions .favorite'), taille: getComputedStyle(title).fontSize, rail: getComputedStyle(rail).display, links, more }; })()"
+  },
+  {
+    "name": "outil-contexte-masque",
+    "url": "http://localhost:5173/tools/hash-text",
+    "width": 1200,
+    "height": 800,
+    "scheme": "light",
+    "script": "getComputedStyle(document.querySelector('.tool-context-rail')).display === 'none'"
+  },
+  {
+    "name": "rail-epingle-prepa",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(() => { localStorage.setItem('cybertools:favorites', JSON.stringify(['hash-text', 'to-hex'])); return true; })()"
+  },
+  {
+    "name": "rail-epingle",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(() => { const sizes = [...document.querySelectorAll('#ct-rail-pinned .rail-icon')].map(i => Math.round(i.getBoundingClientRect().width) + 'x' + Math.round(i.getBoundingClientRect().height)); localStorage.removeItem('cybertools:favorites'); return (sizes.length === 2 && sizes.every(s => s === '16x16')) || sizes; })()"
   },
   {
     "name": "rail-replie",

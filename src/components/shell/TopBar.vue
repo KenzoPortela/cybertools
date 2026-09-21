@@ -6,7 +6,9 @@ import PathCrumb from '~/components/PathCrumb.vue';
 
 /**
  * Barre du haut : où l'on est (le fil d'Ariane que la page a déclaré), et à
- * droite les actions propres à la page, par le slot `actions`.
+ * droite les actions propres à la page. Celles-ci y sont téléportées
+ * (`<Teleport defer to="#ct-topbar-actions">`) : la barre appartient au
+ * châssis, les actions à la page.
  *
  * Quand le rail passe en tiroir, elle porte aussi le bouton qui l'ouvre et la
  * marque, que le rail n'affiche plus.
@@ -47,9 +49,7 @@ defineExpose({ focusMenu: () => menuButton.value?.focus() });
 
     <PathCrumb :segments="shellCrumbs" class="top-bar-crumb" />
 
-    <div class="top-bar-actions">
-      <slot name="actions" />
-    </div>
+    <div id="ct-topbar-actions" class="top-bar-actions" />
   </header>
 </template>
 

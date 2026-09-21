@@ -351,6 +351,15 @@ function hint(label: string) {
   font-size: 16px;
 }
 
+/*
+ * Taille explicite : les icônes des outils d'IT-Tools n'en ont pas, et
+ * s'étireraient sur toute la largeur disponible.
+ */
+svg.rail-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .rail-item-label {
   flex: 1;
   min-width: 0;

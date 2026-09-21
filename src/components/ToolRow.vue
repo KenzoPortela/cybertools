@@ -16,15 +16,21 @@ import FavoriteButton from '~/components/FavoriteButton.vue';
  * bouton dans un lien serait invalide, et le lien s'étend sous la ligne entière
  * par un pseudo-élément.
  */
-defineProps<{
+withDefaults(defineProps<{
   tool: LocalizedTool;
   /** Afficher la description, en gris, après le nom. */
   description?: boolean;
+  /** Afficher la catégorie ; superflu sur la page de cette catégorie. */
+  category?: boolean;
   /** Mesure à droite, en mono : `2 min`, `12`. */
   meta?: string;
   /** Texte complet de la mesure, en infobulle (`ouvert 12 fois`, date exacte). */
   metaTitle?: string;
-}>();
+}>(), {
+  category: true,
+  meta: undefined,
+  metaTitle: undefined,
+});
 
 function iconOf(tool: LocalizedTool) {
   return tool.icon ?? categoryById.get(tool.category)?.icon;
@@ -41,7 +47,7 @@ function iconOf(tool: LocalizedTool) {
     </RouterLink>
     <span v-if="description" class="tool-row-description">{{ tool.localizedDescription }}</span>
     <span class="tool-row-info">
-      <span class="tool-row-category ct-mono">{{ tool.localizedCategory.toLowerCase() }}</span>
+      <span v-if="category" class="tool-row-category ct-mono">{{ tool.localizedCategory.toLowerCase() }}</span>
       <span v-if="meta" class="tool-row-meta ct-mono" :title="metaTitle">{{ meta }}</span>
     </span>
     <span class="tool-row-actions">
@@ -78,6 +84,12 @@ function iconOf(tool: LocalizedTool) {
   background: var(--ct-primary-faded);
   color: var(--ct-primary);
   font-size: 14px;
+}
+
+/* Les icônes des outils d'IT-Tools n'ont pas de taille propre. */
+.tool-row-icon :deep(svg) {
+  width: 14px;
+  height: 14px;
 }
 
 .tool-row-link {
