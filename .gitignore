@@ -32,3 +32,6 @@ npm-debug.log*
 
 # Moteur CyberChef construit et index de ses opérations (npm run cyberchef:build)
 src/generated/
+
+# Resources pour redesign de l'interface
+redesign/
