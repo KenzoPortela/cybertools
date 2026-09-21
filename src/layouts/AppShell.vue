@@ -38,11 +38,14 @@ const isWide = useMediaQuery('(min-width: 1024px)');
  * la largeur, le rail s'y replie de lui-même. Ce repli ne touche pas au réglage
  * enregistré ; le bouton du rail le défait, le temps de la visite.
  */
-const inWorkspace = computed(() => {
-  if (route.name !== 'tool') return false;
-  const layout = catalog.toolForSlug(String(route.params.slug))?.layout;
-  return layout === 'full' || layout === 'workspace';
-});
+const currentLayout = computed(() => (route.name === 'tool' ? catalog.toolForSlug(String(route.params.slug))?.layout : undefined));
+const inWorkspace = computed(() => currentLayout.value === 'full' || currentLayout.value === 'workspace');
+/**
+ * L'atelier en panneaux a ses propres pieds, alignés sur chaque panneau : la
+ * barre d'état globale s'efface pour ne pas en empiler deux. Le compteur de
+ * requêtes externes, lui, reste affiché, dans le pied de l'atelier.
+ */
+const statusHidden = computed(() => currentLayout.value === 'workspace');
 const expandedHere = ref(false);
 watch(() => route.path, () => {
   expandedHere.value = false;
@@ -115,7 +118,7 @@ watch(paletteOpen, (open) => {
 <template>
   <div
     class="shell"
-    :class="{ 'shell--collapsed': collapsed, 'shell--drawer-open': drawerOpen }"
+    :class="{ 'shell--collapsed': collapsed, 'shell--drawer-open': drawerOpen, 'shell--no-status': statusHidden }"
   >
     <NavRail
       id="ct-nav-rail"
@@ -135,7 +138,7 @@ watch(paletteOpen, (open) => {
         <slot />
       </main>
 
-      <StatusBar />
+      <StatusBar v-if="!statusHidden" />
       <TabBar @open-pinned="openDrawer('pinned')" />
     </div>
 
@@ -155,6 +158,10 @@ watch(paletteOpen, (open) => {
 
 .shell--collapsed {
   grid-template-columns: var(--ct-rail-collapsed-width) minmax(0, 1fr);
+}
+
+.shell--no-status {
+  --ct-chrome-bottom: 0px;
 }
 
 .shell-rail {

@@ -52,7 +52,7 @@ export interface BakeRecord {
 }
 
 /** Longueur en octets d'un texte encodé en UTF-8, sans le recopier. */
-function utf8Length(text: string) {
+export function utf8Length(text: string) {
   let bytes = 0;
   for (let i = 0; i < text.length; i++) {
     const code = text.charCodeAt(i);

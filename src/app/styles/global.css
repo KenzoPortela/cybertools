@@ -100,6 +100,8 @@ textarea {
   --ct-topbar-height: 48px;
   --ct-statusbar-height: 28px;
   --ct-tabbar-height: 56px;
+  /* Ce que le châssis occupe en bas : la barre d'état, ou rien quand un espace de travail la masque. */
+  --ct-chrome-bottom: var(--ct-statusbar-height);
 }
 
 /* Un élément atteint au clavier ne doit pas finir sous une barre collante. */

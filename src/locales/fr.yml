@@ -210,6 +210,28 @@ app:
 
   cc:
     parameters: Paramètres
+    inputView: 'Vue de l''entrée'
+    outputView: 'Vue de la sortie'
+    tabs:
+      text: texte
+      hex: hex
+      file: fichier
+      raw: brut
+      tree: arbre
+      diff: diff
+    clearInput: 'Vider l''entrée'
+    cursor: 'ln {line}, col {col}'
+    entropy: 'entropie {value}'
+    resembles: 'ressemble à : {chain}'
+    sniffBinary: binaire
+    runShortcut: exécuter
+    dropHere: 'Déposez un fichier ici, ou choisissez-en un : ses octets deviennent l''entrée. Rien n''est envoyé.'
+    hexTruncated: 'Seuls les {size} premiers sont affichés.'
+    noBytes: 'Aucun octet à montrer.'
+    notJson: 'La sortie n''est pas du JSON.'
+    diffNeedsText: 'La comparaison demande une entrée et une sortie en texte.'
+    diffTooLarge: 'Trop de lignes pour les comparer ici.'
+    treeMore: '… et {count} de plus'
     switchOn: activé
     switchOff: désactivé
     input: Entrée
@@ -751,6 +773,13 @@ app:
     hintAdd: ajouter
     hintReplace: remplacer
     noSettings: 'aucun réglage'
+    stepCount: '0 étape | 1 étape | {n} étapes'
+    ignoredCount: '0 ignorée | 1 ignorée | {n} ignorées'
+    errorCount: '0 erreur | 1 erreur | {n} erreurs'
+    runDone: exécutée
+    runFailed: 'en échec'
+    runBusy: 'en cours…'
+    runIdle: 'en attente d''une entrée'
     resume: Reprendre la dernière recette ({count} étape) | Reprendre la dernière recette ({count} étapes)
     openIn: Ouvrir dans les Recettes
     continueIn: Continuer dans les Recettes

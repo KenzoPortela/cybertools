@@ -1,14 +1,21 @@
 <script setup lang="ts">
 /**
- * Panneau de sortie d'une opération ou d'une recette : texte (binaire signalé),
- * ou HTML assaini ; copie et téléchargement.
+ * Panneau de sortie d'une opération ou d'une recette.
+ *
+ * Quatre vues : le texte brut (avec l'offset de chaque ligne), les octets en
+ * hexadécimal, l'arbre quand la sortie est du JSON, et la différence avec
+ * l'entrée. Une sortie HTML (tableaux, graphiques) est assainie avant d'être
+ * affichée. Copie et téléchargement dans l'en-tête.
  */
 import { NAlert, NButton, NSpin } from 'naive-ui';
 import { useCopy } from '@/composable/copy';
 import { type BakeResult, chefClient } from '~/integrations/cyberchef/chef-client';
+import CodeView from '~/integrations/cyberchef/components/CodeView.vue';
+import JsonTree from '~/integrations/cyberchef/components/JsonTree.vue';
+import { hexdump, lineDiff, parseJson } from '~/integrations/cyberchef/data-view';
 import { decodeOutput, downloadBytes, formatBytes, sanitizeHtml } from '~/integrations/cyberchef/output';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   result?: BakeResult;
   busy: boolean;
   /** Le calcul dure : on affiche l'état du worker et un bouton d'annulation. */
@@ -24,9 +31,19 @@ const props = defineProps<{
   warning?: string;
   /** Nom de base des fichiers téléchargés. */
   filename: string;
-}>();
+  /** L'entrée en texte, pour la vue « diff » ; absente quand l'entrée est un fichier. */
+  source?: string;
+  variant?: 'card' | 'pane';
+}>(), {
+  result: undefined,
+  errorTitle: undefined,
+  warning: undefined,
+  source: undefined,
+  variant: 'card',
+});
 
 const { t } = useI18n();
+const titleId = useId();
 
 const decoded = computed(() => (props.result?.bytes ? decodeOutput(props.result.bytes) : undefined));
 const html = computed(() => (props.result?.html ? sanitizeHtml(props.result.html) : undefined));
@@ -43,10 +60,80 @@ function download() {
     downloadBytes(props.result.bytes, `${props.filename}.${decoded.value?.binary ? 'bin' : 'txt'}`);
   }
 }
+
+// --- Vues ----------------------------------------------------------------------
+
+type Tab = 'raw' | 'hex' | 'tree' | 'diff';
+const TABS: Tab[] = ['raw', 'hex', 'tree', 'diff'];
+const tab = ref<Tab>('raw');
+
+const json = computed(() => (html.value || decoded.value?.binary ? undefined : parseJson(outputText.value)));
+
+/** Pourquoi une vue n'est pas proposée ; `undefined` si elle l'est. */
+const unavailable = computed<Record<Tab, string | undefined>>(() => ({
+  raw: undefined,
+  hex: props.result?.bytes ? undefined : t('app.cc.noBytes'),
+  tree: json.value ? undefined : t('app.cc.notJson'),
+  diff: props.source === undefined || html.value ? t('app.cc.diffNeedsText') : undefined,
+}));
+
+// Une vue devenue sans objet (la sortie n'est plus du JSON) rend la main au brut.
+watch(unavailable, (reasons) => {
+  if (reasons[tab.value]) tab.value = 'raw';
+});
+
+const hex = computed(() => (tab.value === 'hex' && props.result?.bytes ? hexdump(new Uint8Array(props.result.bytes)) : undefined));
+const diff = computed(() => (tab.value === 'diff' && props.source !== undefined ? lineDiff(props.source, outputText.value) : undefined));
+const diffSign = { same: ' ', added: '+', removed: '-' } as const;
+
+function onTabKey(event: KeyboardEvent) {
+  const delta = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+  if (!delta) return;
+  event.preventDefault();
+  const available = TABS.filter(id => !unavailable.value[id]);
+  tab.value = available[(available.indexOf(tab.value) + delta + available.length) % available.length];
+  nextTick(() => (event.currentTarget as HTMLElement | null)?.parentElement?.querySelector<HTMLElement>('[aria-selected="true"]')?.focus());
+}
 </script>
 
 <template>
-  <c-card :title="t('app.cc.output')" class="cc-output" :aria-busy="busy">
+  <section class="io-panel cc-output" :class="`io-panel--${variant}`" :aria-labelledby="titleId" :aria-busy="busy">
+    <header class="io-head">
+      <h2 :id="titleId" class="io-title ct-mono">
+        {{ t('app.cc.output') }}
+      </h2>
+      <span v-if="result && !result.error" class="io-meta ct-mono">
+        {{ result.html ? 'HTML' : formatBytes(decoded?.size ?? 0) }} · {{ result.duration }} ms
+      </span>
+
+      <div class="io-tabs" role="tablist" :aria-label="t('app.cc.outputView')">
+        <button
+          v-for="id in TABS"
+          :key="id"
+          type="button"
+          class="io-tab"
+          role="tab"
+          :aria-selected="tab === id"
+          :tabindex="tab === id ? 0 : -1"
+          :disabled="Boolean(unavailable[id])"
+          :title="unavailable[id]"
+          @click="tab = id"
+          @keydown="onTabKey"
+        >
+          {{ t(`app.cc.tabs.${id}`) }}
+        </button>
+      </div>
+
+      <div class="io-actions">
+        <button type="button" class="io-action" :aria-label="t('app.cc.copy')" :title="t('app.cc.copy')" :disabled="!outputText" @click="copy()">
+          <icon-mdi-content-copy aria-hidden="true" />
+        </button>
+        <button type="button" class="io-action" :aria-label="t('app.cc.download')" :title="t('app.cc.download')" :disabled="!result?.bytes && !result?.html" @click="download">
+          <icon-mdi-download aria-hidden="true" />
+        </button>
+      </div>
+    </header>
+
     <div v-if="slow" class="state">
       <NSpin size="small" />
       <span>{{ chefClient.status.value || t('app.cc.running') }}</span>
@@ -55,93 +142,82 @@ function download() {
       </NButton>
     </div>
 
-    <NAlert v-if="visibleError" type="error" :title="errorTitle || t('app.cc.opError')" class="alert op-error">
-      <pre class="error-text">{{ visibleError }}</pre>
-    </NAlert>
-
-    <template v-else-if="result?.error" />
-
-    <!-- eslint-disable-next-line vue/no-v-html — assaini par DOMPurify -->
-    <div v-else-if="html" class="html-output" v-html="html" />
-
-    <template v-else>
-      <NAlert v-if="warning && !inputEmpty" type="warning" class="alert stopped-notice" :show-icon="false">
-        {{ warning }}
+    <div class="io-body" role="tabpanel" :aria-label="t(`app.cc.tabs.${tab}`)">
+      <NAlert v-if="visibleError" type="error" :title="errorTitle || t('app.cc.opError')" class="alert op-error">
+        <pre class="error-text">{{ visibleError }}</pre>
       </NAlert>
-      <NAlert v-if="decoded?.binary" type="warning" class="alert binary-notice" :show-icon="false">
-        {{ t('app.cc.binary', { size: formatBytes(decoded.size) }) }}
-      </NAlert>
-      <c-input-text
-        :value="outputText"
-        multiline
-        rows="10"
-        readonly
-        raw-text
-        :placeholder="t('app.cc.outputPlaceholder')"
-        class="mono"
-      />
-      <p v-if="decoded?.truncated" class="hint">
-        {{ t('app.cc.truncated', { size: formatBytes(decoded.size) }) }}
-      </p>
-    </template>
 
-    <div class="actions">
-      <c-button :disabled="!outputText" @click="copy()">
-        <icon-mdi-content-copy class="button-icon" aria-hidden="true" />
-        {{ t('app.cc.copy') }}
-      </c-button>
-      <c-button :disabled="!result?.bytes && !result?.html" @click="download">
-        <icon-mdi-download class="button-icon" aria-hidden="true" />
-        {{ t('app.cc.download') }}
-      </c-button>
-      <span v-if="result && !result.error" class="meta">
-        {{ result.html ? 'HTML' : formatBytes(decoded?.size ?? 0) }} · {{ result.duration }} ms
-      </span>
+      <template v-else-if="result?.error" />
+
+      <!-- eslint-disable-next-line vue/no-v-html — assaini par DOMPurify -->
+      <div v-else-if="html" class="html-output" v-html="html" />
+
+      <template v-else-if="tab === 'raw'">
+        <NAlert v-if="warning && !inputEmpty" type="warning" class="alert stopped-notice" :show-icon="false">
+          {{ warning }}
+        </NAlert>
+        <NAlert v-if="decoded?.binary" type="warning" class="alert binary-notice" :show-icon="false">
+          {{ t('app.cc.binary', { size: formatBytes(decoded.size) }) }}
+        </NAlert>
+        <CodeView
+          :value="outputText"
+          readonly
+          gutter="offsets"
+          :label="t('app.cc.output')"
+          :placeholder="t('app.cc.outputPlaceholder')"
+        />
+        <p v-if="decoded?.truncated" class="io-note">
+          {{ t('app.cc.truncated', { size: formatBytes(decoded.size) }) }}
+        </p>
+      </template>
+
+      <template v-else-if="tab === 'hex'">
+        <pre class="io-pre ct-mono">{{ hex?.text }}</pre>
+        <p v-if="hex?.truncated" class="io-note">
+          {{ t('app.cc.hexTruncated', { size: formatBytes(64 * 1024) }) }}
+        </p>
+      </template>
+
+      <div v-else-if="tab === 'tree' && json" class="tree">
+        <JsonTree :value="json.value" />
+      </div>
+
+      <template v-else-if="tab === 'diff'">
+        <pre v-if="diff" class="io-pre diff ct-mono"><span
+          v-for="(line, index) in diff"
+          :key="index"
+          class="diff-line"
+          :class="`diff-line--${line.kind}`"
+        >{{ diffSign[line.kind] }} {{ line.text }}</span></pre>
+        <p v-else class="io-note">
+          {{ t('app.cc.diffTooLarge') }}
+        </p>
+      </template>
     </div>
-  </c-card>
+  </section>
 </template>
 
+<style scoped src="./io-panel.css"></style>
+
 <style scoped>
-.cc-output {
-  min-width: 0;
-}
-
-/* Sur le conteneur : leur textarea impose « font-family: inherit » avec un sélecteur plus fort. */
-.mono :deep(.input-wrapper) {
-  font-family: var(--ct-font-mono);
-  font-size: 13px;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.button-icon {
-  margin-right: 6px;
-}
-
-.meta {
-  margin-left: auto;
-  font-size: 12px;
-  color: var(--ct-text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
 .state {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
-  font-size: 13px;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--ct-border);
   color: var(--ct-text-muted);
+  font-size: var(--ct-font-size-secondary);
 }
 
 .alert {
-  margin-bottom: 10px;
+  flex-shrink: 0;
+  margin: 8px 12px 0;
+}
+
+.io-body > .alert:last-of-type {
+  margin-bottom: 8px;
 }
 
 .error-text {
@@ -151,15 +227,37 @@ function download() {
   font-size: 12px;
 }
 
-.hint {
-  margin: 6px 0 0;
-  font-size: 12px;
-  color: var(--ct-text-muted);
+/* Page d'opération : une sortie HTML (tableau, graphique) prend la hauteur qu'il lui faut. */
+.io-panel--card .io-body:has(.html-output) {
+  height: auto;
+  max-height: 520px;
+}
+
+.tree {
+  flex: 1;
+  min-height: 0;
+  padding: 8px 12px;
+  overflow: auto;
+}
+
+.diff-line {
+  display: block;
+  white-space: pre;
+}
+
+.diff-line--added {
+  background: color-mix(in srgb, var(--ct-success) 14%, transparent);
+}
+
+.diff-line--removed {
+  background: color-mix(in srgb, var(--ct-error) 14%, transparent);
 }
 
 /* Sorties HTML de CyberChef : tableaux, rendus d'image, graphiques. */
 .html-output {
-  max-height: 520px;
+  flex: 1;
+  min-height: 0;
+  padding: 8px 12px;
   overflow: auto;
   font-size: 13px;
 }

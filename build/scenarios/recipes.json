@@ -149,7 +149,7 @@
     "width": 1440,
     "height": 900,
     "scheme": "dark",
-    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .pane--ops input'); i++) await sleep(100); const widths = [...document.querySelectorAll('.workbench .pane')].map(p => Math.round(p.getBoundingClientRect().width)); const height = Math.round(document.querySelector('.workbench').getBoundingClientRect().height); const rail = Math.round(document.querySelector('.rail').getBoundingClientRect().width); const actions = document.querySelector('.workbench-actions').getBoundingClientRect().left; const star = document.querySelector('#ct-topbar-actions .favorite').getBoundingClientRect().left; const ok = widths[0] === 236 && widths[1] === 398 && widths[2] > 600 && height === 900 - 48 - 28 && rail === 48 && actions < star; return ok || { widths, height, rail, actions, star }; })()"
+    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .pane--ops input'); i++) await sleep(100); const widths = [...document.querySelectorAll('.workbench .pane')].map(p => Math.round(p.getBoundingClientRect().width)); const height = Math.round(document.querySelector('.workbench').getBoundingClientRect().height); const rail = Math.round(document.querySelector('.rail').getBoundingClientRect().width); const actions = document.querySelector('.workbench-actions').getBoundingClientRect().left; const star = document.querySelector('#ct-topbar-actions .favorite').getBoundingClientRect().left; const ok = widths[0] === 236 && widths[1] === 398 && widths[2] > 600 && height === 900 - 48 && !document.querySelector('.status-bar') && rail === 48 && actions < star; return ok || { widths, height, rail, actions, star }; })()"
   },
   {
     "name": "atelier-redimension",
@@ -173,7 +173,7 @@
     "width": 900,
     "height": 900,
     "scheme": "dark",
-    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .pane--ops input'); i++) await sleep(100); const panes = [...document.querySelectorAll('.workbench .pane')].map(p => p.getBoundingClientRect()); const stacked = panes[0].bottom <= panes[1].top && panes[1].bottom <= panes[2].top; const resizers = [...document.querySelectorAll('.pane-resizer')].every(r => getComputedStyle(r).display === 'none'); return (stacked && resizers) || { stacked, resizers }; })()"
+    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .pane--ops input'); i++) await sleep(100); const panes = [...document.querySelectorAll('.workbench .pane')].map(p => p.getBoundingClientRect()); const stacked = panes[0].bottom <= panes[1].top && panes[1].bottom <= panes[2].top; const resizers = [...document.querySelectorAll('.pane-resizer')].every(r => getComputedStyle(r).display === 'none'); const io = ['.cc-input', '.cc-output', '.run-banner'].map(sel => document.querySelector(sel).getBoundingClientRect()); const ioStacked = io[0].bottom <= io[1].top + 1 && io[1].bottom <= io[2].top + 1 && io.every(b => b.height > 20); return (stacked && resizers && ioStacked) || { stacked, resizers, io: io.map(b => [Math.round(b.top), Math.round(b.height)]) }; })()"
   },
   {
     "name": "ops-groupes",
@@ -198,6 +198,30 @@
     "height": 900,
     "scheme": "dark",
     "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); for (let i = 0; i < 150 && !document.querySelector('.workbench .ops-search'); i++) await sleep(100); for (let i = 0; i < 50 && !document.querySelector('.steps .step'); i++) await sleep(100); const step = document.querySelector('.steps .step'); const head = Math.round(step.querySelector('.step-head').getBoundingClientRect().height); const columns = getComputedStyle(step.querySelector('.params-grid')).gridTemplateColumns.split(' ').length; const rail = step.querySelector('.n-switch__rail'); const switchSize = Math.round(rail.getBoundingClientRect().width) + 'x' + Math.round(rail.getBoundingClientRect().height); const move = getComputedStyle(step.querySelector('.step-action--move')).opacity; const label = step.querySelector('.n-switch').getAttribute('aria-label'); return (head === 32 && columns === 2 && switchSize === '22x13' && move === '0' && !!label) || { head, columns, switchSize, move, label }; })()"
+  },
+  {
+    "name": "io-ressemble-et-bandeau",
+    "url": "http://localhost:5173/tools/recipes#recipe=From_Base64('A-Za-z0-9%2B/%3D',true,false)Gunzip()",
+    "width": 1440,
+    "height": 900,
+    "scheme": "dark",
+    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const until = async (test, timeout = 15000) => { for (const t0 = performance.now(); performance.now() - t0 < timeout;) { const v = test(); if (v) return v; await sleep(100); } return null; };\n  const type = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };\n  const text = sel => document.querySelector(sel)?.textContent.replace(/\\s+/g, ' ').trim();\n  await until(() => document.querySelector('.io-column textarea'));\n  type(document.querySelector('.io-column textarea'), 'H4sIAAAAAAAACvNIzcnJVyjPL8pJ0VFIK8rPVUiuTEotKsnPzylWBAC4xs7eHQAAAA==');\n  await until(() => document.querySelector('.run-state--done'));\n  await sleep(400);\n  const strip = text('.cc-input .io-strip');\n  const banner = [...document.querySelectorAll('.run-banner > span')].map(e => e.textContent.replace(/\\s+/g, ' ').trim()).join(' | ');\n  const out = document.querySelectorAll('.io-column textarea')[1].value;\n  return (/looks like: base64 → GZIP/.test(strip) && /^done \\| 68 o → 29 o \\| \\d+ ms \\| 2 steps · 0 errors \\| 0 external requests$/.test(banner) && out === 'Hello world, from cybertools!') || { strip, banner, out };\n})()"
+  },
+  {
+    "name": "io-gouttieres",
+    "url": "http://localhost:5173/tools/recipes#recipe=To_Upper_case('All')",
+    "width": 1440,
+    "height": 900,
+    "scheme": "light",
+    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const until = async (test, timeout = 15000) => { for (const t0 = performance.now(); performance.now() - t0 < timeout;) { const v = test(); if (v) return v; await sleep(100); } return null; };\n  const type = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };\n  const text = sel => document.querySelector(sel)?.textContent.replace(/\\s+/g, ' ').trim();\n  await until(() => document.querySelector('.io-column textarea'));\n  type(document.querySelector('.io-column textarea'), 'un\\ndeux\\ntrois');\n  await until(() => document.querySelectorAll('.io-column textarea')[1].value === 'UN\\nDEUX\\nTROIS');\n  await sleep(300);\n  const gutters = [...document.querySelectorAll('.io-column .code-gutter')].map(g => [...g.querySelectorAll('.code-gutter-line')].map(l => l.textContent.trim()).join(','));\n  return (gutters[0] === '1,2,3' && gutters[1] === '00000000,00000003,00000008') || gutters;\n})()"
+  },
+  {
+    "name": "io-onglets",
+    "url": "http://localhost:5173/tools/recipes#recipe=JSON_Minify()",
+    "width": 1440,
+    "height": 900,
+    "scheme": "dark",
+    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms));\n  const until = async (test, timeout = 15000) => { for (const t0 = performance.now(); performance.now() - t0 < timeout;) { const v = test(); if (v) return v; await sleep(100); } return null; };\n  const type = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };\n  const text = sel => document.querySelector(sel)?.textContent.replace(/\\s+/g, ' ').trim();\n  await until(() => document.querySelector('.io-column textarea'));\n  type(document.querySelector('.io-column textarea'), '{ \"a\": 1, \"b\": [true, null] }');\n  await until(() => document.querySelectorAll('.io-column textarea')[1]?.value === '{\"a\":1,\"b\":[true,null]}');\n  const tabs = () => [...document.querySelectorAll('.cc-output [role=tab]')];\n  const pick = name => tabs().find(b => b.textContent.trim() === name).click();\n  const disabled = tabs().filter(b => b.disabled).map(b => b.textContent.trim());\n  pick('hex'); await sleep(300);\n  const hex = document.querySelector('.cc-output .io-pre')?.textContent.slice(0, 8);\n  pick('tree'); await sleep(300);\n  const leaves = [...document.querySelectorAll('.cc-output .leaf')].map(l => l.textContent.replace(/\\s+/g, '')).join(',');\n  pick('diff'); await sleep(300);\n  const diff = [...document.querySelectorAll('.cc-output .diff-line')].map(l => l.className.replace('diff-line diff-line--', '')[0]).join('');\n  return (disabled.length === 0 && hex === '00000000' && leaves === 'a1,0true,1null' && diff.startsWith('r') && diff.includes('a')) || { disabled, hex, leaves, diff };\n})()"
   },
   {
     "scheme": "light",

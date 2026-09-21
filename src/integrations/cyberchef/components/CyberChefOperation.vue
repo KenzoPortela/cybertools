@@ -111,6 +111,7 @@ const description = computed(() => (config.value ? sanitizeHtml(config.value.des
           :busy="busy"
           :slow="slow"
           :input-empty="!file && input === ''"
+          :source="file ? undefined : input"
           :filename="slug"
         />
       </div>

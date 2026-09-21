@@ -1,0 +1,224 @@
+/*
+ * Panneaux d'entrée et de sortie, partagés par CcInput et CcOutput.
+ *
+ * Deux habillages : `card` sur la page d'une opération (un bloc parmi
+ * d'autres), `pane` dans l'atelier (plein cadre, les deux panneaux se
+ * partagent la hauteur).
+ */
+
+.io-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  font-size: var(--ct-font-size-ui);
+}
+
+.io-panel--card {
+  overflow: hidden;
+  border: 1px solid var(--ct-border);
+  border-radius: var(--ct-radius-panel);
+  background: var(--ct-surface);
+}
+
+.io-panel--pane {
+  flex: 1 1 0;
+}
+
+/* --- En-tête : titre, mesure, onglets, actions ---------------------------- */
+
+.io-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  flex-shrink: 0;
+  min-height: 40px;
+  /* Étroit (carte d'une page d'opération) : onglets et actions passent à la ligne plutôt que d'être coupés. */
+  padding: 6px 8px 6px 12px;
+  border-bottom: 1px solid var(--ct-border);
+}
+
+.io-title {
+  margin: 0;
+  color: var(--ct-text-faint);
+  font-size: var(--ct-font-size-label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.io-meta {
+  color: var(--ct-text-faint);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.io-tabs {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+  padding: 2px;
+  border-radius: var(--ct-radius-control);
+  background: var(--ct-neutral);
+}
+
+.io-tab {
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--ct-radius-micro);
+  background: transparent;
+  color: var(--ct-text-muted);
+  font-family: var(--ct-font-mono);
+  font-size: var(--ct-font-size-secondary);
+  cursor: pointer;
+}
+
+.io-tab:hover:not(:disabled) {
+  color: var(--ct-text);
+}
+
+.io-tab[aria-selected='true'] {
+  background: var(--ct-surface-raised);
+  box-shadow: 0 0 0 1px var(--ct-border);
+  color: var(--ct-text);
+}
+
+.io-tab:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.io-actions {
+  display: flex;
+  gap: 2px;
+}
+
+.io-action {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ct-radius-control);
+  background: transparent;
+  color: var(--ct-text-muted);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.io-action:hover:not(:disabled) {
+  background: var(--ct-elevated);
+  color: var(--ct-text);
+}
+
+.io-action:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* --- Corps ---------------------------------------------------------------- */
+
+.io-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.io-panel--card .io-body {
+  height: 240px;
+}
+
+.io-panel--pane .io-body {
+  flex: 1;
+}
+
+.io-pre {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 8px 12px;
+  overflow: auto;
+  background: var(--ct-input-background);
+  color: var(--ct-text);
+  font-size: var(--ct-font-size-data);
+  line-height: 20px;
+  white-space: pre;
+}
+
+.io-placeholder {
+  color: var(--ct-text-faint);
+}
+
+.io-note {
+  margin: 0;
+  padding: 6px 12px;
+  border-top: 1px solid var(--ct-border);
+  color: var(--ct-text-faint);
+  font-size: var(--ct-font-size-secondary);
+}
+
+/* --- Bandeau d'état du panneau ---------------------------------------------- */
+
+.io-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  min-height: 28px;
+  padding: 0 12px;
+  border-top: 1px solid var(--ct-border);
+  color: var(--ct-text-faint);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.io-strip > * + *:not(.io-strip-end) {
+  padding-left: 12px;
+  border-left: 1px solid var(--ct-border);
+}
+
+.io-strip-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.button-icon {
+  margin-right: 6px;
+}
+
+@media (hover: none) {
+  .io-tab {
+    height: 40px;
+    padding: 0 12px;
+  }
+
+  .io-action {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/*
+ * Atelier empilé : la colonne n'a plus de hauteur fixe à partager. Chaque
+ * panneau prend sa hauteur naturelle — avec `flex: 1 1 0`, il serait écrasé à
+ * zéro et chevaucherait son voisin.
+ */
+@media (max-width: 999.98px) {
+  .io-panel--pane {
+    flex: none;
+  }
+
+  .io-panel--pane .io-body {
+    flex: none;
+    height: 260px;
+  }
+}

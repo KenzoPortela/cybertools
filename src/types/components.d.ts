@@ -142,6 +142,7 @@ declare module 'vue' {
     IconMdiStarOutline: typeof import('~icons/mdi/star-outline')['default']
     IconMdiThemeLightDark: typeof import('~icons/mdi/theme-light-dark')['default']
     IconMdiTranslate: typeof import('~icons/mdi/translate')['default']
+    IconMdiTrayArrowDown: typeof import('~icons/mdi/tray-arrow-down')['default']
     IconMdiTriangleDown: typeof import('~icons/mdi/triangle-down')['default']
     IconMdiUpload: typeof import('~icons/mdi/upload')['default']
     IconMdiVideo: typeof import('~icons/mdi/video')['default']

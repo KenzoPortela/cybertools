@@ -210,6 +210,28 @@ app:
 
   cc:
     parameters: Parameters
+    inputView: 'Input view'
+    outputView: 'Output view'
+    tabs:
+      text: text
+      hex: hex
+      file: file
+      raw: raw
+      tree: tree
+      diff: diff
+    clearInput: 'Clear the input'
+    cursor: 'ln {line}, col {col}'
+    entropy: 'entropy {value}'
+    resembles: 'looks like: {chain}'
+    sniffBinary: binary
+    runShortcut: run
+    dropHere: 'Drop a file here, or pick one: its bytes become the input. Nothing is uploaded.'
+    hexTruncated: 'Only the first {size} are shown.'
+    noBytes: 'No bytes to show.'
+    notJson: 'The output is not JSON.'
+    diffNeedsText: 'The comparison needs a text input and a text output.'
+    diffTooLarge: 'Too many lines to compare here.'
+    treeMore: '… {count} more'
     switchOn: 'on'
     switchOff: 'off'
     input: Input
@@ -490,6 +512,13 @@ app:
     hintAdd: add
     hintReplace: replace
     noSettings: 'no settings'
+    stepCount: '0 steps | 1 step | {n} steps'
+    ignoredCount: '0 ignored | 1 ignored | {n} ignored'
+    errorCount: '0 errors | 1 error | {n} errors'
+    runDone: done
+    runFailed: failed
+    runBusy: 'running…'
+    runIdle: 'waiting for input'
     resume: Resume last recipe ({count} step) | Resume last recipe ({count} steps)
     openIn: Open in Recipes
     continueIn: Continue in Recipes

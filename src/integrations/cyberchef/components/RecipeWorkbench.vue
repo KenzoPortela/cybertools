@@ -16,7 +16,7 @@ import draggable from 'vuedraggable';
 import { useCopy } from '@/composable/copy';
 import type { RecipeStep } from '~/catalog/tool.types';
 import PaneResizer from '~/components/PaneResizer.vue';
-import { chefClient } from '~/integrations/cyberchef/chef-client';
+import { chefClient, utf8Length } from '~/integrations/cyberchef/chef-client';
 import CcInput, { type InputFile } from '~/integrations/cyberchef/components/CcInput.vue';
 import CcOutput from '~/integrations/cyberchef/components/CcOutput.vue';
 import MagicPanel from '~/integrations/cyberchef/components/MagicPanel.vue';
@@ -25,8 +25,10 @@ import RecipeStepCard from '~/integrations/cyberchef/components/RecipeStepCard.v
 import { type OperationConfig, completeArgs, loadOperationConfig } from '~/integrations/cyberchef/operations';
 import { isRecipeOperation } from '~/integrations/cyberchef/recipe-operations';
 import { buildFragment, looksLikeLink, parseLink } from '~/integrations/cyberchef/recipe-link';
+import { formatBytes } from '~/integrations/cyberchef/output';
 import { useBaker } from '~/integrations/cyberchef/use-baker';
 import { type WorkbenchStep, toRecipe, toWorkbenchStep, useRecipeStore } from '~/stores/recipe';
+import { useSessionStore } from '~/stores/session';
 import { useSettingsStore } from '~/stores/settings';
 
 const CYBERCHEF_URL = 'https://gchq.github.io/CyberChef/';
@@ -37,6 +39,7 @@ const router = useRouter();
 const store = useRecipeStore();
 const { steps, input, saved } = storeToRefs(store);
 const { settings } = storeToRefs(useSettingsStore());
+const { networkRequests } = storeToRefs(useSessionStore());
 
 const file = ref<InputFile>();
 const configs = ref<Record<string, OperationConfig>>();
@@ -193,6 +196,21 @@ function stepTitle(key: string) {
   return step ? t(key, { index: index! + 1, name: step.op }) : undefined;
 }
 
+// --- Pieds de panneau ----------------------------------------------------------
+
+const activeSteps = computed(() => steps.value.filter(step => !step.disabled).length);
+const ignoredSteps = computed(() => steps.value.length - activeSteps.value);
+const inputBytes = computed(() => (file.value ? file.value.size : utf8Length(input.value)));
+const outputBytes = computed(() => result.value?.bytes?.byteLength ?? (result.value?.html ? utf8Length(result.value.html) : 0));
+
+/** État de la dernière exécution, pour le bandeau du bas. */
+const runState = computed<'busy' | 'idle' | 'failed' | 'done'>(() => {
+  if (busy.value) return 'busy';
+  if (!result.value || (!file.value && input.value === '')) return 'idle';
+  return result.value.error || result.value.stoppedAt !== undefined ? 'failed' : 'done';
+});
+const RUN_LABEL = { busy: 'app.recipes.runBusy', idle: 'app.recipes.runIdle', failed: 'app.recipes.runFailed', done: 'app.recipes.runDone' } as const;
+
 const errorTitle = computed(() => (result.value?.error ? stepTitle('app.recipes.failedAt') : undefined));
 const stoppedWarning = computed(() => (result.value?.stoppedAt !== undefined ? stepTitle('app.recipes.stoppedAt') : undefined));
 
@@ -321,91 +339,120 @@ onMounted(async () => {
     <PaneResizer v-model="opsWidth" :min="180" :max="400" :label="t('app.recipes.resizeOps')" class="pane-resizer" />
 
     <section class="pane pane--recipe" aria-labelledby="pane-recipe">
-      <header class="pane-head">
-        <h2 id="pane-recipe" class="pane-label ct-mono">
-          {{ t('app.recipes.recipe') }}
-        </h2>
-        <div v-if="steps.length" class="pane-tools ct-mono">
-          <button type="button" class="link-button" @click="toggleAll">
-            {{ allCollapsed ? t('app.recipes.expandAll') : t('app.recipes.collapseAll') }}
-          </button>
-          <span aria-hidden="true">·</span>
-          <button type="button" class="link-button recipe-clear" @click="clear">
-            {{ t('app.recipes.clear') }}
-          </button>
+      <div class="pane-scroll">
+        <header class="pane-head">
+          <h2 id="pane-recipe" class="pane-label ct-mono">
+            {{ t('app.recipes.recipe') }}
+          </h2>
+          <div v-if="steps.length" class="pane-tools ct-mono">
+            <button type="button" class="link-button" @click="toggleAll">
+              {{ allCollapsed ? t('app.recipes.expandAll') : t('app.recipes.collapseAll') }}
+            </button>
+            <span aria-hidden="true">·</span>
+            <button type="button" class="link-button recipe-clear" @click="clear">
+              {{ t('app.recipes.clear') }}
+            </button>
+          </div>
+        </header>
+
+        <NAlert
+          v-for="(notice, index) in notices"
+          :key="index"
+          :type="notice.type"
+          closable
+          class="notice"
+          @close="notices.splice(index, 1)"
+        >
+          {{ notice.text }}
+        </NAlert>
+
+        <c-card v-if="showMagic" :title="t('app.magic.panelTitle')" class="magic-card">
+          <p class="magic-intro">
+            {{ steps.length ? t('app.magic.introWithRecipe') : t('app.magic.intro') }}
+          </p>
+          <MagicPanel :input="file?.buffer ?? input" :prefix="recipe" :apply-label="t('app.magic.addToRecipe')" @apply="append" />
+        </c-card>
+
+        <draggable
+          v-if="steps.length"
+          v-model="steps"
+          item-key="uid"
+          handle=".drag-handle"
+          class="steps"
+          :animation="150"
+        >
+          <template #item="{ element, index }">
+            <RecipeStepCard
+              :step="element"
+              :index="index"
+              :count="steps.length"
+              :config="configs?.[element.op]"
+              :failed="failedStep === index"
+              @update:args="(args: unknown[]) => updateStep(index, { args })"
+              @toggle-disabled="updateStep(index, { disabled: !element.disabled })"
+              @toggle-collapsed="updateStep(index, { collapsed: !element.collapsed })"
+              @move="(delta: -1 | 1) => move(index, delta)"
+              @remove="remove(index)"
+            />
+          </template>
+        </draggable>
+
+        <div v-else class="empty">
+          <icon-mdi-chef-hat class="empty-icon" aria-hidden="true" />
+          <p class="empty-title">
+            {{ t('app.recipes.emptyTitle') }}
+          </p>
+          <p class="empty-text">
+            {{ t('app.recipes.emptyText') }}
+          </p>
+          <c-button v-if="saved.length" class="resume" @click="resume">
+            <icon-mdi-history class="button-icon" aria-hidden="true" />
+            {{ t('app.recipes.resume', { count: saved.length }, saved.length) }}
+          </c-button>
         </div>
-      </header>
-
-      <NAlert
-        v-for="(notice, index) in notices"
-        :key="index"
-        :type="notice.type"
-        closable
-        class="notice"
-        @close="notices.splice(index, 1)"
-      >
-        {{ notice.text }}
-      </NAlert>
-
-      <c-card v-if="showMagic" :title="t('app.magic.panelTitle')" class="magic-card">
-        <p class="magic-intro">
-          {{ steps.length ? t('app.magic.introWithRecipe') : t('app.magic.intro') }}
-        </p>
-        <MagicPanel :input="file?.buffer ?? input" :prefix="recipe" :apply-label="t('app.magic.addToRecipe')" @apply="append" />
-      </c-card>
-
-      <draggable
-        v-if="steps.length"
-        v-model="steps"
-        item-key="uid"
-        handle=".drag-handle"
-        class="steps"
-        :animation="150"
-      >
-        <template #item="{ element, index }">
-          <RecipeStepCard
-            :step="element"
-            :index="index"
-            :count="steps.length"
-            :config="configs?.[element.op]"
-            :failed="failedStep === index"
-            @update:args="(args: unknown[]) => updateStep(index, { args })"
-            @toggle-disabled="updateStep(index, { disabled: !element.disabled })"
-            @toggle-collapsed="updateStep(index, { collapsed: !element.collapsed })"
-            @move="(delta: -1 | 1) => move(index, delta)"
-            @remove="remove(index)"
-          />
-        </template>
-      </draggable>
-
-      <div v-else class="empty">
-        <icon-mdi-chef-hat class="empty-icon" aria-hidden="true" />
-        <p class="empty-title">
-          {{ t('app.recipes.emptyTitle') }}
-        </p>
-        <p class="empty-text">
-          {{ t('app.recipes.emptyText') }}
-        </p>
-        <c-button v-if="saved.length" class="resume" @click="resume">
-          <icon-mdi-history class="button-icon" aria-hidden="true" />
-          {{ t('app.recipes.resume', { count: saved.length }, saved.length) }}
-        </c-button>
       </div>
+
+      <footer class="pane-foot ct-mono">
+        <span class="run-state" :class="`run-state--${runState}`">
+          <span class="run-dot" aria-hidden="true" />
+          {{ t('app.recipes.stepCount', activeSteps) }}
+        </span>
+        <span>{{ t('app.recipes.ignoredCount', ignoredSteps) }}</span>
+      </footer>
     </section>
 
     <PaneResizer v-model="stepsWidth" :min="300" :max="640" :label="t('app.recipes.resizeSteps')" class="pane-resizer" />
 
     <section class="pane pane--io io-column" :aria-label="t('app.recipes.io')">
-      <CcInput v-model:input="input" v-model:file="file" :manual="!settings.autoBake" :running="busy" @run="run" />
+      <CcInput v-model:input="input" v-model:file="file" variant="pane" :manual="!settings.autoBake" :running="busy" @run="run" />
       <CcOutput
+        variant="pane"
         :result="result"
         :busy="busy"
         :slow="slow"
         :input-empty="!file && input === ''"
         :error-title="errorTitle"
         :warning="stoppedWarning"
+        :source="file ? undefined : input"
         filename="recette"
       />
+
+      <!-- Bandeau d'exécution : ce que la recette vient de faire, mesuré. -->
+      <footer class="pane-foot run-banner ct-mono">
+        <span class="run-state" :class="`run-state--${runState}`">
+          <span class="run-dot" aria-hidden="true" />
+          {{ t(RUN_LABEL[runState]) }}
+        </span>
+        <template v-if="result && (runState === 'done' || runState === 'failed')">
+          <span>{{ formatBytes(inputBytes) }} → {{ formatBytes(outputBytes) }}</span>
+          <span>{{ result.duration }} ms</span>
+          <span>{{ t('app.recipes.stepCount', activeSteps) }} · {{ t('app.recipes.errorCount', runState === 'failed' ? 1 : 0) }}</span>
+        </template>
+        <span class="run-network" :title="t('app.status.networkNone')">
+          <span class="run-dot" :class="networkRequests ? 'run-dot--warning' : 'run-dot--live'" aria-hidden="true" />
+          {{ t('app.status.network', networkRequests) }}
+        </span>
+      </footer>
     </section>
 
     <NModal v-model:show="shareOpen" preset="card" :title="t('app.recipes.shareTitle')" class="dialog">
@@ -469,8 +516,8 @@ onMounted(async () => {
 .workbench {
   display: grid;
   grid-template-columns: var(--ops-width) 1px var(--steps-width) 1px minmax(360px, 1fr);
-  height: calc(100vh - var(--ct-topbar-height) - var(--ct-statusbar-height));
-  height: calc(100dvh - var(--ct-topbar-height) - var(--ct-statusbar-height));
+  height: calc(100vh - var(--ct-topbar-height) - var(--ct-chrome-bottom));
+  height: calc(100dvh - var(--ct-topbar-height) - var(--ct-chrome-bottom));
   font-size: var(--ct-font-size-ui);
 }
 
@@ -492,8 +539,89 @@ onMounted(async () => {
   background: var(--ct-chassis);
 }
 
+/* Recette, entrée et sortie : une zone qui défile au-dessus d'un pied fixe. */
+.pane--recipe,
 .pane--io {
-  gap: 16px;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.pane-scroll {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  padding: 12px 16px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.pane--io .cc-output {
+  border-top: 1px solid var(--ct-border);
+}
+
+/* Pieds de panneau, à la hauteur de la barre d'état : ils la remplacent ici. */
+.pane-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  height: var(--ct-statusbar-height);
+  padding: 0 12px;
+  border-top: 1px solid var(--ct-border);
+  background: var(--ct-chassis);
+  color: var(--ct-text-faint);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.pane-foot > * + *:not(.run-network) {
+  padding-left: 12px;
+  border-left: 1px solid var(--ct-border);
+}
+
+.run-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.run-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ct-text-faint);
+}
+
+.run-state--done .run-dot {
+  background: var(--ct-success);
+}
+
+.run-state--failed .run-dot {
+  background: var(--ct-error);
+}
+
+.run-state--busy .run-dot {
+  background: var(--ct-warning);
+}
+
+.run-dot--live {
+  background: var(--ct-primary);
+}
+
+.run-dot--warning {
+  background: var(--ct-warning);
+}
+
+.run-network {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .pane-head {
@@ -561,6 +689,11 @@ onMounted(async () => {
   }
 
   .pane {
+    overflow: visible;
+    padding: 16px;
+  }
+
+  .pane-scroll {
     overflow: visible;
     padding: 16px;
   }
