@@ -132,7 +132,8 @@ useHead(computed(() => ({
     :category="tool.category"
     :slug="tool.slug"
     :wide="tool.renderer.kind !== 'vue' || tool.layout !== undefined"
-    :full="tool.layout === 'full'"
+    :full="tool.layout === 'full' || tool.layout === 'workspace'"
+    :workspace="tool.layout === 'workspace'"
   >
     <template #actions>
       <c-button

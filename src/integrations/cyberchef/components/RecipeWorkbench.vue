@@ -3,14 +3,19 @@
  * L'atelier de recettes : enchaîner des opérations CyberChef, voir le résultat
  * en direct, lancer Magic, partager ou importer une recette au format de
  * CyberChef.
+ *
+ * Trois panneaux pleine hauteur, redimensionnables : les opérations, la
+ * recette, l'entrée et la sortie. Chacun défile seul ; leurs largeurs sont
+ * mémorisées. En dessous de 1000 px, ils s'empilent.
  */
 import { useDebounceFn, useEventListener } from '@vueuse/core';
-import { NAlert, NButton, NCheckbox, NModal } from 'naive-ui';
+import { NAlert, NButton, NCheckbox, NModal, NSwitch } from 'naive-ui';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import draggable from 'vuedraggable';
 import { useCopy } from '@/composable/copy';
 import type { RecipeStep } from '~/catalog/tool.types';
+import PaneResizer from '~/components/PaneResizer.vue';
 import { chefClient } from '~/integrations/cyberchef/chef-client';
 import CcInput, { type InputFile } from '~/integrations/cyberchef/components/CcInput.vue';
 import CcOutput from '~/integrations/cyberchef/components/CcOutput.vue';
@@ -117,6 +122,24 @@ function clear() {
   steps.value = [];
   notices.value = [];
 }
+
+const allCollapsed = computed(() => steps.value.length > 0 && steps.value.every(step => step.collapsed));
+
+function toggleAll() {
+  const collapsed = !allCollapsed.value;
+  steps.value = steps.value.map(step => ({ ...step, collapsed }));
+}
+
+// --- Panneaux ---------------------------------------------------------------
+
+const opsWidth = ref(settings.value.recipesOpsWidth);
+const stepsWidth = ref(settings.value.recipesStepsWidth);
+// Enregistré une fois le geste fini, pas à chaque pixel.
+const saveWidths = useDebounceFn(() => {
+  settings.value.recipesOpsWidth = opsWidth.value;
+  settings.value.recipesStepsWidth = stepsWidth.value;
+}, 300);
+watch([opsWidth, stepsWidth], saveWidths);
 
 // --- Import --------------------------------------------------------------
 
@@ -263,28 +286,53 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="workbench">
-    <div class="recipe-column">
-      <div class="toolbar">
-        <RecipeOpPicker class="picker" @add="add" />
-        <div class="toolbar-actions">
-          <c-button :type="showMagic ? 'primary' : 'default'" @click="showMagic = !showMagic">
-            <icon-mdi-auto-fix class="button-icon" aria-hidden="true" />
-            Magic
-          </c-button>
-          <c-button @click="importOpen = true">
-            <icon-mdi-import class="button-icon" aria-hidden="true" />
-            {{ t('app.recipes.import') }}
-          </c-button>
-          <c-button :disabled="!steps.length" @click="openShare">
-            <icon-mdi-share-variant-outline class="button-icon" aria-hidden="true" />
-            {{ t('app.recipes.share') }}
-          </c-button>
-          <c-button variant="text" :disabled="!steps.length" @click="clear">
-            {{ t('app.recipes.clear') }}
-          </c-button>
-        </div>
+  <div class="workbench" :style="{ '--ops-width': `${opsWidth}px`, '--steps-width': `${stepsWidth}px` }">
+    <!-- Les actions de l'atelier montent dans la barre du haut, avant l'étoile. -->
+    <Teleport defer to="#ct-topbar-actions">
+      <div class="workbench-actions">
+        <c-button size="small" :type="showMagic ? 'primary' : 'default'" :aria-pressed="showMagic" aria-label="Magic" @click="showMagic = !showMagic">
+          <icon-mdi-auto-fix class="button-icon" aria-hidden="true" />
+          <span class="action-label">Magic</span>
+        </c-button>
+        <c-button size="small" :aria-label="t('app.recipes.import')" @click="importOpen = true">
+          <icon-mdi-import class="button-icon" aria-hidden="true" />
+          <span class="action-label">{{ t('app.recipes.import') }}</span>
+        </c-button>
+        <c-button size="small" :disabled="!steps.length" :aria-label="t('app.recipes.share')" @click="openShare">
+          <icon-mdi-share-variant-outline class="button-icon" aria-hidden="true" />
+          <span class="action-label">{{ t('app.recipes.share') }}</span>
+        </c-button>
+        <label class="auto-bake" :title="t('app.recipes.autoBakeHelp')">
+          <NSwitch v-model:value="settings.autoBake" size="small" class="auto-bake-switch" />
+          <span class="ct-mono">{{ t('app.recipes.autoBake') }}</span>
+        </label>
       </div>
+    </Teleport>
+
+    <section class="pane pane--ops" aria-labelledby="pane-ops">
+      <h2 id="pane-ops" class="pane-label ct-mono">
+        {{ t('app.recipes.operations') }}
+      </h2>
+      <RecipeOpPicker class="picker" @add="add" />
+    </section>
+
+    <PaneResizer v-model="opsWidth" :min="180" :max="400" :label="t('app.recipes.resizeOps')" class="pane-resizer" />
+
+    <section class="pane pane--recipe" aria-labelledby="pane-recipe">
+      <header class="pane-head">
+        <h2 id="pane-recipe" class="pane-label ct-mono">
+          {{ t('app.recipes.recipe') }}
+        </h2>
+        <div v-if="steps.length" class="pane-tools ct-mono">
+          <button type="button" class="link-button" @click="toggleAll">
+            {{ allCollapsed ? t('app.recipes.expandAll') : t('app.recipes.collapseAll') }}
+          </button>
+          <span aria-hidden="true">·</span>
+          <button type="button" class="link-button recipe-clear" @click="clear">
+            {{ t('app.recipes.clear') }}
+          </button>
+        </div>
+      </header>
 
       <NAlert
         v-for="(notice, index) in notices"
@@ -341,9 +389,11 @@ onMounted(async () => {
           {{ t('app.recipes.resume', { count: saved.length }, saved.length) }}
         </c-button>
       </div>
-    </div>
+    </section>
 
-    <div class="io-column">
+    <PaneResizer v-model="stepsWidth" :min="300" :max="640" :label="t('app.recipes.resizeSteps')" class="pane-resizer" />
+
+    <section class="pane pane--io io-column" :aria-label="t('app.recipes.io')">
       <CcInput v-model:input="input" v-model:file="file" :manual="!settings.autoBake" :running="busy" @run="run" />
       <CcOutput
         :result="result"
@@ -354,7 +404,7 @@ onMounted(async () => {
         :warning="stoppedWarning"
         filename="recette"
       />
-    </div>
+    </section>
 
     <NModal v-model:show="shareOpen" preset="card" :title="t('app.recipes.shareTitle')" class="dialog">
       <div class="share">
@@ -410,53 +460,125 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+/*
+ * Trois panneaux pleine hauteur, entre la barre du haut et la barre d'état.
+ * Les séparateurs sont des colonnes de 1 px : ils tracent aussi les filets.
+ */
 .workbench {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
-  width: 100%;
+  grid-template-columns: var(--ops-width) 1px var(--steps-width) 1px minmax(360px, 1fr);
+  height: calc(100vh - var(--ct-topbar-height) - var(--ct-statusbar-height));
+  height: calc(100dvh - var(--ct-topbar-height) - var(--ct-statusbar-height));
+  font-size: var(--ct-font-size-ui);
 }
 
-@media (max-width: 1000px) {
-  .workbench {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.recipe-column {
+.pane {
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-width: 0;
+  min-height: 0;
+  padding: 12px 16px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
-.io-column {
-  display: flex;
-  flex-direction: column;
+.pane--ops {
+  background: var(--ct-chassis);
+}
+
+.pane--io {
   gap: 16px;
-  min-width: 0;
-  position: sticky;
-  /* Sous la barre du haut du châssis, avec une marge. */
-  top: calc(var(--ct-topbar-height) + 16px);
 }
 
-@media (max-width: 1000px) {
-  .io-column {
-    position: static;
+.pane-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pane-label {
+  margin: 0;
+  color: var(--ct-text-faint);
+  font-size: var(--ct-font-size-label);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pane-tools {
+  display: flex;
+  gap: 8px;
+  color: var(--ct-text-faint);
+  font-size: 11px;
+  text-transform: lowercase;
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ct-text-faint);
+  font: inherit;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: var(--ct-primary);
+}
+
+/* Actions téléportées dans la barre du haut : avant l'étoile de l'outil. */
+.workbench-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  order: -1;
+}
+
+.auto-bake {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--ct-border);
+  color: var(--ct-text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Sous 1000 px : les panneaux s'empilent et la page défile, comme avant. */
+@media (max-width: 999.98px) {
+  .workbench {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .pane {
+    overflow: visible;
+    padding: 16px;
+  }
+
+  .pane-resizer {
+    display: none;
   }
 }
 
-.toolbar {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+/* Téléphone : les actions de la barre du haut en icônes seules. */
+@media (max-width: 639.98px) {
+  .action-label,
+  .auto-bake span {
+    display: none;
+  }
 
-.toolbar-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  .workbench-actions .button-icon {
+    margin-right: 0;
+  }
+
+  .auto-bake {
+    padding-left: 8px;
+  }
 }
 
 .button-icon {

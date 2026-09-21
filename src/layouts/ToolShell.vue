@@ -27,12 +27,18 @@ const props = withDefaults(defineProps<{
    * espaces de travail, pas des pages à lire.
    */
   full?: boolean;
+  /**
+   * Espace de travail en panneaux (l'atelier) : toute la hauteur, sans marge,
+   * et le titre réservé aux lecteurs d'écran — le fil d'Ariane le dit déjà.
+   */
+  workspace?: boolean;
 }>(), {
   description: '',
   category: undefined,
   slug: undefined,
   wide: false,
   full: false,
+  workspace: false,
 });
 
 const { t } = useI18n();
@@ -49,8 +55,8 @@ useShellCrumbs(() => [
 
 <template>
   <div class="tool-layout" :class="{ 'tool-layout--context': hasContext }">
-    <article class="tool" :class="full ? 'tool--full' : 'page'">
-      <header class="tool-header" :class="{ 'tool-header--wide': wide }">
+    <article class="tool" :class="workspace ? 'tool--workspace' : full ? 'tool--full' : 'page'">
+      <header class="tool-header" :class="{ 'tool-header--wide': wide, 'sr-only': workspace }">
         <h1 class="title">
           {{ title }}
         </h1>
@@ -77,6 +83,11 @@ useShellCrumbs(() => [
 /* Espace de travail : pas de largeur de page, seulement une marge. */
 .tool--full {
   padding: 24px 24px 32px;
+}
+
+/* Espace en panneaux : le contenu gère lui-même sa hauteur et ses marges. */
+.tool--workspace .tool-content {
+  display: block;
 }
 
 @media (max-width: 639.98px) {

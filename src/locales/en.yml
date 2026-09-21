@@ -471,7 +471,16 @@ app:
     importPlaceholder: From_Base64('A-Za-z0-9+/=',true)To_Hex('Space',0)
     importConfirm: Import
     emptyTitle: Your recipe is empty
-    emptyText: Add an operation with the field above, or run Magic to let CyberChef guess how to decode your input.
+    emptyText: Add an operation from the operations pane, or run Magic to let CyberChef guess how to decode your input.
+    operations: Operations
+    recipe: Recipe
+    io: 'Input and output'
+    collapseAll: collapse all
+    expandAll: expand all
+    resizeOps: 'Resize the operations pane'
+    resizeSteps: 'Resize the recipe pane'
+    autoBake: auto
+    autoBakeHelp: 'Recalculate on every change (also in the settings)'
     resume: Resume last recipe ({count} step) | Resume last recipe ({count} steps)
     openIn: Open in Recipes
     continueIn: Continue in Recipes

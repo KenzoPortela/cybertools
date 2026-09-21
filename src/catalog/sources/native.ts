@@ -20,7 +20,7 @@ export function nativeSource(): ToolDef[] {
       keywords: ['recipe', 'recette', 'cyberchef', 'chain', 'enchaîner', 'pipeline', 'bake', 'workbench', 'atelier'],
       icon: IconChefHat,
       renderer: { kind: 'vue', component: () => import('~/integrations/cyberchef/components/RecipeWorkbench.vue') },
-      layout: 'full',
+      layout: 'workspace',
       aliases: ['/recettes', '/recipes'],
     },
     {

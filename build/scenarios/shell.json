@@ -88,7 +88,7 @@
     "width": 1440,
     "height": 900,
     "scheme": "dark",
-    "script": "(() => { const tool = document.querySelector('.tool'); const active = document.querySelector('.rail .rail-item--active')?.getAttribute('href'); return (tool.classList.contains('tool--full') && tool.getBoundingClientRect().width > 1120 && active === '/tools/recipes' && document.querySelectorAll('.rail .rail-item--active').length === 1) || { width: tool.getBoundingClientRect().width, active }; })()"
+    "script": "(() => { const tool = document.querySelector('.tool'); const active = document.querySelector('.rail .rail-item--active')?.getAttribute('href'); return (tool.classList.contains('tool--workspace') && tool.getBoundingClientRect().width > 1120 && active === '/tools/recipes' && document.querySelectorAll('.rail .rail-item--active').length === 1) || { width: tool.getBoundingClientRect().width, active }; })()"
   },
   {
     "name": "cycle-theme",

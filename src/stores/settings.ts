@@ -25,6 +25,10 @@ export interface Settings {
   magicIntensive: boolean;
   /** Rail de navigation réduit à une colonne d'icônes (grand écran seulement). */
   shellRailCollapsed: boolean;
+  /** Atelier : largeur du panneau des opérations, en px. */
+  recipesOpsWidth: number;
+  /** Atelier : largeur du panneau de la recette, en px. */
+  recipesStepsWidth: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -35,6 +39,8 @@ export const DEFAULT_SETTINGS: Settings = {
   magicDepth: 3,
   magicIntensive: false,
   shellRailCollapsed: false,
+  recipesOpsWidth: 236,
+  recipesStepsWidth: 398,
 };
 
 export const useSettingsStore = defineStore('settings', () => {

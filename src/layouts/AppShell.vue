@@ -3,6 +3,7 @@ import { onKeyStroke, useMediaQuery } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
 import { installCommandPaletteShortcuts, useCommandPalette } from '~/app/command-palette';
+import { catalog } from '~/catalog/catalog';
 import CommandPalette from '~/components/CommandPalette.vue';
 import NavRail from '~/components/shell/NavRail.vue';
 import StatusBar from '~/components/shell/StatusBar.vue';
@@ -31,10 +32,27 @@ const { isOpen: paletteOpen } = useCommandPalette();
 installCommandPaletteShortcuts();
 
 const isWide = useMediaQuery('(min-width: 1024px)');
-const collapsed = computed(() => isWide.value && settings.value.shellRailCollapsed);
+
+/**
+ * Espaces de travail (l'atelier, le Stego Lab) : leurs panneaux ont besoin de
+ * la largeur, le rail s'y replie de lui-même. Ce repli ne touche pas au réglage
+ * enregistré ; le bouton du rail le défait, le temps de la visite.
+ */
+const inWorkspace = computed(() => {
+  if (route.name !== 'tool') return false;
+  const layout = catalog.toolForSlug(String(route.params.slug))?.layout;
+  return layout === 'full' || layout === 'workspace';
+});
+const expandedHere = ref(false);
+watch(() => route.path, () => {
+  expandedHere.value = false;
+});
+
+const collapsed = computed(() => isWide.value && (inWorkspace.value ? !expandedHere.value : settings.value.shellRailCollapsed));
 
 function toggleCollapse() {
-  settings.value.shellRailCollapsed = !settings.value.shellRailCollapsed;
+  if (inWorkspace.value) expandedHere.value = !expandedHere.value;
+  else settings.value.shellRailCollapsed = !settings.value.shellRailCollapsed;
 }
 
 // --- Tiroir -----------------------------------------------------------------

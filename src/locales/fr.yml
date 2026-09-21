@@ -732,7 +732,16 @@ app:
     importPlaceholder: From_Base64('A-Za-z0-9+/=',true)To_Hex('Space',0)
     importConfirm: Importer
     emptyTitle: Votre recette est vide
-    emptyText: Ajoutez une opération avec le champ ci-dessus, ou lancez Magic pour laisser CyberChef deviner comment décoder votre entrée.
+    emptyText: Ajoutez une opération depuis le panneau des opérations, ou lancez Magic pour laisser CyberChef deviner comment décoder votre entrée.
+    operations: Opérations
+    recipe: Recette
+    io: 'Entrée et sortie'
+    collapseAll: tout replier
+    expandAll: tout déplier
+    resizeOps: 'Redimensionner le panneau des opérations'
+    resizeSteps: 'Redimensionner le panneau de la recette'
+    autoBake: auto
+    autoBakeHelp: 'Recalculer à chaque modification (aussi dans les paramètres)'
     resume: Reprendre la dernière recette ({count} étape) | Reprendre la dernière recette ({count} étapes)
     openIn: Ouvrir dans les Recettes
     continueIn: Continuer dans les Recettes

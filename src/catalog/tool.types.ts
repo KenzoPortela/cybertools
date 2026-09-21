@@ -57,10 +57,13 @@ export interface ToolDef {
    * Mise en page, hors de la grille de cartes de 600 px d'IT-Tools :
    *  - `wide` : toute la largeur de la page (Magic ; les opérations CyberChef
    *    l'ont d'office) ;
-   *  - `full` : tout l'écran, sans largeur de page — l'atelier et le Stego Lab,
-   *    qui sont des espaces de travail plus que des pages.
+   *  - `full` : tout l'écran, sans largeur de page — le Stego Lab, espace de
+   *    travail plus que page ;
+   *  - `workspace` : tout l'écran, en hauteur aussi, sans en-tête ni marge —
+   *    l'atelier de recettes et ses trois panneaux.
+   * Dans les deux derniers cas, le rail de navigation se replie de lui-même.
    */
-  layout?: 'wide' | 'full';
+  layout?: 'wide' | 'full' | 'workspace';
 
   /** Anciennes URL (celles d'IT-Tools notamment), redirigées vers /tools/<slug>. */
   aliases?: string[];

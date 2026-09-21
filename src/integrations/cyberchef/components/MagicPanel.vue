@@ -84,7 +84,11 @@ async function runAuto(run: number) {
     const stepStarted = performance.now();
     const outcome = await bake(props.input, [...(props.prefix ?? []), magicStep(level)]);
     // Une saisie plus récente a relancé Magic : ce parcours est caduc.
-    if (run !== generation || !outcome) return;
+    if (run !== generation) return;
+    if (!outcome) {
+      supplanted(run);
+      return;
+    }
 
     const found = candidatesOf(outcome);
     if (outcome.error || !found.length) {
@@ -103,6 +107,18 @@ async function runAuto(run: number) {
   }
 }
 
+/**
+ * Le moteur n'a qu'une place d'attente : un autre calcul (celui de la recette,
+ * relancé par une frappe) peut y remplacer la demande de Magic. Magic n'a alors
+ * rien reçu — ce n'est pas un résultat. On recommence, plutôt que de rester
+ * figé sur « exploration en cours ».
+ */
+function supplanted(run: number) {
+  if (run !== generation) return;
+  exploring.value = undefined;
+  runSoon();
+}
+
 function run() {
   const current = ++generation;
   detected.value = undefined;
@@ -115,7 +131,9 @@ function run() {
     runAuto(current);
   }
   else {
-    bake(props.input, [...(props.prefix ?? []), magicStep(depth.value)]);
+    bake(props.input, [...(props.prefix ?? []), magicStep(depth.value)]).then((outcome) => {
+      if (!outcome) supplanted(current);
+    });
   }
 }
 
