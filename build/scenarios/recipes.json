@@ -148,6 +148,6 @@
     "wait": 300,
     "name": "accueil-a-la-une",
     "url": "http://localhost:5173/",
-    "script": "(() => [...document.querySelectorAll('.featured .feature')].map(a => a.getAttribute('href')).join() === '/tools/recipes,/tools/magic')()"
+    "script": "(() => [...document.querySelectorAll('.tiles .tile')].map(a => a.getAttribute('href')).join() === '/tools/recipes,/tools/magic,/tools/stego-lab')()"
   }
 ]

@@ -1,22 +1,34 @@
 app:
   home:
-    title: 'Encode, decrypt, analyse.'
-    eyebrow: '{count} tools · 100% local · open source'
-    subtitle: '{count} tools for encoding, cryptography, networking and data formats. Everything runs in your browser.'
+    title: 'cybertools — home'
     searchPlaceholder: 'Search a tool: base64, hash, JWT, IP…'
-    paletteHint: 'From any page: {shortcut}'
+    anywhere: anywhere
     results: 'Search results'
     resultCount: 'No result for “{query}” | 1 result for “{query}” | {count} results for “{query}”'
     noResult: 'No tool matches. Try another word, in English or French.'
-    favorites: Favourites
-    recents: 'Recently used'
-    clearRecents: Clear
     categories: Categories
-    featured: Featured
-    recipesTag: workbench
-    magicTag: detection
-    recipesPitch: Chain CyberChef operations, watch the result live, share your recipes — compatible with cyberchef.org.
-    magicPitch: "Paste some unknown data: CyberChef guesses how to decode it."
+    resume: Resume
+    resumeEmpty: 'Tools you open will show up here, with when you last used them.'
+    clearRecents: Clear
+    mostUsed: 'Most used'
+    mostUsedEmpty: 'Nothing yet: open a few tools.'
+    opened: 'never opened | opened once | opened {n} times'
+    justNow: now
+    dateUnknown: 'Date unknown (opened before this version)'
+    session: 'This session'
+    sessionOperations: operations
+    sessionProcessed: processed
+    sessionRequests: 'external req.'
+    tiles:
+      recipes:
+        text: 'Chain operations, see the result live.'
+        meta: '{count} operations · cyberchef.org import'
+      magic:
+        text: 'Unknown data: detected layer by layer.'
+        meta: 'auto depth · intensive mode'
+      stego:
+        text: 'LSB, bit planes, ELA, carving, PNG repair.'
+        meta: 'local image · nothing uploaded'
 
   categories:
     encoding: Encoding
@@ -152,6 +164,7 @@ app:
     data:
       title: Stored data
       favorites: 'Favourites: none | Favourites: {count} tool | Favourites: {count} tools'
+      recentsHelp: 'Last opening and number of openings of each tool, for “Resume” and “Most used”. Nothing you type is kept.'
       recents: 'Recent tools: none | Recent tools: {count} | Recent tools: {count}'
       clear: Clear
       backup: Backup

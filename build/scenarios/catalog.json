@@ -4,49 +4,49 @@
     "url": "http://localhost:5173/",
     "scheme": "light",
     "fullPage": true,
-    "script": "(() => { localStorage.removeItem('cybertools:favorites'); localStorage.removeItem('cybertools:recents'); const counts = Object.fromEntries([...document.querySelectorAll('.category-card')].map(c => [c.querySelector('.category-label').textContent.trim(), parseInt(c.querySelector('.category-count').textContent, 10)])); return { sous_titre: document.querySelector('.hero-subtitle').textContent.trim().slice(0, 12), total: Object.values(counts).reduce((a, b) => a + b, 0), counts }; })()"
+    "script": "(() => { localStorage.removeItem('cybertools:favorites'); localStorage.removeItem('cybertools:recents'); const counts = Object.fromEntries([...document.querySelectorAll('.rail a[href^=\"/categories/\"]')].map(a => [a.querySelector('.rail-item-label').textContent.trim(), parseInt(a.querySelector('.rail-count').textContent, 10)])); const indexed = parseInt(document.querySelector('.status-left').textContent, 10); const total = Object.values(counts).reduce((a, b) => a + b, 0); return (Object.keys(counts).length === 10 && total === indexed) || { indexed, total, counts }; })()"
   },
   {
     "name": "cat-recherche-accents",
     "url": "http://localhost:5173/?q=reseau",
     "scheme": "light",
-    "script": "(() => { const first = document.querySelector('.card'); const category = first?.querySelector('.category')?.textContent.trim(); return category === 'Network' || ('premier : ' + first?.querySelector('.title')?.textContent.trim() + ' (' + category + ')'); })()"
+    "script": "(() => { const first = document.querySelector('.results .tool-row'); const category = first?.querySelector('.tool-row-category')?.textContent.trim(); return category === 'network' || ('premier : ' + first?.querySelector('.tool-row-name')?.textContent.trim() + ' (' + category + ')'); })()"
   },
   {
     "name": "cat-recherche-anglais",
     "url": "http://localhost:5173/?q=hash",
     "scheme": "light",
-    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles[0] === 'Hash text') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+    "script": "(() => { const titles = [...document.querySelectorAll('.results .tool-row-name')].map(e => e.textContent.trim()); return (titles[0] === 'Hash text') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
   },
   {
     "name": "cat-recherche-francais",
     "url": "http://localhost:5173/?q=mot de passe",
     "scheme": "light",
-    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles[0] === 'Password strength analyser') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+    "script": "(() => { const titles = [...document.querySelectorAll('.results .tool-row-name')].map(e => e.textContent.trim()); return (titles[0] === 'Password strength analyser') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
   },
   {
     "name": "cat-recherche-verbe",
     "url": "http://localhost:5173/?q=chiffrer",
     "scheme": "light",
-    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles.slice(0, 3).includes('Encrypt / decrypt text')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+    "script": "(() => { const titles = [...document.querySelectorAll('.results .tool-row-name')].map(e => e.textContent.trim()); return (titles.slice(0, 3).includes('Encrypt / decrypt text')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
   },
   {
     "name": "cat-recherche-faute",
     "url": "http://localhost:5173/?q=caeser%20cipher",
     "scheme": "light",
-    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles.slice(0, 5).includes('Caesar Box Cipher') && titles.slice(0, 5).includes('ROT13')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+    "script": "(() => { const titles = [...document.querySelectorAll('.results .tool-row-name')].map(e => e.textContent.trim()); return (titles.slice(0, 5).includes('Caesar Box Cipher') && titles.slice(0, 5).includes('ROT13')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
   },
   {
     "name": "cat-recherche-synonyme",
     "url": "http://localhost:5173/?q=sha256",
     "scheme": "light",
-    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles[0] === 'Hash text') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+    "script": "(() => { const titles = [...document.querySelectorAll('.results .tool-row-name')].map(e => e.textContent.trim()); return (titles[0] === 'Hash text') || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
   },
   {
     "name": "cat-recherche-desordre",
     "url": "http://localhost:5173/?q=decode%20base64",
     "scheme": "light",
-    "script": "(() => { const titles = [...document.querySelectorAll('.card .title')].map(e => e.textContent.trim()); return (titles.slice(0, 3).includes('Base64 string encoder/decoder')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
+    "script": "(() => { const titles = [...document.querySelectorAll('.results .tool-row-name')].map(e => e.textContent.trim()); return (titles.slice(0, 3).includes('Base64 string encoder/decoder')) || ('premiers : ' + titles.slice(0, 5).join(' | ')); })()"
   },
   {
     "name": "cat-recherche-vide",
@@ -58,7 +58,7 @@
     "name": "cat-entree-premier",
     "url": "http://localhost:5173/",
     "scheme": "light",
-    "script": "(async () => { const input = document.querySelector('.search input'); input.value = 'jwt'; input.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(r => setTimeout(r, 300)); input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await new Promise(r => setTimeout(r, 1200)); const ok = location.pathname === '/tools/jwt-parser' && document.querySelector('h1')?.textContent.trim() === 'JWT parser'; return ok || { url: location.pathname, titre: document.querySelector('h1')?.textContent.trim() }; })()"
+    "script": "(async () => { const input = document.querySelector('.command-input'); input.value = 'jwt'; input.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(r => setTimeout(r, 300)); input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await new Promise(r => setTimeout(r, 1200)); const ok = location.pathname === '/tools/jwt-parser' && document.querySelector('h1')?.textContent.trim() === 'JWT parser'; return ok || { url: location.pathname, titre: document.querySelector('h1')?.textContent.trim() }; })()"
   },
   {
     "name": "cat-palette-ouverte",
@@ -89,7 +89,39 @@
     "url": "http://localhost:5173/",
     "scheme": "light",
     "fullPage": true,
-    "script": "({ sections: [...document.querySelectorAll('.section-title')].map(e => e.textContent.trim()), recents: JSON.parse(localStorage.getItem('cybertools:recents')) })"
+    "script": "({ sections: [...document.querySelectorAll('.home .section-label')].map(e => e.textContent.trim()), epingles: [...document.querySelectorAll('#ct-rail-pinned .rail-item-label')].map(e => e.textContent.trim()), recents: JSON.parse(localStorage.getItem('cybertools:recents')).map(e => e.id + ':' + e.count) })"
+  },
+  {
+    "name": "cat-recents-ancien-format-prepa",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(() => { localStorage.setItem('cybertools:recents', JSON.stringify(['jwt-parser', 'hash-text'])); return true; })()"
+  },
+  {
+    "name": "cat-recents-ancien-format",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(() => { const rows = [...document.querySelectorAll('.resume .tool-row')].map(r => r.querySelector('.tool-row-name').textContent.trim() + '|' + (r.querySelector('.tool-row-meta')?.textContent.trim() ?? '')); return rows.join() === 'JWT parser|—,Hash text|—' || rows; })()"
+  },
+  {
+    "name": "cat-recents-ouverture",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(async () => { const link = [...document.querySelectorAll('.resume .tool-row-link')].find(a => a.textContent.includes('Hash text')); link.click(); await new Promise(r => setTimeout(r, 1200)); history.back(); await new Promise(r => setTimeout(r, 800)); const rows = [...document.querySelectorAll('.resume .tool-row')].map(r => r.querySelector('.tool-row-name').textContent.trim() + '|' + (r.querySelector('.tool-row-meta')?.textContent.trim() ?? '')); const entry = JSON.parse(localStorage.getItem('cybertools:recents')).find(e => e.id === 'hash-text'); return (rows[0] === 'Hash text|now' && entry.count === 2 && entry.at > 0) || { rows, entry }; })()"
+  },
+  {
+    "name": "cat-plus-utilises-prepa",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(() => { const now = Date.now(); localStorage.setItem('cybertools:recents', JSON.stringify([{ id: 'hash-text', at: now, count: 3 }, { id: 'jwt-parser', at: now - 1000, count: 7 }, { id: 'url-parser', at: now - 2000, count: 7 }])); return true; })()"
+  },
+  {
+    "name": "cat-plus-utilises",
+    "url": "http://localhost:5173/",
+    "width": 1440,
+    "height": 900,
+    "scheme": "dark",
+    "script": "(() => { const items = [...document.querySelectorAll('.usage-item')].map(i => i.querySelector('.usage-name').textContent.trim() + ':' + i.querySelector('.usage-count').textContent.trim() + ':' + Math.round(parseFloat(i.querySelector('.usage-fill').style.width))); return items.join() === 'JWT parser:7:100,URL parser:7:100,Hash text:3:43' || items; })()"
   },
   {
     "name": "cat-alias",

@@ -216,6 +216,7 @@ function resetAll() {
         <div class="row">
           <div class="row-text">
             <span class="row-label">{{ t('app.settings.data.recents', { count: recents.ids.length }, recents.ids.length) }}</span>
+            <span class="row-help">{{ t('app.settings.data.recentsHelp') }}</span>
           </div>
           <c-button size="small" :disabled="!recents.ids.length" class="clear-recents" @click="recents.clear()">
             {{ t('app.settings.data.clear') }}
