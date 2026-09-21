@@ -37,6 +37,34 @@ export interface BakeResult {
   raw?: unknown;
 }
 
+/**
+ * Ce que le worker a réellement calculé, pour les compteurs de session : une
+ * exécution terminée, même si son résultat a ensuite été écarté au profit d'une
+ * plus récente — le travail, lui, a bien eu lieu.
+ */
+export interface BakeRecord {
+  /** Opérations exécutées : les étapes actives, jusqu'à celle qui a arrêté la recette. */
+  operations: number;
+  inputBytes: number;
+  outputBytes: number;
+  duration: number;
+  failed: boolean;
+}
+
+/** Longueur en octets d'un texte encodé en UTF-8, sans le recopier. */
+function utf8Length(text: string) {
+  let bytes = 0;
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    if (code < 0x80) bytes += 1;
+    else if (code < 0x800) bytes += 2;
+    // Paire de substitution : un caractère de 4 octets sur deux unités.
+    else if (code >= 0xD800 && code <= 0xDBFF && i + 1 < text.length) { bytes += 4; i++; }
+    else bytes += 3;
+  }
+  return bytes;
+}
+
 /** Type « JSON » dans l'énumération des Dish de CyberChef (src/core/Dish.mjs). */
 const DISH_JSON = 6;
 
@@ -68,6 +96,13 @@ class ChefClient {
   private queued?: Request;
   private nextId = 1;
   private replies = new Map<number, { resolve: (value: unknown) => void; reject: (error: Error) => void }>();
+  private bakedListeners = new Set<(record: BakeRecord) => void>();
+
+  /** Prévient à chaque exécution terminée par le worker. Renvoie de quoi se désabonner. */
+  onBaked(listener: (record: BakeRecord) => void) {
+    this.bakedListeners.add(listener);
+    return () => this.bakedListeners.delete(listener);
+  }
 
   /**
    * Exécute une recette sur une entrée. Si un calcul est déjà en cours, la
@@ -157,6 +192,24 @@ class ChefClient {
     if (next) this.start(next);
   }
 
+  private report(request: Request, data: { result: unknown; type: string; duration: number; error: unknown; progress: unknown }) {
+    if (!this.bakedListeners.size) return;
+    const { recipe, input } = request;
+    // CyberChef rend l'index de l'étape où il s'est arrêté ; elle a été exécutée.
+    const stopped = typeof data.progress === 'number' && data.progress < recipe.length;
+    const end = stopped ? (data.progress as number) + 1 : recipe.length;
+    const record: BakeRecord = {
+      operations: recipe.slice(0, end).filter(step => !step.disabled).length,
+      inputBytes: typeof input === 'string' ? utf8Length(input) : input.byteLength,
+      outputBytes: data.result instanceof ArrayBuffer
+        ? data.result.byteLength
+        : data.type === 'html' ? utf8Length(String(data.result)) : 0,
+      duration: data.duration ?? 0,
+      failed: Boolean(data.error),
+    };
+    for (const listener of this.bakedListeners) listener(record);
+  }
+
   private getWorker(): Promise<Worker> {
     if (this.ready) return this.ready;
 
@@ -182,6 +235,7 @@ class ChefClient {
             const request = this.current;
             if (!request || message.data.id !== request.id) return;
             const { result, type, duration, error, progress, dish } = message.data;
+            this.report(request, { result, type, duration, error, progress });
             this.finish(request, () => request.resolve({
               bytes: result instanceof ArrayBuffer ? result : undefined,
               html: type === 'html' ? String(result) : undefined,

@@ -1,29 +1,49 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { RouterLink } from 'vue-router';
 import { AUTHOR } from '~/app/author';
+import { type StatusItem, shellStatus } from '~/app/shell';
+import { formatBytes } from '~/integrations/cyberchef/output';
+import { useSessionStore } from '~/stores/session';
 
 /**
- * Barre d'état, au bas du châssis. À gauche, ce que la page sait d'elle-même
- * (slot par défaut) ; à droite, ce qui ne change pas d'une page à l'autre.
- *
- * Elle reprend pour l'instant le contenu de l'ancien pied de page ; les mesures
- * de session (octets traités, requêtes réseau réellement comptées) viendront
- * s'y ajouter.
+ * Barre d'état, au bas du châssis. Elle dit la vérité, mesurée :
+ *  - à gauche, ce que la page sait d'elle-même (useShellStatus) ou, à défaut,
+ *    ce que le moteur a calculé depuis l'ouverture de la page ;
+ *  - à droite, ce qui vaut pour toute l'application : les requêtes parties vers
+ *    un autre site, comptées par le navigateur, puis version et licence.
  */
 const { t } = useI18n();
+const { operations, bytesProcessed, networkRequests, networkOrigins } = storeToRefs(useSessionStore());
 const version = __APP_VERSION__;
+
+const items = computed<StatusItem[]>(() => shellStatus.value ?? [{
+  text: t('app.status.session', {
+    operations: t('app.status.operations', operations.value),
+    bytes: formatBytes(bytesProcessed.value),
+  }),
+}]);
+
+const networkTitle = computed(() => (networkRequests.value
+  ? t('app.status.networkSome', { origins: networkOrigins.value.join(', ') })
+  : t('app.status.networkNone')));
 </script>
 
 <template>
   <footer class="status-bar ct-mono">
-    <div class="status-left">
-      <slot>
-        <span class="status-dot" aria-hidden="true" />
-        <span class="status-text">{{ t('app.footer.privacy') }}</span>
-      </slot>
-    </div>
+    <ul class="status-left">
+      <li v-for="(item, index) in items" :key="index" class="status-item">
+        <span v-if="item.tone" class="status-dot" :class="`status-dot--${item.tone}`" aria-hidden="true" />
+        <span class="status-text">{{ item.text }}</span>
+      </li>
+    </ul>
 
     <div class="status-right">
+      <span class="status-item status-network" :title="networkTitle">
+        <span class="status-dot" :class="networkRequests ? 'status-dot--warning' : 'status-dot--live'" aria-hidden="true" />
+        {{ t('app.status.network', networkRequests) }}
+      </span>
+      <span class="status-sep" aria-hidden="true">·</span>
       <span>v{{ version }}</span>
       <span class="status-sep" aria-hidden="true">·</span>
       <span>GPL-3.0</span>
@@ -59,16 +79,28 @@ const version = __APP_VERSION__;
   white-space: nowrap;
 }
 
-.status-left,
-.status-right {
+.status-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+/* Un filet entre deux mesures, comme dans une barre d'état d'éditeur. */
+.status-left .status-item + .status-item {
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--ct-border);
+}
+
+.status-item {
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
-}
-
-.status-left {
-  overflow: hidden;
 }
 
 .status-text {
@@ -77,6 +109,9 @@ const version = __APP_VERSION__;
 }
 
 .status-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-shrink: 0;
 }
 
@@ -85,7 +120,28 @@ const version = __APP_VERSION__;
   width: 6px;
   height: 6px;
   border-radius: 50%;
+  background: var(--ct-text-faint);
+}
+
+/* L'accent est réservé à ce qui est vivant : la mesure qui tient sa promesse. */
+.status-dot--live {
   background: var(--ct-primary);
+}
+
+.status-dot--success {
+  background: var(--ct-success);
+}
+
+.status-dot--warning {
+  background: var(--ct-warning);
+}
+
+.status-dot--error {
+  background: var(--ct-error);
+}
+
+.status-network {
+  cursor: help;
 }
 
 .status-link {

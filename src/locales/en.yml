@@ -98,9 +98,19 @@ app:
     comingSoon: 'This tool is coming soon.'
 
   footer:
-    privacy: 'No data ever leaves your browser.'
     madeBy: 'by {name}'
     about: 'About & credits'
+
+  status:
+    session: 'session: {operations} · {bytes} processed'
+    operations: '0 operations | 1 operation | {n} operations'
+    indexed: '0 tools indexed | 1 tool indexed | {n} tools indexed'
+    source: 'source: {source}'
+    bake: '{input} → {output} · {duration} ms · {operations}'
+    failed: failed
+    network: '0 external requests | 1 external request | {n} external requests'
+    networkNone: 'Requests sent to another site since this page opened, as recorded by the browser. The security policy forbids them: this figure should stay at 0.'
+    networkSome: 'Requests sent to another site since this page opened: {origins}'
 
   settings:
     title: Settings

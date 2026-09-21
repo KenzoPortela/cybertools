@@ -3,7 +3,7 @@ import { useRouteQuery } from '@vueuse/router';
 import { NInput } from 'naive-ui';
 import { useRouter } from 'vue-router';
 import { paletteShortcutLabel } from '~/app/command-palette';
-import { useShellCrumbs } from '~/app/shell';
+import { useShellCrumbs, useShellStatus } from '~/app/shell';
 import { catalog } from '~/catalog/catalog';
 import { categories } from '~/catalog/categories';
 import { registry } from '~/catalog/registry';
@@ -17,6 +17,7 @@ const favorites = useFavoritesStore();
 const recents = useRecentsStore();
 
 useShellCrumbs(() => [{ label: t('app.nav.home').toLowerCase() }]);
+useShellStatus(() => [{ text: t('app.status.indexed', registry.tools.length) }]);
 
 // Dans l'URL : une recherche se partage et survit au bouton « retour ».
 const query = useRouteQuery<string>('q', '', { mode: 'replace' });

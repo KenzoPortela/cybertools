@@ -3,14 +3,17 @@ import { useHead } from '@vueuse/head';
 import { NAlert } from 'naive-ui';
 import { type Component, defineAsyncComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { type StatusItem, useShellStatus } from '~/app/shell';
 import { catalog } from '~/catalog/catalog';
-import type { LocalizedTool } from '~/catalog/tool.types';
+import type { LocalizedTool, ToolSource } from '~/catalog/tool.types';
 import FavoriteButton from '~/components/FavoriteButton.vue';
 import { ToolLoadError, ToolLoading } from '~/components/tool-states';
+import { formatBytes } from '~/integrations/cyberchef/output';
 import ToolShell from '~/layouts/ToolShell.vue';
 import NotFoundPage from '~/pages/NotFoundPage.vue';
 import { useRecentsStore } from '~/stores/recents';
 import { useRecipeStore } from '~/stores/recipe';
+import { useSessionStore } from '~/stores/session';
 
 /**
  * Page d'un outil, quelle que soit sa source. Elle ne connaît que le
@@ -49,7 +52,7 @@ function componentFor(tool: LocalizedTool): Component | undefined {
 }
 
 const route = useRoute();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const recents = useRecentsStore();
 const router = useRouter();
 const recipes = useRecipeStore();
@@ -72,6 +75,46 @@ const component = computed(() => (tool.value ? componentFor(tool.value) : undefi
 watch(() => tool.value?.id, (id) => {
   if (id) recents.record(id);
 }, { immediate: true });
+
+// --- Barre d'état ------------------------------------------------------------
+
+const SOURCE_NAMES: Record<ToolSource, string> = { 'it-tools': 'IT-Tools', 'cyberchef': 'CyberChef', 'native': 'cybertools' };
+
+const session = useSessionStore();
+
+/** Ouverture de l'outil : seules les exécutions postérieures sont les siennes. */
+const openedAt = ref(performance.now());
+watch(() => tool.value?.id, () => {
+  openedAt.value = performance.now();
+});
+
+function formatDuration(ms: number) {
+  return new Intl.NumberFormat(locale.value, { maximumFractionDigits: ms < 10 ? 1 : 0 }).format(ms);
+}
+
+/**
+ * D'où vient l'outil, et ce qu'il vient de calculer. Seuls les outils bâtis sur
+ * le moteur CyberChef ont une dernière exécution à montrer ; un outil introuvable
+ * laisse la barre à la session.
+ */
+useShellStatus(() => {
+  if (!tool.value) return null;
+  const items: StatusItem[] = [{ text: t('app.status.source', { source: SOURCE_NAMES[tool.value.source] }) }];
+  const bake = session.lastBake;
+  if (bake && bake.at >= openedAt.value) {
+    const summary = t('app.status.bake', {
+      input: formatBytes(bake.inputBytes),
+      output: formatBytes(bake.outputBytes),
+      duration: formatDuration(bake.duration),
+      operations: t('app.status.operations', bake.operations),
+    });
+    items.push({
+      text: bake.failed ? `${summary} · ${t('app.status.failed')}` : summary,
+      tone: bake.failed ? 'error' : 'success',
+    });
+  }
+  return items;
+});
 
 useHead(computed(() => ({
   title: tool.value?.localizedTitle,

@@ -114,6 +114,32 @@
     "fullPage": true
   },
   {
+    "name": "etat-accueil",
+    "url": "http://localhost:5173/",
+    "scheme": "dark",
+    "script": "(() => { const left = document.querySelector('.status-left').textContent.replace(/\\s+/g, ' ').trim(); const net = document.querySelector('.status-network'); return (/^\\d+ tools indexed$/.test(left) && net.textContent.trim() === '0 external requests' && !!net.querySelector('.status-dot--live')) || { left, net: net.textContent.trim() }; })()"
+  },
+  {
+    "name": "etat-operation",
+    "url": "http://localhost:5173/tools/to-hex",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); const until = async (test, timeout) => { for (const started = performance.now(); performance.now() - started < timeout;) { const value = test(); if (value) return value; await sleep(100); } return null; }; const items = () => [...document.querySelectorAll('.status-left .status-item')].map(e => e.textContent.replace(/\\s+/g, ' ').trim()); if (!await until(() => document.querySelector('.cc-op .io textarea'), 15000)) return 'formulaire absent'; const src = document.querySelector('.cc-op .io textarea'); src.value = 'hello'; src.dispatchEvent(new Event('input', { bubbles: true })); const seen = await until(() => (items().length === 2 && items()[1].startsWith('5 o') ? items() : null), 20000); return (seen && seen[0] === 'source: CyberChef' && /^5 o → 14 o · [\\d.,]+ ms · 1 operation$/.test(seen[1]) && !!document.querySelector('.status-left .status-dot--success')) || items(); })()"
+  },
+  {
+    "name": "etat-session",
+    "url": "http://localhost:5173/tools/to-hex",
+    "scheme": "light",
+    "wait": 200,
+    "script": "(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)); const until = async (test, timeout) => { for (const started = performance.now(); performance.now() - started < timeout;) { const value = test(); if (value) return value; await sleep(100); } return null; }; const items = () => [...document.querySelectorAll('.status-left .status-item')].map(e => e.textContent.replace(/\\s+/g, ' ').trim()); if (!await until(() => document.querySelector('.cc-op .io textarea'), 15000)) return 'formulaire absent'; const src = document.querySelector('.cc-op .io textarea'); src.value = 'hello'; src.dispatchEvent(new Event('input', { bubbles: true })); const seen = await until(() => (items().length === 2 && items()[1].startsWith('5 o') ? items() : null), 20000); if (!seen) return 'pas de calcul'; document.querySelector('.rail-footer a[href=\"/about\"]').click(); await sleep(800); const left = document.querySelector('.status-left').textContent.replace(/\\s+/g, ' ').trim(); return (location.pathname === '/about' && /^session: [1-9]\\d* operations? · \\d+ o processed$/.test(left)) || left; })()"
+  },
+  {
+    "name": "etat-reseau",
+    "url": "http://localhost:5173/",
+    "scheme": "light",
+    "script": "(async () => { const img = new Image(); img.src = 'http://[::1]:5173/favicon.svg?sonde=' + Date.now(); await new Promise(r => { img.onload = img.onerror = r; }); await new Promise(r => setTimeout(r, 500)); const net = document.querySelector('.status-network'); return (net.textContent.trim() === '1 external request' && !!net.querySelector('.status-dot--warning') && net.title.includes('http://[::1]:5173')) || { text: net.textContent.trim(), title: net.title }; })()"
+  },
+  {
     "name": "rail-replie",
     "url": "http://localhost:5173/tools/hash-text",
     "scheme": "dark",

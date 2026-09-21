@@ -1,3 +1,6 @@
+// En premier : le compteur de requêtes externes doit observer le plus tôt possible.
+import '~/app/network-watch';
+
 import { createHead } from '@vueuse/head';
 import { create as createNaive } from 'naive-ui';
 import { createPinia } from 'pinia';
