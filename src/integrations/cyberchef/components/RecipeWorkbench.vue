@@ -280,6 +280,20 @@ async function confirmImport() {
   }
 }
 
+// --- Relais ------------------------------------------------------------------
+
+/**
+ * Une recette déposée alors que l'atelier est déjà ouvert (depuis la palette) :
+ * on la prend tout de suite, sans attendre un prochain montage.
+ */
+watch(() => store.pending, async (pending) => {
+  if (!pending || !configs.value) return;
+  const handoff = store.takeHandoff();
+  if (!handoff) return;
+  if (handoff.mode === 'append') await append(handoff.steps);
+  else await replace(handoff.steps, handoff.input);
+});
+
 // --- Démarrage ----------------------------------------------------------------
 
 onMounted(async () => {
@@ -292,7 +306,11 @@ onMounted(async () => {
   const initialHash = rawHash();
   const link = initialHash ? parseLink(initialHash) : {};
 
-  if (handoff) {
+  if (handoff?.mode === 'append') {
+    // « Ajouter à la recette en cours » : la recette en cours, c'est la dernière.
+    steps.value = [...prepare(saved.value), ...prepare(handoff.steps)];
+  }
+  else if (handoff) {
     await replace(handoff.steps, handoff.input);
   }
   else if (link.recipe !== undefined || link.input !== undefined) {

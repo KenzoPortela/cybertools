@@ -1,6 +1,6 @@
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { RecipeStep } from '~/catalog/tool.types';
 
 export interface WorkbenchStep extends RecipeStep {
@@ -48,11 +48,18 @@ export const useRecipeStore = defineStore('recipe', () => {
    * la reprend à son ouverture. En mémoire plutôt que dans l'URL, pour que
    * l'entrée n'atterrisse pas dans l'historique du navigateur.
    */
-  const handoff = ref<{ steps: RecipeStep[]; input?: string }>();
+  const handoff = ref<{ steps: RecipeStep[]; input?: string; mode: 'replace' | 'append' }>();
 
-  function openWith(recipe: RecipeStep[], withInput?: string) {
-    handoff.value = { steps: recipe, input: withInput };
+  /**
+   * `replace` : la recette déposée remplace la recette en cours (« Ouvrir dans
+   * les Recettes ») ; `append` : elle s'ajoute à la fin (palette, ⌘↵).
+   */
+  function openWith(recipe: RecipeStep[], withInput?: string, mode: 'replace' | 'append' = 'replace') {
+    handoff.value = { steps: recipe, input: withInput, mode };
   }
+
+  /** Une recette attend d'être reprise : l'atelier déjà ouvert la prend aussitôt. */
+  const pending = computed(() => Boolean(handoff.value));
 
   function takeHandoff() {
     const pending = handoff.value;
@@ -60,5 +67,5 @@ export const useRecipeStore = defineStore('recipe', () => {
     return pending;
   }
 
-  return { steps, input, saved, openWith, takeHandoff };
+  return { steps, input, saved, pending, openWith, takeHandoff };
 });

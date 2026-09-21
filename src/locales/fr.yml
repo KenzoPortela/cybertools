@@ -90,13 +90,34 @@ app:
     label: 'Palette de commandes'
     open: 'Ouvrir la palette de commandes'
     trigger: 'Rechercher un outil…'
-    placeholder: 'Rechercher un outil ou une commande…'
+    placeholder: 'Rechercher un outil, ou taper / # > pour restreindre…'
     empty: 'Rien ne correspond à « {query} ».'
+    emptyScope: 'Rien ici pour le moment.'
+    resultCount: '0 résultat | 1 résultat | {n} résultats'
+    tolerant: 'tolère les fautes · fr / en'
+    scopes:
+      label: Filtrer
+      all: tout
+      category: catégorie
+      recipe: recette
+      command: commande
     groups:
       recents: Récents
       favorites: Favoris
-      tools: Outils
       commands: Commandes
+      best: 'Meilleurs résultats'
+      alsoKnown: 'Aussi appelés'
+      others: 'Autres résultats'
+      actions: Actions
+      categories: Catégories
+      recipes: 'Recette enregistrée'
+    resumeRecipe: 'Reprendre la dernière recette'
+    noRecipe: 'Aucune recette enregistrée : la dernière que vous composez est gardée ici.'
+    addToRecipe: 'Ajouter {name} à la recette'
+    workbench: atelier
+    pin: 'Épingler {name}'
+    unpin: 'Désépingler {name}'
+    pinned: Épinglé
     commands:
       settings: Ouvrir les paramètres
       home: 'Aller à l''accueil'
@@ -110,6 +131,8 @@ app:
       navigate: naviguer
       open: ouvrir
       close: fermer
+      add: 'ajouter à la recette'
+      pin: épingler
 
   favorites:
     add: 'Ajouter aux favoris'

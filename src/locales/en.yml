@@ -90,13 +90,34 @@ app:
     label: 'Command palette'
     open: 'Open the command palette'
     trigger: 'Search a tool…'
-    placeholder: 'Search a tool or a command…'
+    placeholder: 'Search a tool, or type / # > to narrow…'
     empty: 'Nothing matches “{query}”.'
+    emptyScope: 'Nothing here yet.'
+    resultCount: '0 results | 1 result | {n} results'
+    tolerant: 'typo-tolerant · en / fr'
+    scopes:
+      label: Filter
+      all: all
+      category: category
+      recipe: recipe
+      command: command
     groups:
       recents: Recent
       favorites: Favourites
-      tools: Tools
       commands: Commands
+      best: 'Best matches'
+      alsoKnown: 'Also known as'
+      others: 'Other results'
+      actions: Actions
+      categories: Categories
+      recipes: 'Saved recipe'
+    resumeRecipe: 'Resume the last recipe'
+    noRecipe: 'No recipe saved yet: the last recipe you build is kept here.'
+    addToRecipe: 'Add {name} to the recipe'
+    workbench: workbench
+    pin: 'Pin {name}'
+    unpin: 'Unpin {name}'
+    pinned: Pinned
     commands:
       settings: Open settings
       home: 'Go to home'
@@ -110,6 +131,8 @@ app:
       navigate: navigate
       open: open
       close: close
+      add: 'add to recipe'
+      pin: pin
 
   favorites:
     add: 'Add to favourites'
